@@ -1,14 +1,14 @@
 {
-    "$schema": "https://json.schemastore.org/prettierrc.json",
-    "singleQuote": false,
-    "trailingComma": "all",
-    "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
-    "overrides": [
-        {
-            "files": "*.svelte",
-            "options": {
-                "parser": "svelte"
-            }
-        }
-    ]
+  "$schema": "https://json.schemastore.org/prettierrc.json",
+  "singleQuote": false,
+  "trailingComma": "all",
+  "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+  "overrides": [
+    {
+      "files": "*.svelte",
+      "options": {
+        "parser": "svelte"
+      }
+    }
+  ]
 }

@@ -2,107 +2,105 @@ import { db } from "$lib/db";
 import type { RequestEvent } from "./$types";
 
 type Curso =
-    | "Todos"
-    | "PRD"
-    | "TEL"
-    | "ELO"
-    | "ELE"
-    | "EDI"
-    | "MEC"
-    | "INF"
-    | undefined;
+  | "Todos"
+  | "PRD"
+  | "TEL"
+  | "ELO"
+  | "ELE"
+  | "EDI"
+  | "MEC"
+  | "INF"
+  | undefined;
 
 interface LoadData {
-    titulo?: string;
-    range_ano_foto_start?: number;
-    range_ano_foto_end?: number;
-    range_ano_formatura_start?: number;
-    range_ano_formatura_end?: number;
-    curso: Curso;
-    isCarometro: boolean;
-    fotos?: Foto[];
+  titulo?: string;
+  range_ano_foto_start?: number;
+  range_ano_foto_end?: number;
+  range_ano_formatura_start?: number;
+  range_ano_formatura_end?: number;
+  curso: Curso;
+  isCarometro: boolean;
+  fotos?: Foto[];
 }
 
 export interface Foto {
-    TituloFoto?: string;
-    CursoFoto: string;
-    AnoFoto?: number;
-    AnoFormatura?: number;
-    NomeMiniaturaStored: string;
-    NomeArqStored: string;
+  TituloFoto?: string;
+  CursoFoto: string;
+  AnoFoto?: number;
+  AnoFormatura?: number;
+  NomeMiniaturaStored: string;
+  NomeArqStored: string;
 }
 
 function intOrUndefined(val: string | null): number | undefined {
-    return val ? parseInt(val) : undefined;
+  return val ? parseInt(val) : undefined;
 }
 
 async function loadFotos(
-    curso: Curso,
-    range_foto?: [number, number],
-    range_formatura?: [number, number],
-    carometro?: boolean,
+  curso: Curso,
+  range_foto?: [number, number],
+  range_formatura?: [number, number],
+  carometro?: boolean,
 ): Promise<Foto[]> {
-    let params: any[] = [];
-    let sql_where = "WHERE Excluido = 0 ";
-    sql_where += "AND Carometro = ? ";
-    params.push(carometro ?? false);
-    if (curso !== undefined) {
-        sql_where += "AND CursoFoto = ?";
-        params.push(curso);
-    }
-    return new Promise((res, rej) => {
-        db.all(
-            `SELECT TituloFoto, CursoFoto, AnoFoto, AnoFormatura, NomeMiniaturaStored, NomeArqStored FROM Fotos ${sql_where};`,
-            params,
-            (err, rows) => {
-                if (err) {
-                    rej(err);
-                    return;
-                }
-                console.log(sql_where);
-                console.log(params);
-                res(rows as Foto[]);
-            },
-        );
-    });
+  let params: any[] = [];
+  let sql_where = "WHERE Excluido = 0 ";
+  sql_where += "AND Carometro = ? ";
+  params.push(carometro ?? false);
+  if (curso !== undefined) {
+    sql_where += "AND CursoFoto = ?";
+    params.push(curso);
+  }
+  return new Promise((res, rej) => {
+    db.all(
+      `SELECT TituloFoto, CursoFoto, AnoFoto, AnoFormatura, NomeMiniaturaStored, NomeArqStored FROM Fotos ${sql_where};`,
+      params,
+      (err, rows) => {
+        if (err) {
+          rej(err);
+          return;
+        }
+        res(rows as Foto[]);
+      },
+    );
+  });
 }
 
 export const actions = {
-    default: async ({ request }) => {
-        const urlParams = await request.formData();
+  default: async ({ request }) => {
+    const formData = await request.formData();
 
-        const params = {
-            titulo: urlParams.get("titulo") ?? undefined,
-            range_ano_foto_start: intOrUndefined(
-                urlParams.get("range_ano_foto_start")?.toString() ?? null,
-            ),
-            range_ano_foto_end: intOrUndefined(
-                urlParams.get("range_ano_foto_end")?.toString() ?? null,
-            ),
-            range_ano_formatura_start: intOrUndefined(
-                urlParams.get("range_ano_formatura_start")?.toString() ?? null,
-            ),
-            range_ano_formatura_end: intOrUndefined(
-                urlParams.get("range_ano_formatura_end")?.toString() ?? null,
-            ),
-            curso: urlParams.get("curso") ?? undefined,
-            isCarometro: urlParams.get("carometro") === "true",
-        };
+    const params = {
+      titulo: formData.get("titulo") ?? undefined,
+      range_ano_foto_start: intOrUndefined(
+        formData.get("range_ano_foto_start")?.toString() ?? null,
+      ),
+      range_ano_foto_end: intOrUndefined(
+        formData.get("range_ano_foto_end")?.toString() ?? null,
+      ),
+      range_ano_formatura_start: intOrUndefined(
+        formData.get("range_ano_formatura_start")?.toString() ?? null,
+      ),
+      range_ano_formatura_end: intOrUndefined(
+        formData.get("range_ano_formatura_end")?.toString() ?? null,
+      ),
+      curso: formData.get("curso") ?? undefined,
+      isCarometro: formData.get("carometro") === "true",
+    };
 
-        if (params.curso == "") {
-            params.curso = undefined as Curso;
-        }
+    if (params.curso == "") {
+      params.curso = undefined as Curso;
+    }
 
-        const fotos = await loadFotos(
-            params.curso as Curso,
-            undefined,
-            undefined,
-            params.isCarometro,
-        );
+    const fotos = await loadFotos(
+      params.curso as Curso,
+      undefined,
+      undefined,
+      params.isCarometro,
+    );
 
-        return {
-            params: params,
-            fotos: fotos
-        };
-    },
+    return {
+      params: params,
+      fotos: fotos,
+    };
+  },
 };

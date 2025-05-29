@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { enhance } from "$app/forms";
   import type { Foto } from "./+page.server";
 
   async function carregarFotos() {
@@ -15,7 +16,7 @@
 <div id="mainbody2">
   <h1>Lista fotos</h1>
   <p><a href="cadfoto.asp"><big>Envie mais uma foto</big></a></p>
-  <form method="POST" name="form01" id="form01">
+  <form method="POST" name="form01" id="form01" use:enhance>
     <table
       width="100%"
       border="0"
@@ -37,7 +38,7 @@
               maxlength="20"
               size="20"
               tabindex="1"
-              value="{form?.params.titulo}"
+              value={form?.params.titulo}
             />
           </td>
           <td
@@ -45,14 +46,16 @@
               ><strong>
                 <!-- TODO: bindar esses valores -->
                 <select name="curso" tabindex="2">
-                  <option selected={form?.params.curso==""} value="">Todos</option>
-                  <option selected={form?.params.curso=="PRD"}>PRD</option>
-                  <option selected={form?.params.curso=="TEL"}>TEL</option>
-                  <option selected={form?.params.curso=="ELO"}>ELO</option>
-                  <option selected={form?.params.curso=="ELE"}>ELE</option>
-                  <option selected={form?.params.curso=="EDI"}>EDI</option>
-                  <option selected={form?.params.curso=="MEC"}>MEC</option>
-                  <option selected={form?.params.curso=="INF"}>INF</option>
+                  <option selected={form?.params.curso == ""} value=""
+                    >Todos</option
+                  >
+                  <option selected={form?.params.curso == "PRD"}>PRD</option>
+                  <option selected={form?.params.curso == "TEL"}>TEL</option>
+                  <option selected={form?.params.curso == "ELO"}>ELO</option>
+                  <option selected={form?.params.curso == "ELE"}>ELE</option>
+                  <option selected={form?.params.curso == "EDI"}>EDI</option>
+                  <option selected={form?.params.curso == "MEC"}>MEC</option>
+                  <option selected={form?.params.curso == "INF"}>INF</option>
                 </select></strong
               ></font
             >Apenas carômetro?
