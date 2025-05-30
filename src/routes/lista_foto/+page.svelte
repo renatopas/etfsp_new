@@ -66,12 +66,7 @@
       <tr>
         <td>
           Título
-          <input
-            type="text"
-            name="titulo"
-            maxlength="20"
-            size="20"
-          />
+          <input type="text" name="titulo" maxlength="20" size="20" />
         </td>
         <td
           >Curso<font size="2" face="Verdana"
@@ -145,6 +140,7 @@
           <td style="text-align: center;">
             <a
               href="/Fotos/{img.NomeArqStored}"
+              target="_blank"
               aria-label="Foto enviada por usuário"
             >
               <img
