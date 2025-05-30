@@ -12,9 +12,7 @@
       /></a
     >
   </div>
-  <!-- fim header -->
 
-  <!-- inicio menu -->
   <div id="menu">
     <ul>
       <li id="one">
@@ -33,5 +31,3 @@
     </ul>
   </div>
 </div>
-<!-- fim menu -->
-<!-- fim do HEADER.HTM -->

@@ -6,11 +6,9 @@
   // pageTracker._trackPageview();
 </script>
 
-<!-- inicio FOOTER.HTM --->
 <div id="footer">
   <p>
     Site mantido por <a href="mailto:renato@etfsp.com">Renato Paschoalinoto</a>
     - Design by <a href="mailto:william.azevedo@gmail.com">Click</a>
   </p>
 </div>
-<!--====fim rodap� === -->
