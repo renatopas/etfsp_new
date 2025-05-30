@@ -71,13 +71,12 @@
             name="titulo"
             maxlength="20"
             size="20"
-            tabindex="1"
           />
         </td>
         <td
           >Curso<font size="2" face="Verdana"
             ><strong>
-              <select name="curso" tabindex="2">
+              <select name="curso">
                 <option selected value="">Todos</option>
                 <option>PRD</option>
                 <option>TEL</option>
