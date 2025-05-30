@@ -34,15 +34,3 @@
     </big>
   </b>
 </p>
-
-<p>
-  <b>
-    <big>
-      Clique em
-      <a href="http://br.groups.yahoo.com/group/ExETFSP" target="_blank">
-        http://br.groups.yahoo.com/group/ExETFSP
-      </a>
-      &nbsp;para ver as mensagens mais recentes da lista de bate-papo.
-    </big>
-  </b>
-</p>
