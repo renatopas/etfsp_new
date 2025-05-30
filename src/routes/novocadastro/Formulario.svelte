@@ -5,8 +5,6 @@
     const checkOkAlpha =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzƒŠŒŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ' \t\r\n\f";
     const checkOkNum = "0123456789-";
-    const checkOkEmail =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzƒŠŒŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ0123456789-@._";
 
     if (theForm.Nome.value == "") {
       alert('Digite um valor para o campo "Nome".');
@@ -113,29 +111,15 @@
       return false;
     }
 
-    if (theForm.Email.value == "") {
-      alert('Digite um valor para o campo "Email".');
+    if (
+      (theForm.Email.value as string).match(
+        /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+      ) === null
+    ) {
+      alert("Digite um e-mail válido");
       theForm.Email.focus();
       event.preventDefault();
       return false;
-    }
-
-    if (theForm.Email.value.length < 8) {
-      alert('Digite pelo menos 8 caracteres no campo "Email".');
-      theForm.Email.focus();
-      event.preventDefault();
-      return false;
-    }
-
-    for (const char of theForm.Email.value) {
-      if (!checkOkEmail.includes(char)) {
-        alert(
-          'Digite somente letra, dígito e "@._" caracteres no campo "Email".',
-        );
-        theForm.Email.focus();
-        event.preventDefault();
-        return false;
-      }
     }
 
     if (theForm.ICQ.value.length > 10) {
