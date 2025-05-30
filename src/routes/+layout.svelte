@@ -11,6 +11,8 @@
 
 <div id="layoutpage">
   <Header />
-  {@render children()}
+  <div id="mainbody2">
+    {@render children()}
+  </div>
   <Footer />
 </div>

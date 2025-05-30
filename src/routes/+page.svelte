@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import Meta from "$lib/Meta.svelte";
 </script>
 
@@ -7,7 +7,7 @@
   title="Ex-Alunos da Escola Tecnica Federal de Sao Paulo / Instituto Federal / ETFSP / CEFET-SP / IF-SP"
 />
 
-<div id="mainbody">
+<div style="float: left; width: 390px;">
   <h1>
     Bem-vindo &agrave; p&aacute;gina n&atilde;o oficial dos ex-alunos da Federal
     de S&atilde;o Paulo!

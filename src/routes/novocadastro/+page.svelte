@@ -11,19 +11,17 @@
   description=""
 />
 
-<div id="mainbody2">
-  {#if form?.success === true}
-    <Sucesso {...form?.data} />
-  {:else}
-    <h1>Cadastre-se</h1>
-    <p>
-      Basta preencher o formulário abaixo. O sigilo dos seus dados é garantido<br
-      />
-      <strong>DIVULGUE </strong>para seus amigos! É nossa melhor propaganda!
-    </p>
-    {#if form?.success === false}
-      <strong>Erro de validação no fomulário: {form.reason}</strong>
-    {/if}
-    <Formulario />
+{#if form?.success === true}
+  <Sucesso {...form?.data} />
+{:else}
+  <h1>Cadastre-se</h1>
+  <p>
+    Basta preencher o formulário abaixo. O sigilo dos seus dados é garantido
+    <br />
+    <strong>DIVULGUE </strong>para seus amigos! É nossa melhor propaganda!
+  </p>
+  {#if form?.success === false}
+    <strong>Erro de validação no fomulário: {form.reason}</strong>
   {/if}
-</div>
+  <Formulario />
+{/if}
