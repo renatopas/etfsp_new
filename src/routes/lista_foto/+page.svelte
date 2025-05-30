@@ -2,10 +2,6 @@
   import { enhance } from "$app/forms";
   import type { Foto } from "./+page.server";
 
-  async function carregarFotos() {
-    fetch("/pesquisa_fotos?" + new URLSearchParams());
-  }
-
   let { form } = $props();
 
   let rows = $derived.by(() => {
