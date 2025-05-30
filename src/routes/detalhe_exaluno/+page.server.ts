@@ -1,5 +1,5 @@
-import { db } from '$lib/db.js'
-import { error } from '@sveltejs/kit'
+import { db } from "$lib/db.js";
+import { error } from "@sveltejs/kit";
 
 interface DadosAluno {
   Nome: string;
@@ -22,7 +22,9 @@ interface DadosAluno {
   QtdFotos: number;
 }
 
-async function getDadosAluno(id: number): Promise<Partial<DadosAluno> | undefined> {
+async function getDadosAluno(
+  id: number,
+): Promise<Partial<DadosAluno> | undefined> {
   return new Promise((res, rej) => {
     db.get(
       "SELECT \
@@ -40,23 +42,23 @@ async function getDadosAluno(id: number): Promise<Partial<DadosAluno> | undefine
       id,
       (err, row?: Partial<DadosAluno>) => {
         if (err) {
-          rej(err)
+          rej(err);
           return;
         }
-        res(row)
-      }
-    )
-  })
+        res(row);
+      },
+    );
+  });
 }
 
 export const load = async ({ url }) => {
-  const idParam = url.searchParams.get("id")
+  const idParam = url.searchParams.get("id");
   if (idParam === null || Number.isNaN(parseInt(idParam))) {
-    error(401)
+    error(401);
   }
-  const dados = await getDadosAluno(parseInt(idParam))
+  const dados = await getDadosAluno(parseInt(idParam));
   if (!dados) {
-    error(404)
+    error(404);
   }
-  return dados
-}
+  return dados;
+};
