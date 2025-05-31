@@ -6,11 +6,10 @@ RUN pnpm i
 RUN pnpm run build
 
 FROM node:23-alpine
-COPY --from=build /app/build /app/package.json /app/pnpm-lock.yaml /app/
-# ADD build /app/build
-# ADD package.json /app
-# ADD pnpm-lock.yaml /app
+COPY --from=build /app/build /app/build
+COPY --from=build /app/package.json /app/package.json
+COPY --from=build /app/pnpm-lock.yaml /app/pnpm-lock.yaml
 WORKDIR /app
 RUN corepack enable pnpm
 RUN pnpm i -P
-ENTRYPOINT [ "node", "./build" ]
+ENTRYPOINT [ "node", "/app/build" ]

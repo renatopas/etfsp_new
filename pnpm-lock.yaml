@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      csv-parser:
-        specifier: ^3.2.0
-        version: 3.2.0
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
@@ -639,11 +636,6 @@ packages:
   cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
-    hasBin: true
-
-  csv-parser@3.2.0:
-    resolution: {integrity: sha512-fgKbp+AJbn1h2dcAHKIdKNSSjfp43BZZykXsCjzALjKy80VXQNHPFJ6T9Afwdzoj24aMkq8GwDS7KGcDPpejrA==}
-    engines: {node: '>= 10'}
     hasBin: true
 
   dayjs@1.11.13:
@@ -1878,8 +1870,6 @@ snapshots:
   cookie@0.6.0: {}
 
   cssesc@3.0.0: {}
-
-  csv-parser@3.2.0: {}
 
   dayjs@1.11.13: {}
 
