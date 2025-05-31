@@ -2,13 +2,13 @@
   import { enhance } from "$app/forms";
   import type { Foto } from "./+page.server";
 
-  let { form } = $props();
+  let { data, form } = $props();
 
   let rows = $derived.by(() => {
     let tmp: Foto[][] = [];
-    let formData = form;
-    for (let i = 0; i < Math.ceil((formData?.fotos.length ?? 0) / 5); i++) {
-      tmp.push(formData?.fotos.slice(i * 5, i * 5 + 5) ?? []);
+    let fotos = form?.fotos ?? data.fotos;
+    for (let i = 0; i < Math.ceil((fotos?.length ?? 0) / 5); i++) {
+      tmp.push(fotos?.slice(i * 5, i * 5 + 5) ?? []);
     }
     return tmp;
   });
@@ -37,7 +37,7 @@
 </script>
 
 <h1>Lista fotos</h1>
-<p><a href="cadfoto.asp"><big>Envie mais uma foto</big></a></p>
+<p><a href="/cadfoto"><big>Envie mais uma foto</big></a></p>
 <form
   method="POST"
   name="form01"
@@ -128,7 +128,7 @@
 </form>
 
 <table width="100%" border="1" cellpadding="0" cellspacing="1" id="tablefotos">
-  <caption>Encontradas {form?.fotos.length ?? 0} fotos. </caption>
+  <caption>Encontradas {form?.fotos.length ?? data.fotos?.length ?? 0} fotos. </caption>
   <tbody>
     {#each rows as row}
       <tr>

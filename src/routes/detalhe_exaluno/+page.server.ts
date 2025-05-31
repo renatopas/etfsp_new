@@ -12,8 +12,7 @@ interface DadosAluno {
   Email: string;
   HomePage: string;
   ICQ: string;
-  DtCadastro: string;
-  DtAtualizacao: string;
+  DtCadastro: number;
   Comentarios: string;
   ComoEncontrou: string;
   ComoEncontrouExtra: string;
@@ -28,16 +27,23 @@ async function getDadosAluno(
   return new Promise((res, rej) => {
     db.get(
       "SELECT \
-        ID, Nome, \
-        Apelidos, Curso, \
-        AnoInicio, AnoTermino, \
-        Email, HomePage, ICQ, \
-        DtCadastro, DtAtualizacao, \
+        ID, \
+        Nome, \
+        Apelidos, \
+        Curso, \
+        AnoInicio, \
+        AnoTermino, \
+        Email, \
+        HomePage, \
+        ICQ, \
+        DtCadastro, \
         Comentarios, \
         ComoEncontrou, \
         ComoEncontrouExtra, \
-        DadoPubl \
-      FROM ExAlunos \
+        DadoPubl, \
+        NomeMiniaturaPes, \
+        QtdFotos \
+      FROM qryExAlunos \
       WHERE ID = ?",
       id,
       (err, row?: Partial<DadosAluno>) => {

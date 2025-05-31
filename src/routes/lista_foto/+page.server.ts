@@ -36,7 +36,7 @@ function intOrUndefined(val: string | null): number | undefined {
   return val ? parseInt(val) : undefined;
 }
 
-async function loadFotos(
+async function getFotos(
   curso: Curso,
   range_foto?: [number, number],
   range_formatura?: [number, number],
@@ -54,6 +54,22 @@ async function loadFotos(
     db.all(
       `SELECT TituloFoto, CursoFoto, AnoFoto, AnoFormatura, NomeMiniaturaStored, NomeArqStored FROM Fotos ${sql_where};`,
       params,
+      (err, rows) => {
+        if (err) {
+          rej(err);
+          return;
+        }
+        res(rows as Foto[]);
+      },
+    );
+  });
+}
+
+async function getFotosByAluno(id: number): Promise<Foto[]> {
+    return new Promise((res, rej) => {
+    db.all(
+      `SELECT TituloFoto, CursoFoto, AnoFoto, AnoFormatura, NomeMiniaturaStored, NomeArqStored FROM Fotos WHERE idExAlunoUpload = ?;`,
+      [id],
       (err, rows) => {
         if (err) {
           rej(err);
@@ -91,7 +107,7 @@ export const actions = {
       params.curso = undefined as Curso;
     }
 
-    const fotos = await loadFotos(
+    const fotos = await getFotos(
       params.curso as Curso,
       undefined,
       undefined,
@@ -104,3 +120,12 @@ export const actions = {
     };
   },
 };
+
+export const load = async ({ url }) => {
+  const id = Number(url.searchParams.get("idExAluno") ?? undefined)
+  if (Number.isSafeInteger(id)) {
+    return {
+      fotos: await getFotosByAluno(id)
+    }
+  }
+}

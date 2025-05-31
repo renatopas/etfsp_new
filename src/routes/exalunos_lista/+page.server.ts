@@ -22,7 +22,7 @@ type Ordem =
   | "SAIDACURSO"
   | "SAIDANOME";
 
-async function pesquisar_alunos(busca: string, ordem: Ordem): Promise<Aluno[]> {
+async function pesquisarAlunos(busca: string, ordem: Ordem): Promise<Aluno[]> {
   let order_by: string;
   switch (ordem) {
     case "CURSOINGRESSO":
@@ -71,11 +71,48 @@ async function pesquisar_alunos(busca: string, ordem: Ordem): Promise<Aluno[]> {
   });
 }
 
+async function lastAlunos(): Promise<Aluno[]> {
+  let cmpTs = Date.now() - 1000 * 60 * 60 * 24 * 7;
+
+  return new Promise((res, rej) => {
+    db.all(
+      "SELECT ID, Nome, Apelidos, Curso, AnoInicio, AnoTermino, HomePage, DtCadastro FROM ExAlunos WHERE Excluido = 0 AND DtCadastro > ? ORDER BY DtCadastro DESC;",
+      [cmpTs],
+      (err, rows) => {
+        if (err) {
+          rej(err);
+          return;
+        }
+        console.log(rows.slice(0, 3));
+        console.log(rows.slice(-3, rows.length));
+        res(
+          rows.map((r: any) => {
+            if (r.AnoInicio && r.AnoTermino) {
+              r.Periodo = r.AnoInicio + "-" + r.AnoTermino;
+            } else {
+              r.Periodo = "";
+            }
+            return r;
+          }) as Aluno[],
+        );
+      },
+    );
+  });
+}
+
 export async function load({ url }): Promise<LoadData> {
   const order = url.searchParams.get("ORDEM") as Ordem | null;
+  const Restricao = url.searchParams.get("Restricao");
   const busca = url.searchParams.get("busca");
 
+  let alunos;
+  if (Restricao === "LAST") {
+    alunos = await lastAlunos();
+  } else {
+    alunos = await pesquisarAlunos(busca ?? "", order ?? "ALFA");
+  }
+
   return {
-    alunos: await pesquisar_alunos(busca ?? "", order ?? "ALFA"),
+    alunos: alunos,
   };
 }
