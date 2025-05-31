@@ -66,7 +66,7 @@ async function getFotos(
 }
 
 async function getFotosByAluno(id: number): Promise<Foto[]> {
-    return new Promise((res, rej) => {
+  return new Promise((res, rej) => {
     db.all(
       `SELECT TituloFoto, CursoFoto, AnoFoto, AnoFormatura, NomeMiniaturaStored, NomeArqStored FROM Fotos WHERE idExAlunoUpload = ?;`,
       [id],
@@ -122,10 +122,10 @@ export const actions = {
 };
 
 export const load = async ({ url }) => {
-  const id = Number(url.searchParams.get("idExAluno") ?? undefined)
+  const id = Number(url.searchParams.get("idExAluno") ?? undefined);
   if (Number.isSafeInteger(id)) {
     return {
-      fotos: await getFotosByAluno(id)
-    }
+      fotos: await getFotosByAluno(id),
+    };
   }
-}
+};

@@ -128,7 +128,9 @@
 </form>
 
 <table width="100%" border="1" cellpadding="0" cellspacing="1" id="tablefotos">
-  <caption>Encontradas {form?.fotos.length ?? data.fotos?.length ?? 0} fotos. </caption>
+  <caption
+    >Encontradas {form?.fotos.length ?? data.fotos?.length ?? 0} fotos.
+  </caption>
   <tbody>
     {#each rows as row}
       <tr>
