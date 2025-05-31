@@ -47,8 +47,6 @@
     </div>
   </div>
 
-  <h1>Consulte a lista de professores e funcion&aacute;rios!</h1>
-
   <p>
     <img
       src="images/logo_cefet.gif"
@@ -57,13 +55,7 @@
       height="100"
       class="imagdir"
     />
-    H&aacute; um cadastro tamb&eacute;m para
-    <a href="profess">funcion&aacute;rios e professores</a>. Veja as
-    op&ccedil;&otilde;es no menu superior.
+    Cadastre-se ou apenas consulte as mensagens.
   </p>
-  <p>
-    Tem tamb&eacute;m uma <a href="listserv">lista de bate-papo</a>. Cadastre-se
-    ou apenas consulte as mensagens.
-  </p>
-  <p>Experimente! E, principalmente, DIVULGUE !!!</p>
+  <p style="margin-bottom: 2rem;">Experimente! E, principalmente, DIVULGUE!!!</p>
 </div>
