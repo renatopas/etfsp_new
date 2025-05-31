@@ -1,0 +1,20 @@
+
+# database
+*.sqlite3
+*.sqlite
+
+# generated stuf
+node_modules
+.svelte_kit
+build
+
+# docker stuff
+.dockerignore
+Dockerfile
+
+# git stuff
+.git
+.gitignore
+
+# misc
+*.md
