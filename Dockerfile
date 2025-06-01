@@ -1,8 +1,9 @@
 FROM node:23-alpine AS build
-ADD . /app/
+ADD package.json pnpm-lock.yaml /app/
 WORKDIR /app
 RUN corepack enable pnpm
 RUN pnpm i
+ADD . /app/
 RUN pnpm run build
 
 FROM node:23-alpine
