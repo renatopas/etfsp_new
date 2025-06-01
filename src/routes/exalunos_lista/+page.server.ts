@@ -83,8 +83,6 @@ async function lastAlunos(): Promise<Aluno[]> {
           rej(err);
           return;
         }
-        console.log(rows.slice(0, 3));
-        console.log(rows.slice(-3, rows.length));
         res(
           rows.map((r: any) => {
             if (r.AnoInicio && r.AnoTermino) {

@@ -21,7 +21,6 @@
             new URLSearchParams({ name: searchText }).toString(),
         )
       ).json();
-      console.log(searchText);
     }, 500);
   }
 
