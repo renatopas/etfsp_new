@@ -1,4 +1,4 @@
-import { db } from "$lib/db.js";
+import { db } from "$lib";
 import { error } from "@sveltejs/kit";
 
 interface DadosAluno {

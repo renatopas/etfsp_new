@@ -1,5 +1,4 @@
-import { db } from "$lib/db";
-import type { RequestEvent } from "./$types";
+import { db } from "$lib";
 
 type Curso =
   | "Todos"

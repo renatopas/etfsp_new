@@ -34,11 +34,13 @@
     "onlyBuiltDependencies": [
       "@tailwindcss/oxide",
       "esbuild",
+      "sharp",
       "sqlite3"
     ]
   },
   "dependencies": {
     "dayjs": "^1.11.13",
+    "sharp": "^0.34.2",
     "sqlite3": "^5.1.7"
   }
 }

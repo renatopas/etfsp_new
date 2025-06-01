@@ -57,5 +57,7 @@
     />
     Cadastre-se ou apenas consulte as mensagens.
   </p>
-  <p style="margin-bottom: 2rem;">Experimente! E, principalmente, DIVULGUE!!!</p>
+  <p style="margin-bottom: 2rem;">
+    Experimente! E, principalmente, DIVULGUE!!!
+  </p>
 </div>
