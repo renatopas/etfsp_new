@@ -20,6 +20,7 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "@tailwindcss/typography": "^0.5.15",
     "@tailwindcss/vite": "^4.0.0",
+    "@types/mime-types": "^3.0.0",
     "@types/node": "^22.15.21",
     "prettier": "^3.4.2",
     "prettier-plugin-svelte": "^3.3.3",
@@ -40,6 +41,7 @@
   },
   "dependencies": {
     "dayjs": "^1.11.13",
+    "mime-types": "^3.0.1",
     "sharp": "^0.34.2",
     "sqlite3": "^5.1.7"
   }

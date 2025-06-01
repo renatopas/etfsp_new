@@ -63,8 +63,7 @@ img {
   padding: 0px;
   margin: 0px;
   text-align: left;
-  background-image: url(images/header.jpg);
-  /*background: url(images/header.gif);*/
+  background-image: url("/images/header.jpg");
   background-color: #ff9900;
   /*height:75px;*/
 }
@@ -246,7 +245,7 @@ body#sectioneight #menu li#eight a {
   font-size: 70%;
 }
 #mainbody2 li {
-  list-style: disc url(/images/listblack.gif) inside;
+  list-style: disc url("/images/listblack.gif") inside;
   padding-left: 5px;
   margin-bottom: 10px;
   margin-left: 5px;
@@ -254,7 +253,7 @@ body#sectioneight #menu li#eight a {
   line-height: 1.4;
 }
 #mainbody2 ul li {
-  list-style: disc url(/images/innerlistblack.gif) inside;
+  list-style: disc url("/images/innerlistblack.gif") inside;
   margin-top: 10px;
   vertical-align: top;
 }
@@ -321,7 +320,7 @@ caption {
   margin: 0.5em 0px 0.5em 10px;
 }
 #mainbody li {
-  list-style: disc url(/images/listblack.gif) inside;
+  list-style: disc url("/images/listblack.gif") inside;
   padding-left: 5px;
   margin-bottom: 10px;
   margin-left: 5px;
@@ -329,7 +328,7 @@ caption {
   line-height: 1.4;
 }
 #mainbody ul ul li {
-  list-style: disc url(/images/innerlistblack.gif) inside;
+  list-style: disc url("/images/innerlistblack.gif") inside;
   margin-top: 10px;
   vertical-align: top;
 }

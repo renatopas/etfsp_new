@@ -1,4 +1,4 @@
-import { db } from "$lib";
+import { db } from "$lib/server/index";
 
 type Curso =
   | "Todos"

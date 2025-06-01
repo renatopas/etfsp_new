@@ -11,9 +11,9 @@ importers:
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
-      debounce:
-        specifier: ^2.2.0
-        version: 2.2.0
+      mime-types:
+        specifier: ^3.0.1
+        version: 3.0.1
       sharp:
         specifier: ^0.34.2
         version: 0.34.2
@@ -36,6 +36,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.0.0
         version: 4.1.7(vite@6.3.5(@types/node@22.15.21)(jiti@2.4.2)(lightningcss@1.30.1))
+      '@types/mime-types':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@types/node':
         specifier: ^22.15.21
         version: 22.15.21
@@ -650,6 +653,9 @@ packages:
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
 
+  '@types/mime-types@3.0.0':
+    resolution: {integrity: sha512-9gFWMsVgEtbsD6yY/2z8pAtnZhdRKl4Q9xmKQJy5gv0fMpzJeeWtQyd7WpdhaIbRSwPCfnjXOsNMcoQvu5giGg==}
+
   '@types/node@22.15.21':
     resolution: {integrity: sha512-EV/37Td6c+MgKAbkcLG6vqZ2zEYHD7bvSrzqqs2RIhbA6w3x+Dqz8MZM3sP6kGTeLrdoOgKZe+Xja7tUB2DNkQ==}
 
@@ -779,10 +785,6 @@ packages:
 
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
-
-  debounce@2.2.0:
-    resolution: {integrity: sha512-Xks6RUDLZFdz8LIdR6q0MTH44k7FikOmnh5xkSjMig6ch45afc8sjTjRQf3P6ax8dMgcQrYO/AR2RGWURrruqw==}
-    engines: {node: '>=18'}
 
   debug@4.4.1:
     resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
@@ -1073,6 +1075,14 @@ packages:
   make-fetch-happen@9.1.0:
     resolution: {integrity: sha512-+zopwDy7DNknmwPQplem5lAZX/eCOzSvSNNcSKm5eVwTkOBzoktEfXsa9L23J/GIRhxRsaxzkPEhrJEpE2F4Gg==}
     engines: {node: '>= 10'}
+
+  mime-db@1.54.0:
+    resolution: {integrity: sha512-aU5EJuIN2WDemCcAp2vFBfp/m4EAhWJnUNSSw0ixs7/kXbd6Pg64EmwJkNdFhB8aWt1sH2CTXrLxo/iAGV3oPQ==}
+    engines: {node: '>= 0.6'}
+
+  mime-types@3.0.1:
+    resolution: {integrity: sha512-xRc4oEhT6eaBpU1XF7AjpOFD+xQmXNB5OVKwp4tqCuBpHLS/ZbBDrc07mYTDqVMg6PfxUjjNp85O6Cd2Z/5HWA==}
+    engines: {node: '>= 0.6'}
 
   mimic-response@3.1.0:
     resolution: {integrity: sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==}
@@ -1988,6 +1998,8 @@ snapshots:
 
   '@types/estree@1.0.7': {}
 
+  '@types/mime-types@3.0.0': {}
+
   '@types/node@22.15.21':
     dependencies:
       undici-types: 6.21.0
@@ -2130,8 +2142,6 @@ snapshots:
   cssesc@3.0.0: {}
 
   dayjs@1.11.13: {}
-
-  debounce@2.2.0: {}
 
   debug@4.4.1:
     dependencies:
@@ -2439,6 +2449,12 @@ snapshots:
       - bluebird
       - supports-color
     optional: true
+
+  mime-db@1.54.0: {}
+
+  mime-types@3.0.1:
+    dependencies:
+      mime-db: 1.54.0
 
   mimic-response@3.1.0: {}
 

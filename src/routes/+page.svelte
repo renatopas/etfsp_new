@@ -27,13 +27,13 @@
   </p>
   <p>Agora temos tamb&eacute;m <a href="lista_foto">FOTOS!!!</a></p>
 
-  <p>
+  <!-- <p>
     Se voc&ecirc; gostou, n&atilde;o gostou, tem qualquer tipo de
     coment&aacute;rio ou sugest&atilde;o sobre esse site, <a href="sugestao"
       >clique aqui</a
     >
     e comunique-se conosco!
-  </p>
+  </p> -->
 </div>
 <div id="sidebody">
   <div id="boxbusca">

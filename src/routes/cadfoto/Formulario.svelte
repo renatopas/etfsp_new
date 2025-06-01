@@ -135,7 +135,7 @@
         <td width="755" colspan="2">
           <strong>Curso </strong><strong>
             <select name="CursoFoto" size="1" required>
-              <option selected value="NUL">Escolha</option>
+              <option selected value="">Escolha</option>
               <option>PRD</option>
               <option>TEL</option>
               <option>ELO</option>

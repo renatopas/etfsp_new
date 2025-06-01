@@ -1,4 +1,4 @@
-import { db } from "$lib";
+import { db } from "$lib/server/index";
 
 interface FormData {
   Operacao: string;

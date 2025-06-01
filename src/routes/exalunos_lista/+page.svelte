@@ -15,8 +15,7 @@
 <p></p>
 <form action="exalunos_lista">
   <input type="text" name="busca" size="20" value={search} />
-  <input name="B1" type="submit" class="formbutton" value="Outra busca" />
-  <input type="hidden" name="Titulo" value="Busca" />
+  <input type="submit" class="formbutton" value="Outra busca" />
   <font size="2"><i>Ex: "Maria", "Ricardo PRD", "ELO 1997"</i></font>
 </form>
 <p>Clique no nome para mais detalhes</p>

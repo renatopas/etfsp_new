@@ -1,4 +1,4 @@
-import { db } from "$lib";
+import { db } from "$lib/server/index";
 
 interface Aluno {
   ID: number;
@@ -46,11 +46,15 @@ async function pesquisarAlunos(busca: string, ordem: Ordem): Promise<Aluno[]> {
     default:
       order_by = "Nome";
   }
+
+  const escapedSearch = `%${busca.replaceAll("%", "\\%").replaceAll("_", "\\_")}%`;
+  console.log(escapedSearch);
   return new Promise((res, rej) => {
     db.all(
-      "SELECT ID, Nome, Apelidos, Curso, AnoInicio, AnoTermino, HomePage FROM ExAlunos WHERE Excluido = 0 ORDER BY " +
+      "SELECT ID, Nome, Apelidos, Curso, AnoInicio, AnoTermino, HomePage FROM ExAlunos WHERE Excluido = 0 AND Nome LIKE ? ESCAPE '\\' ORDER BY " +
         order_by +
         ";",
+      [escapedSearch],
       (err, rows) => {
         if (err) {
           rej(err);
@@ -72,7 +76,7 @@ async function pesquisarAlunos(busca: string, ordem: Ordem): Promise<Aluno[]> {
 }
 
 async function lastAlunos(): Promise<Aluno[]> {
-  let cmpTs = Date.now() - 1000 * 60 * 60 * 24 * 7;
+  let cmpTs = Date.now() - 1000 * 60 * 60 * 24 * 30;
 
   return new Promise((res, rej) => {
     db.all(

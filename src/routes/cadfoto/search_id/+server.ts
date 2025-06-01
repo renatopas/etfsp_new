@@ -1,4 +1,4 @@
-import { db } from "$lib";
+import { db } from "$lib/server/index";
 import { error, json, type RequestHandler } from "@sveltejs/kit";
 
 export interface SearchResult {

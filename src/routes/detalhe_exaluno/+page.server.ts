@@ -1,4 +1,4 @@
-import { db } from "$lib";
+import { db } from "$lib/server/index";
 import { error } from "@sveltejs/kit";
 
 interface DadosAluno {
