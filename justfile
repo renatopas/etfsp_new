@@ -1,5 +1,5 @@
 # set shell := ["bash", "-eux", "-o", "pipefail", "-c"]
-ssh := "oracle"
+ssh := "etfsp"
 
 run: fmt
   pnpm run dev
@@ -9,6 +9,9 @@ fmt:
 
 build: fmt
   pnpm run build
+
+preview: build
+  pnpm run preview
 
 build_docker: fmt
   docker build . -t etfsp:latest -t etfsp:$(jq -r .version < package.json)
