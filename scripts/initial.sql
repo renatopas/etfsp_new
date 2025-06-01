@@ -63,7 +63,7 @@ CREATE TABLE Fotos (
 
 CREATE VIEW qryExAlunos AS
 SELECT
-  Id,
+  ID,
   Nome,
   Curso,
   Apelidos,

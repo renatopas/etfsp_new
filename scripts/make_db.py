@@ -54,6 +54,11 @@ for (_, row) in exalunos.iterrows():
         else:
             row["PublicaTelefone"] = False
 
+        row["Excluido"] = row["Excluido"] == "VERDADEIRO"
+        row["OcultarEmail"] = row["OcultarEmail"] == "VERDADEIRO"
+        row["InscricaoInicialML"] = row["InscricaoInicialML"] == "VERDADEIRO"
+        row["NaoVerificaDuplicidade"] = row["NaoVerificaDuplicidade"] == "VERDADEIRO"
+
         cur.execute("INSERT INTO ExAlunos (" \
             "ID," \
             "Nome," \
