@@ -11,6 +11,8 @@ build
 # docker stuff
 .dockerignore
 Dockerfile
+compose.yaml
+compose.yml
 
 # git stuff
 .git

@@ -7,6 +7,9 @@
 </script>
 
 <svelte:document onload={() => (document.body.id = "sectionone")} />
+<svelte:head>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+</svelte:head>
 
 <div id="layoutpage">
   <Header />
