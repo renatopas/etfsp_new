@@ -10,6 +10,7 @@ FROM node:23-alpine
 COPY --from=build /app/build /app/build
 COPY --from=build /app/package.json /app/package.json
 COPY --from=build /app/pnpm-lock.yaml /app/pnpm-lock.yaml
+COPY --from=build /app/static /app/static
 WORKDIR /app
 RUN corepack enable pnpm
 RUN pnpm i -P
