@@ -2,6 +2,8 @@
 
 ## Requisitos
 
+### Ferramentas
+
 - `pnpm`
 - `node`
 - `just`
@@ -13,6 +15,10 @@ Opcionais:
 ```bash
 pnpm install
 ```
+
+### Serviços
+
+Cloudflare Turnstile, com um widget configurado para o domínio correto
 
 ## Desenvolver
 
@@ -47,11 +53,21 @@ just build_container
 
 ### Docker
 
+Deploy da imagem por SSH:
+
+```bash
+just ssh=<HOSTNAME SSH> send_docker
+```
+
+Usando Docker CLI:
+
 ```bash
 docker run \
   -p 3000:3000 \
-  -e DB_PATH=/database/db.sqlite3 \
-  -e FOTOS_DIR=/Fotos \
+  -e 'DB_PATH=/database/db.sqlite3' \
+  -e 'FOTOS_DIR=/Fotos' \
+  -e 'CF_TURNSTILE_SECRET=0x48632984732619423' \
+  -e 'PUBLIC_CF_TURNSTILE_SITEKEY=0xfff6f85638741' \
   -v ./db.sqlite3:/database/db.sqlite3 \
   -v ./Fotos:/Fotos \
   etfsp:latest
@@ -67,6 +83,8 @@ services:
     environment:
       - "DB_PATH=/database/db.sqlite3"
       - "FOTOS_DIR=/Fotos"
+      - "CF_TURNSTILE_SECRET=0x48632984732619423"
+      - "PUBLIC_CF_TURNSTILE_SITEKEY=0xfff6f85638741"
     volumes:
       - "./db.sqlite3:/database/db.sqlite3"
       - "./Fotos:/Fotos"
