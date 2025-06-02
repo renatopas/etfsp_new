@@ -1,4 +1,5 @@
 import { db } from "$lib/server/index";
+import { validateRequest } from "$lib/server/turnstile.js";
 
 interface FormData {
   Operacao: string;
@@ -124,6 +125,13 @@ async function cadastrarAluno(dados: Partial<FormData>): Promise<boolean> {
 export const actions = {
   default: async ({ request }): Promise<FormSuccess | FormError> => {
     const formData = await request.formData();
+    const headers = request.headers;
+    if (!(await validateRequest(formData, headers))) {
+      return {
+        success: false,
+        reason: "O desafio captcha falhou, tente novamente",
+      };
+    }
     const params = [
       "Operacao",
       "Nome",

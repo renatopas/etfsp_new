@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Turnstile from "$lib/Turnstile.svelte";
+
   let theForm: HTMLFormElement;
 
   function FrontPage_Form1_Validator(event: SubmitEvent) {
@@ -420,6 +422,8 @@
       >
     </tbody>
   </table>
+
+  <Turnstile />
 
   <p>
     <input
