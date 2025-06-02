@@ -1,5 +1,19 @@
 # etfsp.com
 
+## Requisitos
+
+- `pnpm`
+- `node`
+- `just`
+
+Opcionais:
+
+- `docker`
+
+```bash
+pnpm install
+```
+
 ## Desenvolver
 
 ```bash
