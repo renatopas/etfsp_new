@@ -49,9 +49,8 @@
 
   <p>
     <img
-      src="images/logo_cefet.gif"
+      src="/images/ifsp.png"
       alt="Centro Federal de Educacão Tecnológica de SP"
-      width="100"
       height="100"
       class="imagdir"
     />
