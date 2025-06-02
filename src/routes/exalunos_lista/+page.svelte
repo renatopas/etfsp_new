@@ -9,6 +9,18 @@
   onMount(() => {
     search = new URL(document.location.toString()).searchParams.get("busca");
   });
+
+  function homepageToURL(hpage: string): URL | undefined {
+    let homepage_url: URL | undefined;
+    try {
+      homepage_url = new URL(hpage);
+    } catch (e) {
+      try {
+        homepage_url = new URL("https://" + hpage);
+      } catch (e) {}
+    }
+    return homepage_url;
+  }
 </script>
 
 <h1>Relação de Ex-alunos</h1>
@@ -42,7 +54,20 @@
         <td>
           {aluno.Periodo}
         </td>
-        <td> fotos! </td>
+        <td>
+          {#if aluno.NomeMiniaturaPes}
+            <img
+              src="/Fotos/{aluno.NomeMiniaturaPes}"
+              alt="Foto Pessoal de {aluno.Nome}"
+            />
+            <br />
+          {/if}
+          {#if aluno.HomePage}
+            <a href={homepageToURL(aluno.HomePage)?.toString()} target="_blank"
+              >{aluno.HomePage}</a
+            >
+          {/if}
+        </td>
       </tr>
     {/each}
   </tbody>

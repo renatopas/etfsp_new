@@ -7,6 +7,7 @@ interface Aluno {
   Curso: string;
   Periodo: string;
   HomePage?: string;
+  NomeMiniaturaPes?: string;
 }
 
 interface LoadData {
@@ -51,7 +52,7 @@ async function pesquisarAlunos(busca: string, ordem: Ordem): Promise<Aluno[]> {
   console.log(escapedSearch);
   return new Promise((res, rej) => {
     db.all(
-      "SELECT ID, Nome, Apelidos, Curso, AnoInicio, AnoTermino, HomePage FROM ExAlunos WHERE Excluido = 0 AND Nome LIKE ? ESCAPE '\\' ORDER BY " +
+      "SELECT ID, Nome, Apelidos, Curso, AnoInicio, AnoTermino, HomePage, NomeMiniaturaPes FROM qryExAlunos WHERE Nome LIKE ? ESCAPE '\\' ORDER BY " +
         order_by +
         ";",
       [escapedSearch],
@@ -80,7 +81,7 @@ async function lastAlunos(): Promise<Aluno[]> {
 
   return new Promise((res, rej) => {
     db.all(
-      "SELECT ID, Nome, Apelidos, Curso, AnoInicio, AnoTermino, HomePage, DtCadastro FROM ExAlunos WHERE Excluido = 0 AND DtCadastro > ? ORDER BY DtCadastro DESC;",
+      "SELECT ID, Nome, Apelidos, Curso, AnoInicio, AnoTermino, HomePage, DtCadastro, NomeMiniaturaPes FROM qryExAlunos WHERE DtCadastro > ? ORDER BY DtCadastro DESC;",
       [cmpTs],
       (err, rows) => {
         if (err) {
