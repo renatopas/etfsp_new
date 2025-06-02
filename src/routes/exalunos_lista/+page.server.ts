@@ -26,25 +26,25 @@ async function pesquisarAlunos(busca: string, ordem: Ordem): Promise<Aluno[]> {
   let order_by: string;
   switch (ordem) {
     case "CURSOINGRESSO":
-      order_by = "Curso, AnoInicio, Nome";
+      order_by = "Curso, AnoInicio, lower(Nome)";
       break;
     case "CURSOSAIDA":
-      order_by = "Curso, AnoTermino, Nome";
+      order_by = "Curso, AnoTermino, lower(Nome)";
       break;
     case "INGRESSOCURSO":
-      order_by = "AnoInicio, Curso, Nome";
+      order_by = "AnoInicio, Curso, lower(Nome)";
       break;
     case "INGRESSONOME":
-      order_by = "AnoInicio, Nome";
+      order_by = "AnoInicio, lower(Nome)";
       break;
     case "SAIDACURSO":
-      order_by = "AnoTermino, Curso, Nome";
+      order_by = "AnoTermino, Curso, lower(Nome)";
       break;
     case "SAIDANOME":
-      order_by = "AnoTermino, Nome";
+      order_by = "AnoTermino, lower(Nome)";
       break;
     default:
-      order_by = "Nome";
+      order_by = "lower(Nome)";
   }
 
   const escapedSearch = `%${busca.replaceAll("%", "\\%").replaceAll("_", "\\_")}%`;

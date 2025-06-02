@@ -41,7 +41,7 @@
   <div
     style="position: absolute; top: 0; left: 0; width: 100%; height:100%; background-color: #0005;"
     onclick={clearSearchForm}
-  />
+  ></div>
   <div class="idsearch">
     <h1>Pesquise seu Nome</h1>
     <label for="idsearchname" style="font-size: 70%; font-weight: bold;"

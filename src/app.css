@@ -63,19 +63,19 @@ img {
   padding: 0px;
   margin: 0px;
   text-align: left;
-  background-image: url("/images/header.jpg");
   background-color: #ff9900;
-  /*height:75px;*/
+  height: 75px;
 }
+
+#header a {
+  display: contents;
+}
+
 /*#header img
 {
 	margin: 0px;
 	padding: 0px;
 	border: 0px
-}
-/* Logotipo  */
-#header img.logo {
-  float: left;
 }
 
 /* *************** */
@@ -83,26 +83,15 @@ img {
 /* *************** */
 
 #menu {
+  display: flex;
+  flex-grow: 1 1;
   padding: 0px;
   margin: 0px;
+  width: 100%;
   clear: both;
 }
-#menu ul {
-  clear: left;
-  padding: 0px;
-  margin: 0px;
-  list-style-type: none;
-  text-align: center;
-  border: 0px;
-}
-#menu ul li {
-  padding: 0px;
-  display: block;
-  float: left;
-  margin: 0px;
-  text-align: center;
-}
-#menu ul li a {
+
+#menu a {
   padding: 0px;
   display: block;
   font-weight: normal;
@@ -110,7 +99,7 @@ img {
   background: #fff; /* #000; */
   /*margin: 0px 0px 10px; */
   margin: 0px;
-  width: 188px;
+  width: 100%;
   color: #c30; /* #fff; */
   line-height: 2em;
   border-left: #ccc 1px solid;
@@ -125,8 +114,26 @@ img {
   text-decoration: none;
   /* voice-family: inherit; */
 }
-unknown {
-  font-size: x-small;
+
+#menu a.selected {
+  background-color: #c30;
+  color: #fff;
+}
+
+#menu a.selected:hover {
+  background-color: #a10;
+  color: #fff;
+}
+
+#menu a:hover {
+  background: #ccc;
+  color: #009;
+  filter: Glow(Color=#A4B8D0, Strength=2);
+}
+
+#menu a:active {
+  background: #c60;
+  color: #fff;
 }
 
 /*==== ajuste de width do menu ===*/
@@ -139,15 +146,7 @@ unknown {
 #resources a:visited {
   border-right: #ccc 1px solid;
 }
-#menu ul li a:hover {
-  background: #ccc;
-  color: #009;
-  filter: Glow(Color=#A4B8D0, Strength=2);
-}
-#menu a:active {
-  background: #c60;
-  color: #fff;
-}
+
 .invisible {
   display: none;
 }
@@ -229,7 +228,7 @@ body#sectioneight #menu li#eight a {
 /* fim menu */
 /* *************** */
 #mainbody2 {
-  padding: 30px 12px 12px 12px;
+  padding: 12px;
   margin: 0px;
   width: 96%;
   /* voice-family: inherit; */
