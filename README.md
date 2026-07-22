@@ -1,5 +1,9 @@
 # etfsp.com
 
+## Planejamento
+
+- [Redesign responsivo da interface](docs/redesign/README.md)
+
 ## Requisitos
 
 ### Ferramentas
