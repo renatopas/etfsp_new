@@ -1,5 +1,9 @@
 node_modules
 
+# Production
+/Fotos
+/database 
+
 # Output
 .output
 .vercel
