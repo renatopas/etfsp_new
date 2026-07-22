@@ -1,6 +1,6 @@
 # ISSUE-003 — Remoção do campo ICQ do cadastro
 
-**Estado:** Aguardando validação  
+**Estado:** Concluída
 **Área:** Cadastro de ex-alunos  
 **Rota afetada:** `/novocadastro`
 
@@ -105,3 +105,14 @@ cadastros.
 
 - `src/routes/novocadastro/Formulario.svelte`.
 - `src/routes/novocadastro/+page.server.ts`.
+
+## Resultado da implementação
+
+- Removido o campo ICQ da interface de cadastro.
+- O servidor deixou de ler, validar, devolver ou inserir ICQ; um valor enviado
+  manualmente é ignorado.
+- O `INSERT` passa a omitir a coluna `ICQ`, preservando o padrão `NULL` para
+  novos registros e os valores históricos existentes.
+- Atualizados `docs/redesign/functional-spec.md` e
+  `docs/redesign/implementation-plan.md`. O schema, importador legado, view e
+  perfil público não foram alterados.

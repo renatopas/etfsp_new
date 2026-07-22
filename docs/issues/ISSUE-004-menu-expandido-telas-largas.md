@@ -1,6 +1,6 @@
 # ISSUE-004 — Navegação sempre expandida em telas largas
 
-**Estado:** Aguardando validação  
+**Estado:** Concluída
 **Área:** Cabeçalho e navegação principal  
 **Rotas afetadas:** todas as páginas do site
 
@@ -125,3 +125,14 @@ ordem dos links e a indicação do destino atual.
 
 Não se prevê mudança em rotas, banco de dados, schema, conteúdo privado ou
 contratos de servidor.
+
+## Resultado da implementação
+
+- Confirmado o breakpoint de `48rem`, que comporta a marca e os quatro destinos
+  no layout existente.
+- A partir desse breakpoint, a navegação fica sempre visível e o botão “Menu”
+  permanece oculto, inclusive com JavaScript ativo.
+- Abaixo do breakpoint, foi preservado o menu acessível existente; ao reduzir a
+  largura a partir do modo largo, o painel móvel volta ao estado fechado.
+- Atualizados `docs/redesign/functional-spec.md`,
+  `docs/redesign/design-system.md` e `docs/redesign/implementation-plan.md`.

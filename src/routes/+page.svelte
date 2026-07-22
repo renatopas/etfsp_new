@@ -17,7 +17,10 @@
 
   <div class="home-page__search">
     <SearchForm example="Ex.: Maria da Silva" />
-    <a class="home-page__all" href="/exalunos_lista">Ver todos os ex-alunos</a>
+    <div class="home-page__directory-links" aria-label="Consultar ex-alunos">
+      <a href="/exalunos_lista">Ver todos os ex-alunos</a>
+      <a href="/exalunos_lista?recentes=1">Ver cadastros recentes</a>
+    </div>
   </div>
 
   <div class="home-page__actions" aria-label="Outras opções">
@@ -45,8 +48,10 @@
     box-shadow: var(--shadow-card);
   }
 
-  .home-page__all {
-    justify-self: start;
+  .home-page__directory-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
   }
 
   .home-page__actions {

@@ -142,13 +142,6 @@
       inputmode="url"
       maxlength="250"
     />
-    <label for="ICQ">ICQ <span>opcional</span></label><input
-      id="ICQ"
-      name="ICQ"
-      value={values.ICQ ?? ""}
-      inputmode="numeric"
-      maxlength="20"
-    />
   </fieldset>
   <fieldset>
     <legend>Informações opcionais</legend>

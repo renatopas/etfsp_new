@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageProps } from "./$types";
-  import type { AlumniOrder } from "$lib/domain";
+  import { COURSES, type AlumniOrder } from "$lib/domain";
   import AlumniCard from "$lib/components/AlumniCard.svelte";
   import Button from "$lib/components/Button.svelte";
   import EmptyState from "$lib/components/EmptyState.svelte";
@@ -22,18 +22,32 @@
   ];
 
   const preservedSearchFilters = $derived({
+    curso: data.filters.curso,
     ordem: data.filters.ordem,
     recentes: data.filters.recentes ? "1" : undefined,
   });
 
   const paginationParameters = $derived({
     busca: data.filters.busca || undefined,
+    curso: data.filters.curso,
     ordem: data.filters.ordem,
     recentes: data.filters.recentes ? "1" : undefined,
   });
 
   const resetHref = $derived(
-    data.filters.recentes ? "/exalunos_lista?recentes=1" : "/exalunos_lista",
+    `/exalunos_lista?${new URLSearchParams({
+      ...(data.filters.curso ? { curso: data.filters.curso } : {}),
+      ordem: data.filters.ordem,
+      ...(data.filters.recentes ? { recentes: "1" } : {}),
+    }).toString()}`.replace(/\?$/, ""),
+  );
+
+  const allCoursesHref = $derived(
+    `/exalunos_lista?${new URLSearchParams({
+      ...(data.filters.busca ? { busca: data.filters.busca } : {}),
+      ordem: data.filters.ordem,
+      ...(data.filters.recentes ? { recentes: "1" } : {}),
+    }).toString()}`.replace(/\?$/, ""),
   );
 </script>
 
@@ -71,22 +85,33 @@
       </p>
     </div>
 
-    <form class="order-form" method="GET" action="/exalunos_lista">
+    <form class="filter-form" method="GET" action="/exalunos_lista">
       {#if data.filters.busca}
         <input type="hidden" name="busca" value={data.filters.busca} />
       {/if}
       {#if data.filters.recentes}
         <input type="hidden" name="recentes" value="1" />
       {/if}
-      <label for="ordem">Ordenar por</label>
-      <div class="order-form__controls">
-        <select id="ordem" name="ordem" value={data.filters.ordem}>
-          {#each orderOptions as option}
-            <option value={option.value}>{option.label}</option>
-          {/each}
-        </select>
-        <Button type="submit" variant="secondary">Aplicar</Button>
+      <div class="filter-form__fields">
+        <div>
+          <label for="curso">Curso</label>
+          <select id="curso" name="curso" value={data.filters.curso ?? ""}>
+            <option value="">Todos os cursos</option>
+            {#each COURSES as course}
+              <option value={course}>{course}</option>
+            {/each}
+          </select>
+        </div>
+        <div>
+          <label for="ordem">Ordenar por</label>
+          <select id="ordem" name="ordem" value={data.filters.ordem}>
+            {#each orderOptions as option}
+              <option value={option.value}>{option.label}</option>
+            {/each}
+          </select>
+        </div>
       </div>
+      <Button type="submit" variant="secondary">Aplicar filtros</Button>
     </form>
   </div>
 
@@ -110,11 +135,14 @@
     />
   {:else}
     <EmptyState
-      title="Não encontramos ex-alunos com esse nome."
-      description="Tente buscar apenas parte do nome ou consulte a relação completa."
+      title="Não encontramos ex-alunos com esses filtros."
+      description="Tente buscar apenas parte do nome, escolher outro curso ou consultar a relação completa."
     >
       {#snippet children()}
         <a href={resetHref}>Limpar busca</a>
+        {#if data.filters.curso}
+          <a href={allCoursesHref}>Ver todos os cursos</a>
+        {/if}
         <a href="/novocadastro/">Cadastre-se</a>
       {/snippet}
     </EmptyState>
@@ -162,7 +190,9 @@
     color: var(--color-text-muted);
   }
 
-  .order-form {
+  .filter-form,
+  .filter-form__fields,
+  .filter-form__fields > div {
     display: grid;
     gap: var(--space-2);
   }
@@ -170,12 +200,6 @@
   label {
     color: var(--color-heading);
     font-weight: 700;
-  }
-
-  .order-form__controls {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--space-2);
   }
 
   select {
@@ -204,6 +228,10 @@
     }
 
     .alumni-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filter-form__fields {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }

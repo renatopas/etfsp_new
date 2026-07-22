@@ -1,6 +1,6 @@
 # ISSUE-001 — Link para cadastros recentes na página inicial
 
-**Estado:** Aguardando validação  
+**Estado:** Concluída
 **Área:** Início e consulta de ex-alunos  
 **Rotas afetadas:** `/` e, apenas como destino, `/exalunos_lista`
 
@@ -77,3 +77,13 @@ o texto “Ver cadastros recentes”. O destino deve ser
 
 Não se prevê mudança em banco de dados, schema, endpoint ou contrato de
 privacidade.
+
+## Resultado da implementação
+
+- Adicionado o link “Ver cadastros recentes” em `src/routes/+page.svelte`, ao
+  lado do link para a relação completa, com destino
+  `/exalunos_lista?recentes=1`.
+- Atualizada a seção 2 de `docs/redesign/functional-spec.md` e a tarefa
+  RED-201 de `docs/redesign/implementation-plan.md`.
+- Não houve alteração no período de 30 dias, na rota de resultados, em banco de
+  dados ou em contratos de privacidade.

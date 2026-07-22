@@ -124,7 +124,10 @@ O CSS deve ser mobile-first. Não existe largura fixa da página.
 ### `SiteHeader`
 
 - Marca textual ou imagem responsiva com dimensões declaradas.
-- Navegação desktop e botão de menu móvel.
+- A partir de `48rem`, navegação expandida com os quatro destinos visíveis; o
+  botão “Menu” não é exibido.
+- Abaixo de `48rem`, botão de menu móvel com os mesmos destinos no fluxo da
+  página.
 - Recebe ou deriva a rota ativa; não exige que cada página passe manualmente um
   nome de aba quando a informação já está disponível em `$page.url.pathname`.
 - Links sempre começam por `/`.

@@ -70,10 +70,7 @@
         oninput={search}
         autocomplete="off"
       />
-      <p>
-        Digite pelo menos 3 caracteres. Sem JavaScript, localize o perfil e
-        informe o ID abaixo.
-      </p>
+      <p>Digite pelo menos 3 caracteres.</p>
       <label for="IdExAlunoUp">ID do ex-aluno</label><input
         id="IdExAlunoUp"
         name="IdExAlunoUp"

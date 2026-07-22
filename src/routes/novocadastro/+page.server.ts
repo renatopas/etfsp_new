@@ -21,7 +21,6 @@ type FieldName =
   | "Email"
   | "Telefone"
   | "HomePage"
-  | "ICQ"
   | "Endereco"
   | "Cidade"
   | "Estado"
@@ -81,7 +80,6 @@ export const actions: Actions = {
           "Email",
           "Telefone",
           "HomePage",
-          "ICQ",
           "Endereco",
           "Cidade",
           "Estado",
@@ -123,8 +121,6 @@ export const actions: Actions = {
       errors.Telefone = "O telefone deve ter no máximo 30 caracteres.";
     if (values.HomePage && !normalizedHomepage)
       errors.HomePage = "Informe uma página com endereço http ou https válido.";
-    if (values.ICQ && !/^\d{1,20}$/.test(values.ICQ))
-      errors.ICQ = "O ICQ deve conter até 20 dígitos.";
     if (values.Endereco.length > 200)
       errors.Endereco = "O endereço deve ter no máximo 200 caracteres.";
     if (values.Cidade.length > 100)
@@ -166,8 +162,8 @@ export const actions: Actions = {
 
     try {
       await run(
-        `INSERT INTO ExAlunos (Nome, Apelidos, Curso, AnoInicio, AnoTermino, Email, ICQ, HomePage, Endereco, Cidade, Estado, CEP, Pais, Telefone, DadoPubl, ComoEncontrou, ComoEncontrouExtra, DtCadastro)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO ExAlunos (Nome, Apelidos, Curso, AnoInicio, AnoTermino, Email, HomePage, Endereco, Cidade, Estado, CEP, Pais, Telefone, DadoPubl, ComoEncontrou, ComoEncontrouExtra, DtCadastro)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           values.Nome,
           optional(values.Apelidos),
@@ -175,7 +171,6 @@ export const actions: Actions = {
           startYear,
           endYear,
           values.Email,
-          optional(values.ICQ),
           optional(normalizedHomepage ?? ""),
           optional(values.Endereco),
           optional(values.Cidade),

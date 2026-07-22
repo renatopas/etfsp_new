@@ -433,15 +433,18 @@ table {
     flex-wrap: nowrap;
   }
 
-  .site-header__menu-button {
+  .site-header--enhanced .site-header__menu-button {
     display: none;
   }
 
-  .site-navigation,
-  .site-navigation:not(.site-navigation--open) {
+  .site-navigation {
     display: block;
     width: auto;
     padding: 0;
+  }
+
+  .site-header--enhanced .site-navigation:not(.site-navigation--open) {
+    display: block;
   }
 
   .site-navigation ul {

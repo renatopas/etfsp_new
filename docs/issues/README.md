@@ -21,3 +21,4 @@ do site.
 - [ISSUE-002 — Filtro de curso na relação de ex-alunos](./ISSUE-002-filtro-curso-exalunos.md)
 - [ISSUE-003 — Remoção do campo ICQ do cadastro](./ISSUE-003-remover-icq-cadastro.md)
 - [ISSUE-004 — Navegação sempre expandida em telas largas](./ISSUE-004-menu-expandido-telas-largas.md)
+- [ISSUE-005 — Simplificar a instrução da busca no envio de foto](./ISSUE-005-instrucao-busca-cadastro-foto.md)

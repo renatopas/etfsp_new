@@ -12,10 +12,13 @@ o trabalho de redesign. Regras de banco e privacidade continuam sujeitas a
 - Exibir a marca do site como link para `/`.
 - Exibir os destinos Início, Ex-alunos, Fotos e Cadastre-se, nessa ordem.
 - Destacar o destino correspondente à tela atual com cor e `aria-current`.
-- Em telas estreitas, exibir um botão “Menu” com rótulo textual. Ao acioná-lo,
+- A partir de `48rem`, manter os quatro destinos visíveis no cabeçalho e não
+  exibir o botão “Menu”.
+- Abaixo de `48rem`, exibir um botão “Menu” com rótulo textual. Ao acioná-lo,
   abrir os mesmos quatro destinos em um painel no fluxo normal da página.
 - O menu fecha ao escolher um destino, ao pressionar `Escape` ou ao acionar
   novamente o botão.
+- Ao retornar do layout largo para o estreito, o painel do menu começa fechado.
 - A abertura do menu não pode deslocar o foco para um local imprevisível nem
   impedir navegação por teclado.
 - Exibir um link “Ir para o conteúdo” como primeiro item focável.
@@ -58,7 +61,7 @@ se cadastre imediatamente.
 2. Texto curto explicando que o site reúne ex-alunos, professores e
    funcionários da ETFSP, CEFET-SP e IFSP.
 3. Busca por nome com botão “Buscar ex-aluno”.
-4. Link auxiliar “Ver todos os ex-alunos”.
+4. Links auxiliares “Ver todos os ex-alunos” e “Ver cadastros recentes”.
 5. Duas ações secundárias: “Cadastre-se” e “Ver fotos”.
 6. Uma nota curta informando que o site é não oficial.
 
@@ -72,11 +75,14 @@ em tempo real. Não criar seção histórica sem conteúdo disponível.
 - O formulário envia para `/exalunos_lista?busca=...`.
 - Entrada vazia leva à relação completa em ordem alfabética.
 - Não executar autocomplete nesta tela na primeira versão.
+- O link “Ver cadastros recentes” envia para `/exalunos_lista?recentes=1`.
 
 ### Critérios de aceite
 
 - Em 320 px de largura não existe rolagem horizontal.
 - Busca exige no máximo digitar o nome e acionar um botão.
+- Os links para relação completa e cadastros recentes funcionam por teclado e
+  sem JavaScript.
 - A ação “Cadastre-se” aparece sem abrir o menu em celular.
 - O conteúdo principal é compreensível sem imagens.
 
@@ -122,6 +128,7 @@ tamanho de tela.
 | Parâmetro  | Regra                                                     |
 | ---------- | --------------------------------------------------------- |
 | `busca`    | texto opcional, aparado; busca literal por trecho do nome |
+| `curso`    | curso opcional da allowlist; ausente não restringe        |
 | `ordem`    | valor da allowlist de ordenação; padrão `nome`            |
 | `recentes` | `1` limita aos 30 dias anteriores; ausente não limita     |
 | `pagina`   | inteiro positivo; padrão `1`                              |
@@ -137,8 +144,17 @@ nomes em minúsculas da tabela acima.
 - A consulta usa parâmetros SQL e filtra registros logicamente excluídos.
 - O valor digitado permanece no campo após a busca.
 - Uma busca vazia retorna todos os registros permitidos.
-- A primeira fase mantém a busca por trecho do nome. Busca por apelido, curso ou
-  ano fica fora do escopo para não alterar resultados durante o redesign.
+- A busca por nome permanece por trecho. Busca por apelido ou ano fica fora do
+  escopo para não alterar resultados durante o redesign.
+
+### Filtro de curso
+
+- O seletor apresenta “Todos os cursos” e os cursos da allowlist compartilhada.
+- Um curso válido restringe a consulta por igualdade; vazio, ausente, repetido
+  ou inválido equivale a “Todos os cursos”.
+- Busca, curso, ordenação e cadastros recentes podem ser combinados.
+- A filtragem é feita no servidor com parâmetro SQL; ela não acrescenta colunas
+  retornadas ao navegador.
 
 ### Resultados
 
@@ -160,21 +176,23 @@ nomes em minúsculas da tabela acima.
 ### Paginação
 
 - Exibir “Anterior” e “Próxima”, mais “Página X de Y”.
-- Manter `busca`, `ordem` e `recentes` ao trocar de página.
+- Manter `busca`, `curso`, `ordem` e `recentes` ao trocar de página.
 - Ocultar “Anterior” na primeira página e “Próxima” na última.
 - Se `pagina` exceder a última página, redirecionar ou normalizar para a última
   página válida; não retornar uma tela vazia enganosa.
 
 ### Estado vazio
 
-Texto: “Não encontramos ex-alunos com esse nome.” Ações: “Limpar busca” e
-“Cadastre-se”, sem sugerir que a ausência autoriza criar cadastro em nome de
-outra pessoa.
+Texto: “Não encontramos ex-alunos com esses filtros.” Ações: “Limpar busca”,
+“Ver todos os cursos”, quando houver curso selecionado, e “Cadastre-se”, sem
+sugerir que a ausência autoriza criar cadastro em nome de outra pessoa.
 
 ### Critérios de aceite
 
 - Nenhum resultado inclui campos internos ou e-mail.
 - Ordenação e paginação funcionam com JavaScript desativado.
+- O filtro de curso aceita somente a allowlist no servidor e preserva os demais
+  filtros ao buscar, ordenar e paginar.
 - A busca literal por `100%` ou `_` não amplia indevidamente a consulta SQL.
 - Miniaturas mantêm proporção e reservam espaço para evitar saltos de layout.
 
@@ -236,28 +254,28 @@ Permitir cadastro aberto em uma única página e sem criar conta.
 - Remover o botão “Apaga tudo”. Um clique acidental não deve apagar a página.
 - Não coletar “Tipo de curso” enquanto esse valor não tiver persistência
   canônica no schema.
+- Não coletar ICQ em novos cadastros; valores históricos permanecem no banco.
 
 ### Campos
 
-| Grupo                 | Campo                      | Obrigatório | Regras de interface                                                      |
-| --------------------- | -------------------------- | ----------- | ------------------------------------------------------------------------ |
-| Dados principais      | Nome completo              | sim         | 5–120 caracteres; aceitar acentos, hífen e apóstrofo                     |
-| Dados principais      | Apelido                    | não         | até 80 caracteres                                                        |
-| Dados principais      | Curso                      | sim         | selecionar uma opção da allowlist existente                              |
-| Dados principais      | Ano em que entrou          | sim         | quatro dígitos                                                           |
-| Dados principais      | Ano em que saiu            | sim         | quatro dígitos, igual ou posterior ao ingresso                           |
-| Contato               | E-mail                     | sim         | um endereço válido; não aceitar uma lista em um único campo              |
-| Contato               | Telefone                   | não         | até 30 caracteres; permitir formatação internacional                     |
-| Contato               | Homepage                   | não         | URL `http` ou `https`; prefixar `https://` quando omitido                |
-| Contato               | ICQ                        | não         | manter somente por compatibilidade com cadastros antigos; até 20 dígitos |
-| Informações opcionais | Endereço                   | não         | até 200 caracteres; uso interno                                          |
-| Informações opcionais | Cidade                     | não         | até 100 caracteres; uso interno                                          |
-| Informações opcionais | Estado                     | não         | até 50 caracteres; uso interno                                           |
-| Informações opcionais | CEP                        | não         | até 20 caracteres; uso interno                                           |
-| Informações opcionais | País                       | não         | até 80 caracteres; padrão “Brasil”; uso interno                          |
-| Informações opcionais | Como encontrou o site      | não         | lista existente mais “Outro”; uso interno                                |
-| Informações opcionais | Detalhes de como encontrou | não         | até 160 caracteres; só habilitar quando aplicável; uso interno           |
-| Informações opcionais | Informações para o perfil  | não         | até 2.000 caracteres; conteúdo público                                   |
+| Grupo                 | Campo                      | Obrigatório | Regras de interface                                            |
+| --------------------- | -------------------------- | ----------- | -------------------------------------------------------------- |
+| Dados principais      | Nome completo              | sim         | 5–120 caracteres; aceitar acentos, hífen e apóstrofo           |
+| Dados principais      | Apelido                    | não         | até 80 caracteres                                              |
+| Dados principais      | Curso                      | sim         | selecionar uma opção da allowlist existente                    |
+| Dados principais      | Ano em que entrou          | sim         | quatro dígitos                                                 |
+| Dados principais      | Ano em que saiu            | sim         | quatro dígitos, igual ou posterior ao ingresso                 |
+| Contato               | E-mail                     | sim         | um endereço válido; não aceitar uma lista em um único campo    |
+| Contato               | Telefone                   | não         | até 30 caracteres; permitir formatação internacional           |
+| Contato               | Homepage                   | não         | URL `http` ou `https`; prefixar `https://` quando omitido      |
+| Informações opcionais | Endereço                   | não         | até 200 caracteres; uso interno                                |
+| Informações opcionais | Cidade                     | não         | até 100 caracteres; uso interno                                |
+| Informações opcionais | Estado                     | não         | até 50 caracteres; uso interno                                 |
+| Informações opcionais | CEP                        | não         | até 20 caracteres; uso interno                                 |
+| Informações opcionais | País                       | não         | até 80 caracteres; padrão “Brasil”; uso interno                |
+| Informações opcionais | Como encontrou o site      | não         | lista existente mais “Outro”; uso interno                      |
+| Informações opcionais | Detalhes de como encontrou | não         | até 160 caracteres; só habilitar quando aplicável; uso interno |
+| Informações opcionais | Informações para o perfil  | não         | até 2.000 caracteres; conteúdo público                         |
 
 Os limites de ano são 1909 até o ano civil atual. O servidor calcula o ano
 atual; o navegador pode usar o mesmo limite apenas para feedback imediato.
@@ -375,9 +393,9 @@ cadastro ela será associada.
   “Trocar”.
 - Manter o ID em campo oculto apenas como transporte, nunca como prova de
   identidade.
-- Sem JavaScript, oferecer link para localizar o perfil e um campo numérico de
-  identificação acompanhado por instrução. Esta alternativa continua sujeita à
-  validação no servidor.
+- Sem JavaScript, manter o campo numérico de identificação, sujeito à validação
+  no servidor. A ajuda visível da busca limita-se a “Digite pelo menos 3
+  caracteres.” e não descreve esse mecanismo técnico.
 - O servidor valida que o ID existe e que `Excluido = 0`; o nome enviado pelo
   navegador é ignorado e relido do banco.
 

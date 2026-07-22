@@ -133,12 +133,15 @@ atualizados na mesma tarefa.
 - corrigir links relativos para links iniciados por `/`;
 - implementar menu móvel com botão textual, `aria-expanded`, fechamento por
   `Escape` e foco previsível;
+- manter a navegação expandida e o botão “Menu” oculto a partir de `48rem`,
+  retornando o menu móvel ao estado fechado ao reduzir a largura;
 - atualizar o rodapé e remover créditos visuais obsoletos quando não forem mais
   aplicáveis;
 - declarar dimensões da marca e fornecer alternativa textual.
 
-**Aceite:** os quatro destinos continuam acessíveis; navegação funciona por
-teclado; não há largura fixa de 760 px ou `position: absolute` no shell.
+**Aceite:** os quatro destinos continuam acessíveis e ficam visíveis sem clique
+a partir de `48rem`; navegação funciona por teclado; não há largura fixa de
+760 px ou `position: absolute` no shell.
 
 ### Validação da fase 1
 
@@ -157,6 +160,8 @@ dado real for necessário.
 
 - implementar a hierarquia descrita na seção 2 da especificação funcional;
 - criar/reutilizar `SearchForm` com rótulo visível;
+- disponibilizar os atalhos para relação completa e cadastros recentes com o
+  parâmetro `recentes=1`;
 - manter o texto sobre ETFSP, CEFET-SP e IFSP em versão curta e UTF-8;
 - destacar “Cadastre-se” e “Ver fotos” sem adicionar métricas inventadas;
 - remover floats, estilos inline e entidades HTML desnecessárias;
@@ -194,7 +199,9 @@ usa listas em fonte reduzida nem controles menores que 44 px.
 
 **Tarefas:**
 
-- validar e normalizar `busca`, `ordem`, `recentes` e `pagina`;
+- validar e normalizar `busca`, `curso`, `ordem`, `recentes` e `pagina`;
+- filtrar curso somente por valor da allowlist, com comparação SQL
+  parametrizada;
 - manter compatibilidade com `ORDEM` e `Restricao=LAST`;
 - manter allowlist de ordenação, sem interpolar entrada livre;
 - escapar curingas de `LIKE` e remover logs da busca;
@@ -213,8 +220,8 @@ consultas são parametrizadas e não retornam homepage/e-mail.
 **Tarefas:**
 
 - substituir tabela por lista responsiva de cartões;
-- manter formulário e ordenação preenchidos com valores vindos do servidor,
-  sem depender de `onMount` para ler a URL;
+- manter formulário, filtro de curso e ordenação preenchidos com valores vindos
+  do servidor, sem depender de `onMount` para ler a URL;
 - implementar singular/plural, estado vazio e paginação;
 - construir links absolutos de rota e URLs de imagem seguras;
 - reservar espaço da miniatura e omiti-la de modo limpo quando ausente;
@@ -227,7 +234,7 @@ preserva a URL e o contexto via histórico do navegador.
 
 - zero, um, 30 e mais de 30 resultados;
 - primeira, intermediária, última e página acima do limite;
-- todas as ordenações e modo recentes;
+- todas as ordenações, cursos válidos e modo recentes, inclusive em combinação;
 - busca contendo `%`, `_`, acentos e espaços externos;
 - teclado, leitor de tela na contagem e 320–1440 px;
 - `pnpm run check`, `pnpm run lint` e `pnpm run build`.
@@ -301,6 +308,8 @@ genérico e código de correlação.
 - validar relação entre os anos e usar o ano civil atual;
 - normalizar homepage e e-mail;
 - remover “Operacao” e “TipoCurso” da entrada nova;
+- não coletar, validar nem inserir ICQ em novos cadastros, preservando a coluna
+  e valores históricos;
 - não aceitar vários e-mails em um campo;
 - manter os padrões `OcultarEmail = 0` e `PublicaTelefone = 0`, informados na
   interface;
@@ -463,7 +472,8 @@ submissões concorrentes não escolhem o mesmo nome.
 
 - substituir overlay absoluto e tabelas por busca embutida acessível;
 - implementar debounce, resultados limitados, seleção e ação “Trocar”;
-- oferecer fallback sem JavaScript descrito na especificação;
+- oferecer fallback sem JavaScript descrito na especificação, sem inserir essa
+  explicação técnica no texto de ajuda destinado ao usuário;
 - usar componentes de campo, explicações de carômetro/foto pessoal e uma única
   ação principal;
 - criar pré-visualização local e permitir troca de arquivo;

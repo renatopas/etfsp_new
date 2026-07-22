@@ -32,6 +32,16 @@
 
   onMount(() => {
     navigationEnhanced = true;
+
+    const wideNavigation = window.matchMedia("(min-width: 48rem)");
+    const closeMobileMenu = (event: MediaQueryListEvent) => {
+      if (!event.matches) {
+        menuOpen = false;
+      }
+    };
+
+    wideNavigation.addEventListener("change", closeMobileMenu);
+    return () => wideNavigation.removeEventListener("change", closeMobileMenu);
   });
 
   function isCurrent(item: NavigationItem): boolean {

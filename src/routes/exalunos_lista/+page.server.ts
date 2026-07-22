@@ -1,9 +1,11 @@
 import type { PageServerLoad } from "./$types";
 import {
   ALUMNI_ORDER_TO_LEGACY,
+  COURSES,
   LEGACY_ALUMNI_ORDER_TO_ORDER,
   type AlumniListItem,
   type AlumniOrder,
+  type Course,
   type LegacyAlumniOrder,
 } from "$lib/domain";
 import { db } from "$lib/server/index";
@@ -96,6 +98,20 @@ function normalizeSearch(value: string | null): string {
   return value?.trim().slice(0, 120) ?? "";
 }
 
+function isCourse(value: string): value is Course {
+  return (COURSES as readonly string[]).includes(value);
+}
+
+function normalizeCourse(url: URL): Course | undefined {
+  const courses = url.searchParams.getAll("curso");
+  if (courses.length !== 1) {
+    return undefined;
+  }
+
+  const course = courses[0];
+  return isCourse(course) ? course : undefined;
+}
+
 function escapeLike(value: string): string {
   return value.replace(/[\\%_]/g, "\\$&");
 }
@@ -123,6 +139,7 @@ function mapAlumnus(row: AlumniRow): AlumniListItem {
 
 export const load: PageServerLoad = async ({ url }) => {
   const busca = normalizeSearch(url.searchParams.get("busca"));
+  const curso = normalizeCourse(url);
   const ordem = normalizeOrder(url);
   const recentes =
     url.searchParams.get("recentes") === "1" ||
@@ -135,6 +152,11 @@ export const load: PageServerLoad = async ({ url }) => {
   if (busca) {
     conditions.push("e.Nome LIKE ? ESCAPE '\\'");
     params.push(`%${escapeLike(busca)}%`);
+  }
+
+  if (curso) {
+    conditions.push("e.Curso = ?");
+    params.push(curso);
   }
 
   if (recentes) {
@@ -179,7 +201,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
   return {
     alunos: rows.map(mapAlumnus),
-    filters: { busca, ordem, recentes },
+    filters: { busca, curso, ordem, recentes },
     pagination: { page, totalPages, total },
   };
 };

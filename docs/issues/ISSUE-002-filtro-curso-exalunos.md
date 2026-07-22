@@ -1,6 +1,6 @@
 # ISSUE-002 — Filtro de curso na relação de ex-alunos
 
-**Estado:** Aguardando validação  
+**Estado:** Concluída
 **Área:** Consulta de ex-alunos  
 **Rota afetada:** `/exalunos_lista`
 
@@ -117,3 +117,17 @@ perder filtros.
   preservação do novo parâmetro exigir ajuste genérico.
 
 Não se prevê mudança em `scripts/initial.sql` nem na view `qryExAlunos`.
+
+## Resultado da implementação
+
+- Adicionado o parâmetro `curso`, normalizado no servidor para exatamente um
+  valor da allowlist `COURSES`; valores ausentes, inválidos ou repetidos não
+  filtram a consulta.
+- A consulta usa `e.Curso = ?` parametrizado e mantém `Excluido = 0` em todas
+  as combinações de filtros.
+- Adicionado o seletor “Curso”, com “Todos os cursos”, e preservação de curso,
+  busca, ordenação, recentes e paginação nas URLs geradas.
+- O estado vazio agora permite limpar a busca preservando os demais filtros e,
+  quando aplicável, voltar a todos os cursos.
+- Atualizados `docs/redesign/functional-spec.md` e
+  `docs/redesign/implementation-plan.md`; não houve mudança de schema ou view.
