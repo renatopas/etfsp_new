@@ -79,10 +79,18 @@
           id="AnoInicio"
           name="AnoInicio"
           value={values.AnoInicio ?? ""}
+          type="number"
           inputmode="numeric"
-          pattern="\d{4}"
+          min="1909"
+          max="2100"
+          step="1"
           required
+          aria-invalid={Boolean(error("AnoInicio"))}
+          aria-describedby={error("AnoInicio") ? "AnoInicio-error" : undefined}
         />
+        {#if error("AnoInicio")}
+          <p id="AnoInicio-error" class="field-error">{error("AnoInicio")}</p>
+        {/if}
       </div>
       <div>
         <label for="AnoTermino">Ano em que saiu <span>obrigatório</span></label
@@ -90,10 +98,20 @@
           id="AnoTermino"
           name="AnoTermino"
           value={values.AnoTermino ?? ""}
+          type="number"
           inputmode="numeric"
-          pattern="\d{4}"
+          min="1909"
+          max="2100"
+          step="1"
           required
+          aria-invalid={Boolean(error("AnoTermino"))}
+          aria-describedby={error("AnoTermino")
+            ? "AnoTermino-error"
+            : undefined}
         />
+        {#if error("AnoTermino")}
+          <p id="AnoTermino-error" class="field-error">{error("AnoTermino")}</p>
+        {/if}
       </div>
     </div>
   </fieldset>
