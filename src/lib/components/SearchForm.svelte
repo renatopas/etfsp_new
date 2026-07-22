@@ -5,6 +5,7 @@
     action?: string;
     buttonLabel?: string;
     example?: string;
+    hiddenValues?: Record<string, string | undefined>;
     id?: string;
     label?: string;
     query?: string;
@@ -14,6 +15,7 @@
     action = "/exalunos_lista",
     buttonLabel = "Buscar ex-aluno",
     example,
+    hiddenValues = {},
     id = "busca-exaluno",
     label = "Nome do ex-aluno",
     query = "",
@@ -23,6 +25,11 @@
 </script>
 
 <form class="search-form" method="GET" {action}>
+  {#each Object.entries(hiddenValues) as [name, value]}
+    {#if value !== undefined}
+      <input type="hidden" {name} {value} />
+    {/if}
+  {/each}
   <label for={id}>{label}</label>
   <div class="search-form__controls">
     <input

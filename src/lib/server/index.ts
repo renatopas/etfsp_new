@@ -1,7 +1,6 @@
 import { default as sqlite } from "sqlite3";
 import { building } from "$app/environment";
 import path from "node:path";
-import { existsSync } from "node:fs";
 import { env } from "$env/dynamic/private";
 
 export let db: sqlite.Database;
@@ -11,8 +10,6 @@ if (!building) {
   if (!env.DB_PATH) {
     throw new Error("DB_PATH must be set");
   }
-  console.log(env.DB_PATH);
-  console.log(existsSync(env.DB_PATH));
   db = new sqlite.Database(
     env.DB_PATH,
     sqlite.OPEN_READWRITE | sqlite.OPEN_FULLMUTEX,

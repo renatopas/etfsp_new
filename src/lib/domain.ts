@@ -40,7 +40,7 @@ export interface AlumniListItem {
   id: number;
   name: string;
   nickname?: string;
-  course?: Course;
+  course?: string;
   startYear?: number;
   endYear?: number;
   thumbnail?: string;

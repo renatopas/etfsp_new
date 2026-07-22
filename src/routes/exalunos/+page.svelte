@@ -2,7 +2,15 @@
   import Meta from "$lib/Meta.svelte";
   import PageHeader from "$lib/components/PageHeader.svelte";
   import SearchForm from "$lib/components/SearchForm.svelte";
-  import { ALUMNI_ORDER_TO_LEGACY } from "$lib/domain";
+  import type { AlumniOrder } from "$lib/domain";
+
+  const orderOptions: Array<{ value: AlumniOrder; label: string }> = [
+    { value: "nome", label: "Nome" },
+    { value: "cursoIngresso", label: "Curso e ano de ingresso" },
+    { value: "cursoSaida", label: "Curso e ano de saída" },
+    { value: "ingressoCurso", label: "Ano de ingresso e curso" },
+    { value: "saidaCurso", label: "Ano de saída e curso" },
+  ];
 </script>
 
 <Meta
@@ -26,12 +34,10 @@
   >
     <h2 id="consultas-rapidas">Consultas rápidas</h2>
     <div>
-      <a
-        class="button button--secondary"
-        href={`/exalunos_lista?ORDEM=${ALUMNI_ORDER_TO_LEGACY.nome}`}
+      <a class="button button--secondary" href="/exalunos_lista?ordem=nome"
         >Ver todos em ordem alfabética</a
       >
-      <a class="button button--secondary" href="/exalunos_lista?Restricao=LAST"
+      <a class="button button--secondary" href="/exalunos_lista?recentes=1"
         >Ver cadastros recentes</a
       >
     </div>
@@ -40,20 +46,10 @@
   <form class="alumni-entry__order" method="GET" action="/exalunos_lista">
     <label for="ordem-exalunos">Ordenar por</label>
     <div>
-      <select id="ordem-exalunos" name="ORDEM">
-        <option value={ALUMNI_ORDER_TO_LEGACY.nome}>Nome</option>
-        <option value={ALUMNI_ORDER_TO_LEGACY.cursoIngresso}
-          >Curso e ano de ingresso</option
-        >
-        <option value={ALUMNI_ORDER_TO_LEGACY.cursoSaida}
-          >Curso e ano de saída</option
-        >
-        <option value={ALUMNI_ORDER_TO_LEGACY.ingressoCurso}
-          >Ano de ingresso e curso</option
-        >
-        <option value={ALUMNI_ORDER_TO_LEGACY.saidaCurso}
-          >Ano de saída e curso</option
-        >
+      <select id="ordem-exalunos" name="ordem">
+        {#each orderOptions as option}
+          <option value={option.value}>{option.label}</option>
+        {/each}
       </select>
       <button type="submit" class="button button--primary">Ver relação</button>
     </div>
