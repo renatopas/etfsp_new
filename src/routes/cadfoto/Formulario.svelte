@@ -3,14 +3,38 @@
   import Button from "$lib/components/Button.svelte";
   import { COURSES } from "$lib/domain";
   import type { SearchResult } from "./search_id/+server";
-  let { form }: { form?: { success?: boolean; reason?: string } | null } =
-    $props();
+  type FormValues = Partial<
+    Record<
+      | "IdExAlunoUp"
+      | "TituloFoto"
+      | "CursoFoto"
+      | "TurmaFoto"
+      | "AnoFoto"
+      | "AnoFormatura"
+      | "Carometro"
+      | "FotoPessoal",
+      string
+    >
+  >;
+  let {
+    form,
+  }: {
+    form?: {
+      success?: boolean;
+      reason?: string;
+      errors?: Partial<Record<"AnoFoto" | "AnoFormatura", string>>;
+      values?: FormValues;
+    } | null;
+  } = $props();
   let query = $state("");
   let results = $state<SearchResult[]>([]);
   let selected = $state<SearchResult | undefined>();
   let preview = $state<string | undefined>();
   let submitting = $state(false);
   let timer: ReturnType<typeof setTimeout>;
+  let values = $derived(form?.values ?? {});
+  const error = (name: "AnoFoto" | "AnoFormatura") => form?.errors?.[name];
+  const currentYear = new Date().getFullYear();
   function search() {
     clearTimeout(timer);
     timer = setTimeout(async () => {
@@ -36,7 +60,7 @@
   }
 </script>
 
-{#if form?.success === false}<p class="error" role="alert">
+{#if form?.success === false && form.reason}<p class="error" role="alert">
     {form.reason}
   </p>{/if}
 <form
@@ -74,6 +98,7 @@
       <label for="IdExAlunoUp">ID do ex-aluno</label><input
         id="IdExAlunoUp"
         name="IdExAlunoUp"
+        value={values.IdExAlunoUp ?? ""}
         inputmode="numeric"
         required
       />{#if results.length}<ul>
@@ -108,6 +133,7 @@
     ><input
       id="TituloFoto"
       name="TituloFoto"
+      value={values.TituloFoto ?? ""}
       required
       minlength="4"
       maxlength="250"
@@ -115,12 +141,14 @@
       id="CursoFoto"
       name="CursoFoto"
       required
+      value={values.CursoFoto ?? ""}
       ><option value="">Selecione</option>{#each COURSES as course}<option
           value={course}>{course}</option
         >{/each}</select
     ><label for="TurmaFoto">Turma <span>obrigatório</span></label><input
       id="TurmaFoto"
       name="TurmaFoto"
+      value={values.TurmaFoto ?? ""}
       required
       maxlength="15"
     />
@@ -129,28 +157,75 @@
         >Ano da foto<input
           id="AnoFoto"
           name="AnoFoto"
+          value={values.AnoFoto ?? ""}
+          type="number"
           inputmode="numeric"
-          pattern="\d{4}"
+          min="1909"
+          max={currentYear}
+          step="1"
+          aria-invalid={Boolean(error("AnoFoto"))}
+          aria-describedby={error("AnoFoto") ? "AnoFoto-error" : undefined}
         /></label
+      >{#if error("AnoFoto")}<p id="AnoFoto-error" class="field-error">
+          {error("AnoFoto")}
+        </p>{/if}
       ><label for="AnoFormatura"
         >Ano de formatura<input
           id="AnoFormatura"
           name="AnoFormatura"
+          value={values.AnoFormatura ?? ""}
+          type="number"
           inputmode="numeric"
-          pattern="\d{4}"
+          min="1909"
+          max={currentYear}
+          step="1"
+          aria-invalid={Boolean(error("AnoFormatura"))}
+          aria-describedby={error("AnoFormatura")
+            ? "AnoFormatura-error"
+            : undefined}
         /></label
+      >{#if error("AnoFormatura")}<p
+          id="AnoFormatura-error"
+          class="field-error"
+        >
+          {error("AnoFormatura")}
+        </p>{/if}
       >
     </div>
     <fieldset>
       <legend>É carômetro?</legend><label
-        ><input type="radio" name="Carometro" value="false" checked /> Não</label
-      ><label><input type="radio" name="Carometro" value="true" /> Sim</label>
+        ><input
+          type="radio"
+          name="Carometro"
+          value="false"
+          checked={values.Carometro !== "true"}
+        /> Não</label
+      ><label
+        ><input
+          type="radio"
+          name="Carometro"
+          value="true"
+          checked={values.Carometro === "true"}
+        /> Sim</label
+      >
       <p>Carômetro é uma foto de identificação de turma.</p>
     </fieldset>
     <fieldset>
       <legend>É foto pessoal?</legend><label
-        ><input type="radio" name="FotoPessoal" value="false" checked /> Não</label
-      ><label><input type="radio" name="FotoPessoal" value="true" /> Sim</label>
+        ><input
+          type="radio"
+          name="FotoPessoal"
+          value="false"
+          checked={values.FotoPessoal !== "true"}
+        /> Não</label
+      ><label
+        ><input
+          type="radio"
+          name="FotoPessoal"
+          value="true"
+          checked={values.FotoPessoal === "true"}
+        /> Sim</label
+      >
       <p>A foto pessoal pode representar a pessoa na relação e no perfil.</p>
     </fieldset>
   </fieldset>
@@ -211,6 +286,11 @@
   }
   .error {
     padding: var(--space-3);
+    color: var(--color-danger);
+    background: var(--color-danger-surface);
+  }
+  .field-error {
+    padding: var(--space-1);
     color: var(--color-danger);
     background: var(--color-danger-surface);
   }

@@ -405,17 +405,17 @@ verificada.
 
 ### Campos
 
-| Campo                | Obrigatório | Regra                                                                         |
-| -------------------- | ----------- | ----------------------------------------------------------------------------- |
-| Ex-aluno selecionado | sim         | ID existente e não excluído                                                   |
-| Arquivo              | sim         | PNG, GIF, JPEG, WebP ou AVIF; máximo 5 MB; conteúdo decodificável por `sharp` |
-| Título               | sim         | 4–250 caracteres                                                              |
-| Curso                | sim         | allowlist existente                                                           |
-| Turma                | sim         | 1–15 caracteres                                                               |
-| Ano de formatura     | não         | 1909 até ano atual                                                            |
-| Ano da foto          | não         | 1909 até ano atual                                                            |
-| Carômetro            | sim         | escolha “Sim” ou “Não”; padrão “Não”                                          |
-| Foto pessoal         | sim         | escolha “Sim” ou “Não”; padrão “Não”                                          |
+| Campo                | Obrigatório | Regra                                                                           |
+| -------------------- | ----------- | ------------------------------------------------------------------------------- |
+| Ex-aluno selecionado | sim         | ID existente e não excluído                                                     |
+| Arquivo              | sim         | PNG, GIF, JPEG, WebP ou AVIF; máximo 5 MB; conteúdo decodificável por `sharp`   |
+| Título               | sim         | 4–250 caracteres                                                                |
+| Curso                | sim         | allowlist existente                                                             |
+| Turma                | sim         | 1–15 caracteres                                                                 |
+| Ano de formatura     | não         | vazio ou quatro dígitos entre 1909 e ano atual; validar e persistir no servidor |
+| Ano da foto          | não         | vazio ou quatro dígitos entre 1909 e ano atual; validar e persistir no servidor |
+| Carômetro            | sim         | escolha “Sim” ou “Não”; padrão “Não”                                            |
+| Foto pessoal         | sim         | escolha “Sim” ou “Não”; padrão “Não”                                            |
 
 “Foto pessoal” deve ser explicada como a imagem que pode representar a pessoa
 na relação e no perfil. “Carômetro” deve receber uma descrição curta, sem
@@ -432,6 +432,11 @@ presumir que todos conhecem o termo.
 
 ### Envio e persistência
 
+- Anos vazios são persistidos como `NULL`; anos informados fora do intervalo ou
+  sem quatro dígitos retornam erro junto ao campo e não iniciam o processamento
+  do arquivo.
+- `AnoFoto` e `AnoFormatura` válidos são persistidos nas colunas
+  correspondentes da tabela `Fotos`.
 - O servidor gera nomes controlados, converte a imagem e cria miniatura.
 - Escrita dos arquivos e do registro deve terminar antes do sucesso.
 - Uma falha não pode deixar um registro que aponta para arquivo inexistente; a
@@ -452,6 +457,8 @@ tratar o ID como autenticação; caso contrário, volta à seleção.
   metadados e enviar na mesma página.
 - Resultado de busca de nomes nunca inclui e-mail ou outros contatos.
 - Arquivo inválido é rejeitado no servidor mesmo com `accept` contornado.
+- Os dois anos aceitam 1909 até o ano atual e são preservados nos metadados
+  reexibidos após falha de outro campo.
 - A resposta de sucesso só ocorre depois de banco e arquivos terminarem.
 
 ## 9. Conteúdo e terminologia

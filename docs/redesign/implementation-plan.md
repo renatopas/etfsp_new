@@ -442,6 +442,8 @@ server-only.
 
 - validar o ID consultando um ex-aluno não excluído e ignorar o nome enviado;
 - validar todos os metadados e allowlists conforme a seção 8;
+- validar anos opcionais no servidor e persistir `AnoFoto` e `AnoFormatura` nas
+  respectivas colunas;
 - manter limite de 5 MB e formatos aceitos;
 - decodificar com `sharp`, impor limites razoáveis de dimensões/pixels e gerar
   nomes independentes do nome original;
@@ -480,6 +482,8 @@ submissões concorrentes não escolhem o mesmo nome.
 - indicar 5 MB e formatos antes da seleção;
 - preservar metadados em erro quando seguro e exigir nova escolha de arquivo
   quando o navegador não permitir preservá-lo;
+- reexibir os anos e seus erros junto aos campos, sem tratar ano inválido como
+  valor vazio;
 - implementar estado ocupado e tela de sucesso com links corretos.
 
 ### RED-704 — Restringir entrega de arquivos

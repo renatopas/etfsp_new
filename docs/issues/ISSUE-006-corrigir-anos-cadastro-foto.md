@@ -1,6 +1,6 @@
 # ISSUE-006 — Corrigir anos no cadastro de foto
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 **Área:** Envio de foto
 **Rota afetada:** `/cadfoto`
 
@@ -104,3 +104,16 @@ que cada coluna recebeu o valor correto, sem expor dados reais em logs.
 
 Não se prevê mudança em schema, migração, importador legado, galeria ou contrato
 de privacidade.
+
+## Resultado da implementação
+
+- A validação no servidor agora diferencia ano vazio de ano inválido e retorna
+  erro junto ao campo para valores fora de 1909 até o ano atual ou que não têm
+  quatro dígitos.
+- Anos válidos são reexibidos após falha de outro metadado; campos vazios seguem
+  opcionais e são enviados como `NULL`.
+- O `INSERT` passou a incluir `AnoFormatura`, além de `AnoFoto`, persistindo os
+  dois valores nas colunas correspondentes.
+- Atualizados `docs/redesign/functional-spec.md` e
+  `docs/redesign/implementation-plan.md`; schema e dados históricos não foram
+  alterados.
