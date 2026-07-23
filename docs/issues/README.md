@@ -23,3 +23,4 @@ do site.
 - [ISSUE-004 — Navegação sempre expandida em telas largas](./ISSUE-004-menu-expandido-telas-largas.md)
 - [ISSUE-005 — Simplificar a instrução da busca no envio de foto](./ISSUE-005-instrucao-busca-cadastro-foto.md)
 - [ISSUE-006 — Corrigir anos no cadastro de foto](./ISSUE-006-corrigir-anos-cadastro-foto.md)
+- [ISSUE-007 — Aumentar a densidade das listagens](./ISSUE-007-densidade-listagens.md)
