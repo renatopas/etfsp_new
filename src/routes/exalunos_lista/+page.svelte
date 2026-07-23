@@ -218,8 +218,8 @@
 
   .alumni-grid {
     display: grid;
-    gap: var(--space-4);
-    margin-top: var(--space-5);
+    gap: var(--space-2);
+    margin-top: var(--space-4);
   }
 
   @media (min-width: 48rem) {

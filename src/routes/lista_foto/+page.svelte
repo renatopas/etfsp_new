@@ -219,18 +219,23 @@
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--space-2);
     margin-top: var(--space-4);
   }
   article {
-    padding: var(--space-3);
+    padding: var(--space-2);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
   }
+  article a {
+    display: block;
+  }
   article img {
-    width: 100%;
+    display: block;
+    width: min(100%, 320px);
+    max-width: 320px;
     aspect-ratio: 4/3;
     object-fit: cover;
   }
@@ -241,7 +246,8 @@
   }
   article h3,
   article p {
-    margin-top: var(--space-2);
+    margin-top: var(--space-1);
+    font-size: var(--text-sm);
   }
   dialog {
     width: min(90vw, 60rem);

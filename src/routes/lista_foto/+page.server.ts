@@ -1,7 +1,7 @@
 import type { PageServerLoad } from "./$types";
 import { COURSES, type Course, type PublicPhoto } from "$lib/domain";
 import { db } from "$lib/server/index";
-const PAGE_SIZE = 24;
+const PAGE_SIZE = 100;
 const MIN_YEAR = 1909;
 interface Row {
   TituloFoto: string | null;

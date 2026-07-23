@@ -23,6 +23,7 @@
         alt={`Foto pessoal de ${alumnus.name}`}
         width="112"
         height="112"
+        loading="lazy"
       />
     </a>
   {:else}
@@ -39,18 +40,17 @@
         {[alumnus.course, period].filter(Boolean).join(" · ")}
       </p>
     {/if}
-    <a class="alumni-card__profile-link" href={detailHref}>Ver perfil</a>
   </div>
 </article>
 
 <style>
   .alumni-card {
     display: grid;
-    grid-template-columns: 5rem minmax(0, 1fr);
-    gap: var(--space-3);
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    gap: var(--space-2);
     align-items: start;
     min-width: 0;
-    padding: var(--space-4);
+    padding: var(--space-2);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background: var(--color-surface);
@@ -60,8 +60,8 @@
   .alumni-card__photo,
   .alumni-card__placeholder {
     display: grid;
-    width: 5rem;
-    height: 5rem;
+    width: 3.5rem;
+    height: 3.5rem;
     place-items: center;
     overflow: hidden;
     border-radius: var(--radius-sm);
@@ -84,10 +84,11 @@
     min-width: 0;
   }
 
-  h2 {
+  :global(#mainbody2) .alumni-card h2 {
     margin: 0;
     color: var(--color-heading);
-    font-size: var(--text-lg);
+    font-size: var(--text-base);
+    line-height: var(--leading-tight);
   }
 
   h2 a {
@@ -104,11 +105,5 @@
   .alumni-card__details {
     color: var(--color-text-muted);
     font-size: var(--text-sm);
-  }
-
-  .alumni-card__profile-link {
-    display: inline-block;
-    margin-top: var(--space-3);
-    font-weight: 700;
   }
 </style>

@@ -187,14 +187,16 @@ a pessoa enquanto ela ainda digita.
 
 ### `AlumniCard`
 
-- Foto opcional de tamanho estável, nome como título, apelido, curso e período.
+- Foto opcional de 3,5 rem, nome como título, apelido, curso e período, com
+  espaçamento compacto para listas extensas.
 - Não recebe o objeto completo do banco; recebe somente um modelo público.
 - Estado sem foto usa bloco neutro com iniciais apenas se isso não criar
   complexidade desnecessária; caso contrário, omite a imagem.
 
 ### `PhotoCard` e `PhotoDialog`
 
-- `PhotoCard` contém miniatura com dimensões e metadados textuais.
+- `PhotoCard` contém miniatura 4:3 de no máximo 320 × 240 px e metadados
+  textuais; a apresentação pode reduzir a imagem, mas não ampliá-la.
 - `PhotoDialog` usa elemento `dialog` quando suportado, título acessível,
   fechamento por botão e `Escape`, retenção de foco e retorno à origem.
 - O link para a foto permanece válido sem o diálogo.

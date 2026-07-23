@@ -159,19 +159,20 @@ nomes em minúsculas da tabela acima.
 ### Resultados
 
 - Mostrar a contagem: “1 ex-aluno encontrado” ou “N ex-alunos encontrados”.
-- Mostrar até 30 registros por página.
+- Mostrar até 300 registros por página.
 - Cada item contém somente:
   - miniatura, quando existir;
   - nome;
   - apelido, quando existir;
   - curso;
   - período de ingresso e saída, quando conhecido;
-  - link “Ver perfil”.
+  - acesso ao perfil pelo nome e pela miniatura, quando existir.
 - A área do nome e da miniatura é clicável; não tornar o cartão inteiro um link
   se ele vier a conter outras ações.
 - Não mostrar homepage ou e-mail na listagem.
-- Em celular, usar lista de cartões em uma coluna. Em telas largas, usar a mesma
-  lista em duas colunas; não usar tabela como layout.
+- Usar cartões compactos, preservando todos os dados públicos e links previstos.
+  Em celular, usar lista de cartões em uma coluna. Em telas largas, usar a
+  mesma lista em duas colunas; não usar tabela como layout.
 
 ### Paginação
 
@@ -350,14 +351,15 @@ Permitir ver fotos rapidamente e refinar o acervo sem uma grade rígida.
 
 ### Grade
 
-- Uma coluna em telas muito estreitas, duas a partir de aproximadamente 480 px,
-  três a partir de 760 px e quatro quando houver espaço suficiente.
+- Grade responsiva com cartões a partir de aproximadamente 10 rem; usar tantas
+  colunas quanto houver espaço, sem criar rolagem horizontal.
 - Cada cartão contém miniatura, título, curso e apenas os anos disponíveis.
 - Substituir a legenda baseada somente em cores por rótulos “Foto:” e
   “Formatura:”.
-- Imagens usam proporção consistente com `object-fit: cover`, sem deformação.
+- Imagens usam proporção 4:3 consistente com `object-fit: cover`, sem
+  deformação ou ampliação além de 320 × 240 px.
 - Carregamento tardio é permitido fora da primeira linha.
-- Paginar em 24 fotos por página, preservando os filtros.
+- Paginar em 100 fotos por página, preservando os filtros.
 
 ### Visualização ampliada
 

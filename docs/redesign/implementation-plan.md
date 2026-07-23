@@ -205,7 +205,7 @@ usa listas em fonte reduzida nem controles menores que 44 px.
 - manter compatibilidade com `ORDEM` e `Restricao=LAST`;
 - manter allowlist de ordenação, sem interpolar entrada livre;
 - escapar curingas de `LIKE` e remover logs da busca;
-- aplicar `LIMIT 30` e `OFFSET`, mais uma consulta `COUNT` com os mesmos filtros;
+- aplicar `LIMIT 300` e `OFFSET`, mais uma consulta `COUNT` com os mesmos filtros;
 - selecionar apenas colunas do modelo `AlumniListItem`;
 - garantir `Excluido = 0` diretamente ou por view cujo contrato seja explícito;
 - retornar contagem, página atual, total de páginas e filtros normalizados.
@@ -232,7 +232,7 @@ preserva a URL e o contexto via histórico do navegador.
 
 ### Validação da fase 3
 
-- zero, um, 30 e mais de 30 resultados;
+- zero, um, 300 e mais de 300 resultados;
 - primeira, intermediária, última e página acima do limite;
 - todas as ordenações, cursos válidos e modo recentes, inclusive em combinação;
 - busca contendo `%`, `_`, acentos e espaços externos;
@@ -375,7 +375,7 @@ ou e-mail como suposta verificação.
   mas não usados na consulta;
 - escapar curingas do título;
 - aplicar `Excluido = 0` em todos os caminhos, inclusive `idExAluno`;
-- parametrizar filtros e paginar em 24 itens;
+- parametrizar filtros e paginar em 100 itens;
 - retornar modelo `PublicPhoto`, contagem e filtros normalizados;
 - incluir `TurmaFoto` se ela for exibida no cartão;
 - definir ordenação estável, preferencialmente `idFoto DESC`.
@@ -394,7 +394,8 @@ mostra fotos excluídas; filtros podem ser copiados pela URL.
 - refletir filtros da URL, indicar quantidade e criar estado vazio;
 - substituir significado por vermelho/azul por rótulos textuais;
 - implementar `details/summary` para intervalos avançados;
-- implementar paginação, dimensões de imagem e lazy loading adequado;
+- implementar paginação, cartões compactos, dimensões de imagem sem upscaling e
+  lazy loading adequado;
 - manter link básico para a imagem antes de adicionar diálogo.
 
 ### RED-603 — Adicionar visualização ampliada progressiva
@@ -413,7 +414,7 @@ diálogo e seu título.
 
 - nenhum filtro, cada filtro isolado e combinações;
 - intervalos vazios, invertidos e inválidos;
-- zero, um, 24 e mais de 24 resultados;
+- zero, um, 100 e mais de 100 resultados;
 - fotos gerais, carômetro e fotos por ex-aluno;
 - JavaScript ativado/desativado, teclado e 320–1440 px;
 - `pnpm run check`, `pnpm run lint` e `pnpm run build`.

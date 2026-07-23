@@ -10,7 +10,7 @@ import {
 } from "$lib/domain";
 import { db } from "$lib/server/index";
 
-const PAGE_SIZE = 30;
+const PAGE_SIZE = 300;
 const THIRTY_DAYS_IN_MS = 30 * 24 * 60 * 60 * 1000;
 
 const ORDER_BY: Record<AlumniOrder, string> = {
