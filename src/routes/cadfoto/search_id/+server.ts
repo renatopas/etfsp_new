@@ -1,41 +1,27 @@
+import { json, type RequestHandler } from "@sveltejs/kit";
 import { db } from "$lib/server/index";
-import { error, json, type RequestHandler } from "@sveltejs/kit";
 
 export interface SearchResult {
-  ID: number;
-  Nome: string;
+  id: number;
+  name: string;
+  nickname?: string;
+  course?: string;
+  startYear?: number;
+  endYear?: number;
 }
-
-async function searchName(name: string): Promise<SearchResult[]> {
-  let escaped = `%${name.replaceAll("%", "\\%").replaceAll("_", "\\_")}%`;
-  console.debug(escaped);
-
-  return new Promise((res, rej) => {
-    db.all<SearchResult>(
-      "SELECT ID, Nome FROM ExAlunos WHERE Nome LIKE ? ESCAPE '\\' AND Excluido = 0 ORDER BY Nome;",
-      [escaped],
-      (err, rows) => {
-        if (err) {
-          rej(err);
-          return;
-        }
-        res(rows);
-        return;
-      },
-    );
-  });
+function escapeLike(value: string) {
+  return value.replace(/[\\%_]/g, "\\$&");
 }
-
 export const GET: RequestHandler = async ({ url }) => {
-  let req = url.searchParams;
-  let search = req.get("name");
-  if (search) {
-    if (search.length > 3) {
-      return json(await searchName(search));
-    } else {
-      return json([]);
-    }
-  } else {
-    return error(400);
-  }
+  const name = (url.searchParams.get("name") ?? "").trim();
+  if (name.length < 3) return json([]);
+  const rows = await new Promise<SearchResult[]>((resolve, reject) =>
+    db.all(
+      "SELECT ID AS id, Nome AS name, Apelidos AS nickname, Curso AS course, AnoInicio AS startYear, AnoTermino AS endYear FROM ExAlunos WHERE Excluido = 0 AND Nome LIKE ? ESCAPE '\\' ORDER BY Nome LIMIT 10",
+      [`%${escapeLike(name)}%`],
+      (queryError, results: SearchResult[]) =>
+        queryError ? reject(queryError) : resolve(results),
+    ),
+  );
+  return json(rows);
 };

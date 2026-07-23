@@ -1,62 +1,69 @@
 <script lang="ts">
-  import Meta from "../lib/Meta.svelte";
+  import Meta from "$lib/Meta.svelte";
+  import PageHeader from "$lib/components/PageHeader.svelte";
+  import SearchForm from "$lib/components/SearchForm.svelte";
 </script>
 
 <Meta
-  description=""
-  title="Ex-Alunos da Escola Tecnica Federal de Sao Paulo / Instituto Federal / ETFSP / CEFET-SP / IF-SP"
+  title="Ex-alunos da Escola Técnica Federal de São Paulo"
+  description="Encontre colegas e participe do cadastro de ex-alunos da ETFSP, CEFET-SP e IFSP."
 />
 
-<div style="float: left; width: 390px;">
-  <h1>
-    Bem-vindo &agrave; p&aacute;gina n&atilde;o oficial dos ex-alunos da Federal
-    de S&atilde;o Paulo!
-  </h1>
-  <p>
-    Nosso objetivo &eacute; promover o contato entre ex-alunos, professores e
-    funcion&aacute;rios da nossa Escola, que hoje se chama Instituto Federal
-    S&atilde;o Paulo - IFSP, mas j&aacute; foi Centro Federal de
-    Educa&ccedil;&atilde;o Tecnol&oacute;gica de SP - CEFET-SP e Escola
-    T&eacute;cnica Federal de S&atilde;o Paulo - ETFSP.
-  </p>
+<section class="home-page">
+  <PageHeader
+    title="Encontre seus colegas da Federal de São Paulo"
+    description="Este site reúne ex-alunos, professores e funcionários da ETFSP, CEFET-SP e IFSP."
+  />
 
-  <p>
-    Existe um cadastro de ex-alunos. Voc&ecirc; pode <a href="novocadastro"
-      >inscrever-se</a
-    >, <a href="exalunos">consultar e buscar</a> esse cadastro, com diversas op&ccedil;&otilde;es.
-  </p>
-  <p>Agora temos tamb&eacute;m <a href="lista_foto">FOTOS!!!</a></p>
-
-  <!-- <p>
-    Se voc&ecirc; gostou, n&atilde;o gostou, tem qualquer tipo de
-    coment&aacute;rio ou sugest&atilde;o sobre esse site, <a href="sugestao"
-      >clique aqui</a
-    >
-    e comunique-se conosco!
-  </p> -->
-</div>
-<div id="sidebody">
-  <div id="boxbusca">
-    <div id="boxbuscaform">
-      <h1>Procurar na lista de ex-alunos</h1>
-      <form method="GET" action="exalunos_lista" id="busca">
-        <input type="text" name="busca" size="20" />
-        <input type="submit" value="Buscar" name="B1" />
-        <input type="hidden" name="Titulo" value="Busca" />
-      </form>
+  <div class="home-page__search">
+    <SearchForm example="Ex.: Maria da Silva" />
+    <div class="home-page__directory-links" aria-label="Consultar ex-alunos">
+      <a href="/exalunos_lista">Ver todos os ex-alunos</a>
+      <a href="/exalunos_lista?recentes=1">Ver cadastros recentes</a>
     </div>
   </div>
 
-  <p>
-    <img
-      src="/images/ifsp.png"
-      alt="Centro Federal de Educacão Tecnológica de SP"
-      height="100"
-      class="imagdir"
-    />
-    Cadastre-se ou apenas consulte as mensagens.
+  <div class="home-page__actions" aria-label="Outras opções">
+    <a class="button button--primary" href="/novocadastro">Cadastre-se</a>
+    <a class="button button--secondary" href="/lista_foto">Ver fotos</a>
+  </div>
+
+  <p class="home-page__note">
+    Site não oficial, mantido para facilitar o reencontro entre colegas.
   </p>
-  <p style="margin-bottom: 2rem;">
-    Experimente! E, principalmente, DIVULGUE!!!
-  </p>
-</div>
+</section>
+
+<style>
+  .home-page {
+    max-width: var(--content-reading);
+  }
+
+  .home-page__search {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .home-page__directory-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .home-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .home-page__note {
+    margin: var(--space-6) 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+</style>

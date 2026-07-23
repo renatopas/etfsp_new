@@ -1,70 +1,148 @@
-import { db } from "$lib/server/index";
 import { error } from "@sveltejs/kit";
+import type { PageServerLoad } from "./$types";
+import type { PublicAlumniProfile } from "$lib/domain";
+import { db } from "$lib/server/index";
 
-interface DadosAluno {
-  Nome: string;
+interface ProfileRow {
   ID: number;
-  Apelidos: string;
-  TipoCurso: string;
-  Curso: string;
-  AnoInicio: number;
-  AnoTermino: number;
-  Email: string;
-  HomePage: string;
-  ICQ: string;
-  DtCadastro: number;
-  Comentarios: string;
-  ComoEncontrou: string;
-  ComoEncontrouExtra: string;
-  DadoPubl: string;
-  NomeMiniaturaPes: string;
+  Nome: string;
+  Apelidos: string | null;
+  Curso: string | null;
+  AnoInicio: number | null;
+  AnoTermino: number | null;
+  Email: string | null;
+  Telefone: string | null;
+  HomePage: string | null;
+  ICQ: string | null;
+  DadoPubl: string | null;
+  Comentarios: string | null;
+  DtCadastro: number | null;
+  NomeMiniaturaStored: string | null;
   QtdFotos: number;
 }
 
-async function getDadosAluno(
-  id: number,
-): Promise<Partial<DadosAluno> | undefined> {
-  return new Promise((res, rej) => {
-    db.get(
-      "SELECT \
-        ID, \
-        Nome, \
-        Apelidos, \
-        Curso, \
-        AnoInicio, \
-        AnoTermino, \
-        Email, \
-        HomePage, \
-        ICQ, \
-        DtCadastro, \
-        Comentarios, \
-        ComoEncontrou, \
-        ComoEncontrouExtra, \
-        DadoPubl, \
-        NomeMiniaturaPes, \
-        QtdFotos \
-      FROM qryExAlunos \
-      WHERE ID = ?",
-      id,
-      (err, row?: Partial<DadosAluno>) => {
-        if (err) {
-          rej(err);
-          return;
-        }
-        res(row);
-      },
-    );
+function get<T>(sql: string, params: unknown[]): Promise<T | undefined> {
+  return new Promise((resolve, reject) => {
+    db.get(sql, params, (queryError, row: T | undefined) => {
+      if (queryError) {
+        reject(queryError);
+        return;
+      }
+
+      resolve(row);
+    });
   });
 }
 
-export const load = async ({ url }) => {
-  const idParam = url.searchParams.get("id");
-  if (idParam === null || Number.isNaN(parseInt(idParam))) {
-    error(401);
+function parseId(value: string | null): number {
+  if (!value || !/^[1-9]\d*$/.test(value)) {
+    error(400, "Identificador de ex-aluno inválido.");
   }
-  const dados = await getDadosAluno(parseInt(idParam));
-  if (!dados) {
-    error(404);
+
+  const id = Number(value);
+  if (!Number.isSafeInteger(id)) {
+    error(400, "Identificador de ex-aluno inválido.");
   }
-  return dados;
+
+  return id;
+}
+
+function toOptionalText(value: string | null): string | undefined {
+  const text = value?.trim();
+  return text || undefined;
+}
+
+function toOptionalYear(value: number | null): number | undefined {
+  return value !== null && Number.isInteger(value) ? value : undefined;
+}
+
+function toOptionalTimestamp(value: number | null): number | undefined {
+  return value !== null && Number.isSafeInteger(value) && value > 0
+    ? value
+    : undefined;
+}
+
+function normalizeHomepage(value: string | null): string | undefined {
+  const homepage = value?.trim();
+  if (!homepage) {
+    return undefined;
+  }
+
+  const candidate = /^[a-z][a-z\d+.-]*:/i.test(homepage)
+    ? homepage
+    : `https://${homepage}`;
+
+  try {
+    const url = new URL(candidate);
+    return url.protocol === "http:" || url.protocol === "https:"
+      ? url.toString()
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function mapProfile(row: ProfileRow): PublicAlumniProfile {
+  return {
+    id: row.ID,
+    name: row.Nome,
+    nickname: toOptionalText(row.Apelidos),
+    course: toOptionalText(row.Curso),
+    startYear: toOptionalYear(row.AnoInicio),
+    endYear: toOptionalYear(row.AnoTermino),
+    thumbnail: toOptionalText(row.NomeMiniaturaStored),
+    email: toOptionalText(row.Email),
+    phone: toOptionalText(row.Telefone),
+    homepage: normalizeHomepage(row.HomePage),
+    icq: toOptionalText(row.ICQ),
+    publicInfo: toOptionalText(row.DadoPubl),
+    comments: toOptionalText(row.Comentarios),
+    registeredAt: toOptionalTimestamp(row.DtCadastro),
+    photoCount: row.QtdFotos,
+  };
+}
+
+export const load: PageServerLoad = async ({ url }) => {
+  const id = parseId(url.searchParams.get("id"));
+  const row = await get<ProfileRow>(
+    `SELECT
+      e.ID,
+      e.Nome,
+      e.Apelidos,
+      e.Curso,
+      e.AnoInicio,
+      e.AnoTermino,
+      CASE WHEN e.OcultarEmail = 0 THEN e.Email END AS Email,
+      CASE WHEN e.PublicaTelefone = 1 THEN e.Telefone END AS Telefone,
+      e.HomePage,
+      e.ICQ,
+      e.DadoPubl,
+      e.Comentarios,
+      e.DtCadastro,
+      (
+        SELECT f.NomeMiniaturaStored
+        FROM Fotos AS f
+        WHERE f.idExAlunoUpload = e.ID
+          AND f.Excluido = 0
+          AND f.FotoPessoal = 1
+        ORDER BY f.idFoto DESC
+        LIMIT 1
+      ) AS NomeMiniaturaStored,
+      (
+        SELECT COUNT(*)
+        FROM Fotos AS f
+        WHERE f.idExAlunoUpload = e.ID
+          AND f.Excluido = 0
+      ) AS QtdFotos
+    FROM ExAlunos AS e
+    WHERE e.ID = ?
+      AND e.Excluido = 0`,
+    [id],
+  );
+
+  if (!row) {
+    error(404, "Ex-aluno não encontrado.");
+  }
+
+  return mapProfile(row);
 };

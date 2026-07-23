@@ -1,259 +1,172 @@
-import { db, FOTOS_DIR } from "$lib/server/index.js";
-import { writeFile } from "node:fs/promises";
+import { fail, type Actions } from "@sveltejs/kit";
+import { randomUUID } from "node:crypto";
+import { rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import sharp, { type Sharp } from "sharp";
+import sharp from "sharp";
+import { COURSES } from "$lib/domain";
+import { db, FOTOS_DIR } from "$lib/server/index";
+const MAX_SIZE = 5 * 1024 * 1024,
+  MAX_PIXELS = 40_000_000,
+  MIN_YEAR = 1909;
 
-interface ActionError {
-  success: false;
-  reason: string;
+const FORM_FIELDS = [
+  "IdExAlunoUp",
+  "TituloFoto",
+  "CursoFoto",
+  "TurmaFoto",
+  "AnoFoto",
+  "AnoFormatura",
+  "Carometro",
+  "FotoPessoal",
+] as const;
+type FormField = (typeof FORM_FIELDS)[number];
+type FormValues = Record<FormField, string>;
+type FormErrors = Partial<Record<"AnoFoto" | "AnoFormatura", string>>;
+
+function text(formData: FormData, name: FormField): string {
+  return (formData.get(name)?.toString() ?? "").trim();
 }
 
-interface ActionSuccess {
-  success: true;
-  nome: string;
-  id: number;
+function positive(value: FormDataEntryValue | null) {
+  const s = value?.toString() ?? "";
+  return /^[1-9]\d*$/.test(s) && Number.isSafeInteger(Number(s))
+    ? Number(s)
+    : undefined;
 }
+function validYear(value: string): number | null | undefined {
+  if (!value) return null;
 
-interface PhotoData {
-  NomeArqOriginal: string;
-  CursoFoto: string;
-  AnoFoto?: number;
-  TituloFoto: string;
-  AnoFormatura?: number;
-  Carometro: boolean;
-  TurmaFoto: string;
-  FotoPessoal: boolean;
-  idExAlunoUpload: number;
-  TamanhoFoto: number;
-  ContentType: string;
-  OrigLargura: number;
-  OrigAltura: number;
+  const year = /^\d{4}$/.test(value) ? Number(value) : undefined;
+  return year && year >= MIN_YEAR && year <= new Date().getFullYear()
+    ? year
+    : undefined;
 }
-
-function fdToBool(value: FormDataEntryValue | null): boolean {
-  let str = value?.toString();
-  return str === "true";
+function get<T>(sql: string, params: unknown[]): Promise<T | undefined> {
+  return new Promise((resolve, reject) =>
+    db.get(sql, params, (e, row: T | undefined) =>
+      e ? reject(e) : resolve(row),
+    ),
+  );
 }
-
-function fdToInt(value: FormDataEntryValue | null): number | undefined {
-  let str = value?.toString();
-  if (!str) {
-    return;
-  }
-  let int = parseInt(str);
-  return Number.isSafeInteger(int) ? int : undefined;
+function run(sql: string, params: unknown[]): Promise<void> {
+  return new Promise((resolve, reject) =>
+    db.run(sql, params, (e) => (e ? reject(e) : resolve())),
+  );
 }
+export const actions: Actions = {
+  default: async ({ request }) => {
+    const fd = await request.formData();
+    const values = Object.fromEntries(
+      FORM_FIELDS.map((name) => [name, text(fd, name)]),
+    ) as FormValues;
+    const errors: FormErrors = {};
+    const id = positive(values.IdExAlunoUp);
+    const file = fd.get("arquivo");
+    const title = values.TituloFoto;
+    const course = values.CursoFoto;
+    const className = values.TurmaFoto;
+    const photoYear = validYear(values.AnoFoto);
+    const graduationYear = validYear(values.AnoFormatura);
 
-const THUMB_MAX_SIDE = 100;
+    if (photoYear === undefined)
+      errors.AnoFoto = "Informe um ano entre 1909 e o ano atual.";
+    if (graduationYear === undefined)
+      errors.AnoFormatura = "Informe um ano entre 1909 e o ano atual.";
+    if (Object.keys(errors).length)
+      return fail(400, { success: false, errors, values });
 
-async function makeThumbnail(img: Sharp): Promise<Buffer> {
-  let { width, height } = await img.metadata();
-  let twidth: number, theight: number;
-
-  if (width > height) {
-    twidth = THUMB_MAX_SIDE;
-    theight = Math.round((height / width) * THUMB_MAX_SIDE);
-  } else {
-    theight = THUMB_MAX_SIDE;
-    twidth = Math.round((width / height) * THUMB_MAX_SIDE);
-  }
-
-  img.resize(twidth, theight);
-
-  return img.toFormat("webp").toBuffer();
-}
-
-async function savePhoto(
-  orig: Buffer<ArrayBufferLike>,
-  thumb: Buffer<ArrayBufferLike>,
-  data: PhotoData,
-) {
-  new Promise((res, rej) => {
-    db.get(
-      "INSERT INTO Fotos (\
-        NomeArqOriginal,\
-        NomeArqStored,\
-        NomeMiniaturaStored,\
-        DtUploadFoto,\
-        TituloFoto,\
-        CursoFoto,\
-        AnoFoto,\
-        Carometro,\
-        TurmaFoto,\
-        FotoPessoal,\
-        idExAlunoUpload,\
-        TamanhoFoto,\
-        ContentType,\
-        OrigLargura,\
-        OrigAltura\
-      ) SELECT \
-        ?1,\
-        (cast(max(idFoto) + 1 AS TEXT) || '_' || ?1),\
-        (cast(max(idFoto) + 1 AS TEXT) || '_Mini_' || ?1),\
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? FROM Fotos\
-        RETURNING NomeArqStored, NomeMiniaturaStored",
-      [
-        data.NomeArqOriginal,
-        Date.now(),
-        data.TituloFoto.trim(),
-        data.CursoFoto.trim(),
-        data.AnoFoto ?? null,
-        data.Carometro ?? false,
-        data.TurmaFoto.trim(),
-        data.FotoPessoal ?? false,
-        data.idExAlunoUpload,
-        data.TamanhoFoto,
-        data.ContentType,
-        data.OrigLargura,
-        data.OrigAltura,
-      ],
-      (
-        err,
-        row: { NomeArqStored: string; NomeMiniaturaStored: string } | undefined,
-      ) => {
-        if (err) {
-          rej(err);
-          return;
-        }
-        if (!row) {
-          console.error("Failed to get file names");
-          rej();
-          return;
-        }
-        Promise.all([
-          writeFile(path.join(FOTOS_DIR, data.NomeArqOriginal), orig),
-          writeFile(path.join(FOTOS_DIR, row.NomeArqStored), orig),
-          writeFile(path.join(FOTOS_DIR, row.NomeMiniaturaStored), thumb),
-        ]).then(
-          (r) => res(r),
-          (e) => rej(e),
-        );
-      },
-    );
-  });
-}
-
-export const actions = {
-  default: async ({ request }): Promise<ActionError | ActionSuccess> => {
-    const formData = await request.formData();
-
-    let file = formData.get("arquivo") as File;
-
-    if (!(file instanceof File)) {
-      return {
+    if (
+      !id ||
+      !(file instanceof File) ||
+      file.size === 0 ||
+      file.size > MAX_SIZE ||
+      !title ||
+      title.length < 4 ||
+      title.length > 250 ||
+      !(COURSES as readonly string[]).includes(course) ||
+      className.length < 1 ||
+      className.length > 15
+    )
+      return fail(400, {
         success: false,
-        reason: "arquivo deve ser um arquivo (como vc conseguiu fazer isso?)",
-      };
-    }
-
-    if (!file.type.match(/^image\/(png|gif|jpeg|webp|avif)$/i)) {
-      return {
-        success: false,
-        reason: "arquivo deve ser uma imagem (png, gif, jpg, webp ou avif)",
-      };
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      return {
-        success: false,
-        reason: "a imagem enviada é grande demais (limite 5MB)",
-      };
-    }
-
-    const titulo = formData.get("TituloFoto")?.toString();
-    if (!titulo || titulo.length < 4 || titulo.length > 250) {
-      return {
-        success: false,
-        reason: "titulo inválido",
-      };
-    }
-
-    const curso = formData.get("CursoFoto")?.toString();
-    if (!curso) {
-      // TODO: validar cursos
-      return {
-        success: false,
-        reason: "curso inválido",
-      };
-    }
-
-    const nome = formData.get("NomeExAlunoUpload")?.toString();
-    if (!nome) {
-      return {
-        success: false,
-        reason: "Nome inválido",
-      };
-    }
-
-    const turma = formData.get("TurmaFoto")?.toString();
-    if (!turma) {
-      return {
-        success: false,
-        reason: "Turma inválida",
-      };
-    }
-
-    const id = fdToInt(formData.get("IdExAlunoUp"));
-    if (id === undefined) {
-      return {
-        success: false,
-        reason: "ID enviado inválido",
-      };
-    }
-
-    const isCarometro = fdToBool(formData.get("Carometro"));
-    const isPessoal = fdToBool(formData.get("FotoPessoal"));
-
-    const anoFoto = fdToInt(formData.get("AnoFoto"));
-    const anoFormatura = fdToInt(formData.get("AnoFormatura"));
-
-    console.log(formData);
-
-    try {
-      const sanitizedName = file.name
-        .replace(/[^a-zA-Z0-9._\-]/g, "_")
-        .replace(/\.\w+$/, ".webp");
-
-      const src = sharp(await file.arrayBuffer());
-      let { width, height } = await src.metadata();
-      const [thumb, orig] = await Promise.all([
-        makeThumbnail(src.clone()),
-        src.toFormat("webp").toBuffer(),
-      ]);
-      savePhoto(orig, thumb, {
-        NomeArqOriginal: sanitizedName,
-        CursoFoto: curso,
-        AnoFoto: anoFoto,
-        TituloFoto: titulo,
-        AnoFormatura: anoFormatura,
-        Carometro: isCarometro,
-        TurmaFoto: turma,
-        FotoPessoal: isPessoal,
-        idExAlunoUpload: id,
-        TamanhoFoto: file.size,
-        ContentType: file.type,
-        OrigLargura: width,
-        OrigAltura: height,
+        reason: "Revise os campos obrigatórios e o arquivo selecionado.",
+        values,
       });
-    } catch (e) {
-      console.error(e);
-      if (e instanceof Error) {
-        return {
-          success: false,
-          reason: `um erro ocorreu ao processar sua imagem: ${e.toString()}`,
-        };
-      } else {
-        return {
-          success: false,
-          reason: "um erro ocorreu ao processar sua imagem",
-        };
-      }
+    const alumnus = await get<{ Nome: string }>(
+      "SELECT Nome FROM ExAlunos WHERE ID=? AND Excluido=0",
+      [id],
+    );
+    if (!alumnus)
+      return fail(400, {
+        success: false,
+        reason: "Selecione um ex-aluno válido.",
+        values,
+      });
+    let original: Buffer,
+      thumb: Buffer,
+      width = 0,
+      height = 0;
+    try {
+      const image = sharp(await file.arrayBuffer(), {
+        limitInputPixels: MAX_PIXELS,
+      });
+      const metadata = await image.metadata();
+      width = metadata.width ?? 0;
+      height = metadata.height ?? 0;
+      if (!width || !height) throw new Error();
+      original = await image.clone().webp().toBuffer();
+      thumb = await image
+        .clone()
+        .resize(320, 240, { fit: "inside", withoutEnlargement: true })
+        .webp()
+        .toBuffer();
+    } catch {
+      return fail(400, {
+        success: false,
+        reason:
+          "Não foi possível processar esta imagem. Escolha uma imagem válida de até 5 MB.",
+        values,
+      });
     }
-
-    return {
-      success: true,
-      nome: nome,
-      id: id,
-    };
+    const key = randomUUID();
+    const stored = `${key}.webp`,
+      mini = `${key}-mini.webp`;
+    const files = [path.join(FOTOS_DIR, stored), path.join(FOTOS_DIR, mini)];
+    try {
+      await Promise.all([
+        writeFile(files[0], original),
+        writeFile(files[1], thumb),
+      ]);
+      await run(
+        "INSERT INTO Fotos (NomeArqOriginal,NomeArqStored,NomeMiniaturaStored,DtUploadFoto,TituloFoto,CursoFoto,AnoFoto,AnoFormatura,Carometro,TurmaFoto,FotoPessoal,idExAlunoUpload,TamanhoFoto,ContentType,OrigLargura,OrigAltura) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          file.name.slice(0, 255),
+          stored,
+          mini,
+          Date.now(),
+          title,
+          course,
+          photoYear,
+          graduationYear,
+          values.Carometro === "true" ? 1 : 0,
+          className,
+          values.FotoPessoal === "true" ? 1 : 0,
+          id,
+          file.size,
+          "image/webp",
+          width,
+          height,
+        ],
+      );
+    } catch {
+      await Promise.all(files.map((name) => rm(name, { force: true })));
+      return fail(500, {
+        success: false,
+        reason:
+          "Não foi possível concluir o envio agora. Tente novamente mais tarde.",
+        values,
+      });
+    }
+    return { success: true, nome: alumnus.Nome, id };
   },
 };

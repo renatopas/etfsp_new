@@ -2,19 +2,25 @@
   import "../app.css";
   import Footer from "../lib/Footer.svelte";
   import Header from "../lib/Header.svelte";
+  import PageContainer from "../lib/components/PageContainer.svelte";
 
   let { children } = $props();
 </script>
 
-<svelte:document onload={() => (document.body.id = "sectionone")} />
 <svelte:head>
   <link rel="icon" type="image/png" href="/favicon.png" />
 </svelte:head>
 
-<div id="layoutpage">
+<a class="skip-link" href="#conteudo-principal">Ir para o conteúdo</a>
+
+<div class="site-shell">
   <Header />
-  <div id="mainbody2">
-    {@render children()}
-  </div>
+  <main id="conteudo-principal" class="site-main" tabindex="-1">
+    <PageContainer>
+      <div id="mainbody2">
+        {@render children()}
+      </div>
+    </PageContainer>
+  </main>
   <Footer />
 </div>

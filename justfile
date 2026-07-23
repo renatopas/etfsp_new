@@ -14,7 +14,7 @@ preview: build
   pnpm run preview
 
 build_docker: fmt
-  docker build . -t etfsp:latest -t etfsp:$(jq -r .version < package.json)
+  docker build . -t etfsp:$(jq -r .version < package.json)
 
 send_container: build_docker
-  docker save etfsp:latest | zstd -T8 -5 | pv -W | ssh {{ssh}} 'docker load'
+  docker save etfsp:$(jq -r .version < package.json) | zstd -T8 -5 | pv -W | ssh etfsp 'docker load'
