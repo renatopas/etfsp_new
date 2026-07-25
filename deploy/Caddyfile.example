@@ -1,0 +1,15 @@
+# Instale este arquivo como /etc/caddy/Caddyfile na VPS.
+
+etfsp.juliapixel.com etfsp.com www.etfsp.com {
+	reverse_proxy 127.0.0.1:3000
+	encode
+}
+
+umami.etfsp.com {
+	reverse_proxy 127.0.0.1:3001
+	encode
+}
+
+federalsp.com.br www.federalsp.com.br {
+	redir https://etfsp.com 301
+}

@@ -1,0 +1,78 @@
+services:
+  etfsp:
+    image: etfsp:2.0.1
+    environment:
+      DB_PATH: /database/db.sqlite3
+      FOTOS_DIR: /Fotos
+      CF_TURNSTILE_SECRET: ${CF_TURNSTILE_SECRET:?defina CF_TURNSTILE_SECRET no .env}
+      PUBLIC_CF_TURNSTILE_SITEKEY: ${PUBLIC_CF_TURNSTILE_SITEKEY:?defina PUBLIC_CF_TURNSTILE_SITEKEY no .env}
+      PUBLIC_UMAMI_URL: ${PUBLIC_UMAMI_URL:-}
+      PUBLIC_UMAMI_WEBSITE_ID: ${PUBLIC_UMAMI_WEBSITE_ID:-}
+    volumes:
+      - ./db.sqlite3:/database/db.sqlite3
+      - ./Fotos:/Fotos
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: unless-stopped
+
+  umami:
+    image: ghcr.io/umami-software/umami:latest
+    environment:
+      DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD:?defina UMAMI_DB_PASSWORD no .env}@umami-db:5432/umami
+      APP_SECRET: ${UMAMI_APP_SECRET:?defina UMAMI_APP_SECRET no .env}
+      DISABLE_TELEMETRY: "1"
+      NODE_OPTIONS: --max-old-space-size=320
+    depends_on:
+      umami-db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3001:3000"
+    init: true
+    restart: unless-stopped
+    mem_limit: 448m
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail --silent http://localhost:3000/api/heartbeat || exit 1",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  umami-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD:?defina UMAMI_DB_PASSWORD no .env}
+      TZ: UTC
+      PGTZ: UTC
+    command:
+      - postgres
+      - -c
+      - shared_buffers=64MB
+      - -c
+      - effective_cache_size=192MB
+      - -c
+      - work_mem=2MB
+      - -c
+      - maintenance_work_mem=32MB
+      - -c
+      - max_connections=20
+    volumes:
+      - umami-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    mem_limit: 256m
+    shm_size: 64m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  umami-db-data:
+    name: umami-db-data

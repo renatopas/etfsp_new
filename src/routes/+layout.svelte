@@ -1,10 +1,32 @@
 <script lang="ts">
+  import { env } from "$env/dynamic/public";
+  import { onMount } from "svelte";
   import "../app.css";
   import Footer from "../lib/Footer.svelte";
   import Header from "../lib/Header.svelte";
   import PageContainer from "../lib/components/PageContainer.svelte";
 
   let { children } = $props();
+
+  onMount(() => {
+    const umamiUrl = env.PUBLIC_UMAMI_URL?.replace(/\/+$/, "");
+    const umamiWebsiteId = env.PUBLIC_UMAMI_WEBSITE_ID;
+
+    if (!umamiUrl || !umamiWebsiteId) {
+      return;
+    }
+
+    const tracker = document.createElement("script");
+    tracker.defer = true;
+    tracker.src = `${umamiUrl}/script.js`;
+    tracker.dataset.websiteId = umamiWebsiteId;
+    tracker.dataset.domains = "etfsp.com,www.etfsp.com,etfsp.juliapixel.com";
+    tracker.dataset.excludeSearch = "true";
+    tracker.dataset.doNotTrack = "true";
+    document.head.appendChild(tracker);
+
+    return () => tracker.remove();
+  });
 </script>
 
 <svelte:head>
