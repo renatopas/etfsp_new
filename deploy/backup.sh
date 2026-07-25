@@ -2,6 +2,7 @@
 set -eu
 
 project_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+project_dir=$(pwd)
 backup_root=${BACKUP_DIR:-"$project_dir/backups"}
 timestamp=$(date -u +%Y%m%dT%H%M%SZ)
 destination="$backup_root/$timestamp"
