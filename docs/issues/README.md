@@ -25,3 +25,4 @@ do site.
 - [ISSUE-006 — Corrigir anos no cadastro de foto](./ISSUE-006-corrigir-anos-cadastro-foto.md)
 - [ISSUE-007 — Aumentar a densidade das listagens](./ISSUE-007-densidade-listagens.md)
 - [ISSUE-008 — Redes sociais no cadastro e no perfil de ex-alunos](./ISSUE-008-redes-sociais-exalunos.md)
+- [ISSUE-009 — Simplificar e melhorar o formulário de cadastro](./ISSUE-009-simplificar-formulario-cadastro.md)
