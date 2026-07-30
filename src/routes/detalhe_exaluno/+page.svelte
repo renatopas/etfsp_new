@@ -15,6 +15,7 @@
     Boolean(
       data.email ||
         data.phone ||
+        data.whatsapp ||
         data.homepage ||
         data.instagram ||
         data.facebook ||
@@ -95,6 +96,23 @@
           <div>
             <dt>Telefone</dt>
             <dd><a href={`tel:${data.phone}`}>{data.phone}</a></dd>
+          </div>
+        {/if}
+        {#if data.whatsapp && data.whatsappUrl}
+          <div>
+            <dt>WhatsApp</dt>
+            <dd>
+              <a
+                class="social-link"
+                href={data.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Abrir WhatsApp de ${data.name} em nova janela`}
+              >
+                <SocialIcon network="whatsapp" />
+                <span>{data.whatsapp}</span>
+              </a>
+            </dd>
           </div>
         {/if}
         {#if data.homepage}

@@ -221,6 +221,9 @@ Instagram, Facebook e LinkedIn são publicados somente como URLs HTTPS validadas
 para o domínio oficial correspondente. Esses links usam ícone e nome textual,
 abrem em nova aba com aviso acessível e recebem
 `rel="noopener noreferrer"`.
+WhatsApp é publicado somente após normalização para E.164 e aponta para
+`https://wa.me/`, também com abertura segura em nova aba. Telefone permanece um
+campo histórico distinto e só aparece quando sua flag de publicação permite.
 
 ### Identificador e erros
 
@@ -247,46 +250,43 @@ Permitir cadastro aberto em uma única página e sem criar conta.
 
 - Não existe login, senha, confirmação de e-mail ou assistente de etapas.
 - O formulário é uma página única com três grupos visuais: “Dados principais”,
-  “Contato” e “Informações opcionais”.
-- Os cinco campos obrigatórios aparecem antes dos opcionais.
-- Campos obrigatórios recebem a indicação textual “obrigatório”; não depender
-  apenas de asterisco ou cor.
+  “Contato” e “Texto para seu perfil”.
+- Nome, curso e os dois anos são os únicos campos individualmente obrigatórios.
+- A página informa uma vez que todos os dados coletados são públicos e explica
+  que `(*)` identifica campo obrigatório.
+- O bloco de contato exige ao menos uma opção válida, sem tornar obrigatório um
+  contato específico.
 - Remover o seletor “Operação: Cadastro/Atualização”. O servidor atual não
   autentica nem atualiza com segurança. Quem precisar corrigir um cadastro usa
   o contato do rodapé.
 - Remover o botão “Apaga tudo”. Um clique acidental não deve apagar a página.
 - Não coletar “Tipo de curso” enquanto esse valor não tiver persistência
   canônica no schema.
-- Não coletar ICQ em novos cadastros; valores históricos permanecem no banco.
+- Não coletar ICQ, telefone, endereço, cidade, estado, CEP, país ou dados sobre
+  como a pessoa encontrou o site; valores históricos permanecem no banco.
 
 ### Campos
 
-| Grupo                 | Campo                      | Obrigatório | Regras de interface                                            |
-| --------------------- | -------------------------- | ----------- | -------------------------------------------------------------- |
-| Dados principais      | Nome completo              | sim         | 5–120 caracteres; aceitar acentos, hífen e apóstrofo           |
-| Dados principais      | Apelido                    | não         | até 80 caracteres                                              |
-| Dados principais      | Curso                      | sim         | selecionar uma opção da allowlist existente                    |
-| Dados principais      | Ano em que entrou          | sim         | quatro dígitos                                                 |
-| Dados principais      | Ano em que saiu            | sim         | quatro dígitos, igual ou posterior ao ingresso                 |
-| Contato               | E-mail                     | sim         | um endereço válido; não aceitar uma lista em um único campo    |
-| Contato               | Telefone                   | não         | até 30 caracteres; permitir formatação internacional           |
-| Contato               | Homepage                   | não         | URL `http` ou `https`; prefixar `https://` quando omitido      |
-| Contato               | Instagram                  | não         | URL HTTPS completa em domínio oficial; até 500 caracteres      |
-| Contato               | Facebook                   | não         | URL HTTPS completa em domínio oficial; até 500 caracteres      |
-| Contato               | LinkedIn                   | não         | URL HTTPS completa em domínio oficial; até 500 caracteres      |
-| Informações opcionais | Endereço                   | não         | até 200 caracteres; uso interno                                |
-| Informações opcionais | Cidade                     | não         | até 100 caracteres; uso interno                                |
-| Informações opcionais | Estado                     | não         | até 50 caracteres; uso interno                                 |
-| Informações opcionais | CEP                        | não         | até 20 caracteres; uso interno                                 |
-| Informações opcionais | País                       | não         | até 80 caracteres; padrão “Brasil”; uso interno                |
-| Informações opcionais | Como encontrou o site      | não         | lista existente mais “Outro”; uso interno                      |
-| Informações opcionais | Detalhes de como encontrou | não         | até 160 caracteres; só habilitar quando aplicável; uso interno |
-| Informações opcionais | Informações para o perfil  | não         | até 2.000 caracteres; conteúdo público                         |
+| Grupo            | Campo                 | Obrigatório | Regras de interface                                       |
+| ---------------- | --------------------- | ----------- | --------------------------------------------------------- |
+| Dados principais | Nome completo         | sim         | 5–120 caracteres                                          |
+| Dados principais | Apelido               | não         | até 80 caracteres                                         |
+| Dados principais | Curso                 | sim         | selecionar uma opção da allowlist existente               |
+| Dados principais | Ano em que entrou     | sim         | quatro dígitos                                            |
+| Dados principais | Ano em que saiu       | sim         | quatro dígitos, igual ou posterior ao ingresso            |
+| Contato          | E-mail                | no conjunto | um endereço válido; não aceitar lista                     |
+| Contato          | WhatsApp              | no conjunto | E.164 com código do país; aceitar formatação na digitação |
+| Contato          | Instagram             | no conjunto | URL HTTPS em domínio oficial; até 500 caracteres          |
+| Contato          | Facebook              | no conjunto | URL HTTPS em domínio oficial; até 500 caracteres          |
+| Contato          | LinkedIn              | no conjunto | URL HTTPS em domínio oficial; até 500 caracteres          |
+| Contato          | Página pessoal        | no conjunto | URL `http` ou `https`; normalização vigente               |
+| Texto            | Texto para seu perfil | não         | até 2.000 caracteres                                      |
 
 Os limites de ano são 1909 até o ano civil atual. O servidor calcula o ano
 atual; o navegador pode usar o mesmo limite apenas para feedback imediato.
-O formulário informa que cada rede social preenchida será publicada no perfil.
-Campos vazios são persistidos como `NULL`.
+Um contato preenchido e inválido não satisfaz a regra do conjunto. Campos
+opcionais vazios são persistidos como `NULL`. O servidor ignora campos
+descontinuados mesmo quando enviados em POST manipulado.
 
 ### Privacidade no formulário
 

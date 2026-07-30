@@ -306,19 +306,20 @@ genérico e código de correlação.
 **Tarefas:**
 
 - definir tipo de entrada e estrutura de erros por campo;
-- extrair, aparar e validar todos os valores no servidor conforme a tabela da
-  seção 6;
-- validar curso e “Como encontrou” por allowlist;
+- extrair, aparar e validar somente os valores públicos da tabela da seção 6;
+- ignorar telefone, endereço, localização e origem mesmo em POST manipulado;
+- validar curso por allowlist;
 - validar relação entre os anos e usar o ano civil atual;
 - normalizar homepage e e-mail;
 - validar e normalizar as URLs opcionais de Instagram, Facebook e LinkedIn,
   limitadas a 500 caracteres e ao domínio HTTPS oficial;
+- validar WhatsApp com código do país e normalizá-lo para E.164;
+- exigir ao menos um contato válido entre e-mail, WhatsApp, redes e homepage;
 - remover “Operacao” e “TipoCurso” da entrada nova;
 - não coletar, validar nem inserir ICQ em novos cadastros, preservando a coluna
   e valores históricos;
 - não aceitar vários e-mails em um campo;
-- manter os padrões `OcultarEmail = 0` e `PublicaTelefone = 0`, informados na
-  interface;
+- manter `OcultarEmail = 0`; omitir telefone e `PublicaTelefone` do `INSERT`;
 - parametrizar o `INSERT`, aguardar a escrita e tratar erro sem expor detalhes;
 - remover logs do formulário e dados pessoais;
 - preservar campos permitidos no retorno de erro e nunca retornar o token do
@@ -336,9 +337,11 @@ não resulta em sucesso; logs não contêm valores pessoais.
 **Tarefas:**
 
 - substituir tabela por `FormSection` e componentes de campo;
-- manter uma única página e colocar os cinco campos obrigatórios primeiro;
+- manter uma única página com os três blocos definidos na seção 6;
+- identificar com `(*)` somente nome, curso e os dois anos;
 - usar tipos corretos, `autocomplete`, `inputmode` e descrições de privacidade;
-- informar que redes sociais preenchidas serão publicadas no perfil;
+- informar uma única vez que todos os dados coletados serão publicados;
+- diferenciar controles e fundo dos blocos com superfície e borda contrastantes;
 - remover operação de atualização, tipo de curso, reset e imagem decorativa;
 - substituir validação por `alert()` por validação nativa complementar e erros
   retornados pela action;

@@ -70,6 +70,27 @@ def social_url(row, field: str):
         return None
 
 
+def whatsapp(row):
+    if "WhatsApp" not in row.index or not isinstance(row["WhatsApp"], str):
+        return None
+
+    value = row["WhatsApp"].strip()
+    if not value.startswith("+"):
+        return None
+
+    for separator in (" ", "(", ")", "-"):
+        value = value.replace(separator, "")
+
+    digits = value[1:]
+    if (
+        not digits.isdigit()
+        or not 8 <= len(digits) <= 15
+        or digits.startswith("0")
+    ):
+        return None
+    return "+" + digits
+
+
 for (_, row) in exalunos.iterrows():
     try:
         data_cadastro = row["DtCadastro"]
@@ -97,6 +118,7 @@ for (_, row) in exalunos.iterrows():
         row["Instagram"] = social_url(row, "Instagram")
         row["Facebook"] = social_url(row, "Facebook")
         row["LinkedIn"] = social_url(row, "LinkedIn")
+        row["WhatsApp"] = whatsapp(row)
 
         cur.execute("INSERT INTO ExAlunos (" \
             "ID," \
@@ -120,6 +142,7 @@ for (_, row) in exalunos.iterrows():
             "Instagram," \
             "Facebook," \
             "LinkedIn," \
+            "WhatsApp," \
             "DadoPubl," \
             "ComoEncontrou," \
             "ComoEncontrouExtra," \
@@ -161,6 +184,7 @@ for (_, row) in exalunos.iterrows():
             ":Instagram," \
             ":Facebook," \
             ":LinkedIn," \
+            ":WhatsApp," \
             ":DadoPubl," \
             ":ComoEncontrou," \
             ":ComoEncontrouExtra," \

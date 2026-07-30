@@ -18,7 +18,7 @@
 {:else}
   <PageHeader
     title="Cadastre-se"
-    description="Preencha seus dados em uma única página. Os campos obrigatórios aparecem primeiro."
+    description="Preencha seus dados em uma única página para participar da relação de ex-alunos."
   />
   <Formulario {form} />
 {/if}

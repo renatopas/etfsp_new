@@ -168,6 +168,11 @@ Cada campo tem:
 - `autocomplete` apropriado quando houver padrão conhecido;
 - altura mínima de 44 px nos controles de uma linha.
 
+Nos formulários com blocos sobre superfície suave, os controles usam a
+superfície principal, borda de 2 px e mudança perceptível de borda em hover,
+foco e erro. O bloco pode usar borda, sombra discreta e
+`--color-surface-muted` para reforçar a hierarquia sem caixas aninhadas.
+
 Placeholder nunca substitui rótulo. Não validar apenas no evento `keyup`; erros
 são apresentados após saída do campo ou tentativa de envio, evitando repreender
 a pessoa enquanto ela ainda digita.
@@ -180,6 +185,8 @@ a pessoa enquanto ela ainda digita.
   uma nova aba ou janela.
 - Recebe `target="_blank"` somente junto de `rel="noopener noreferrer"`.
 - Não depende de fonte, script, API ou asset carregado da própria rede social.
+- O mesmo padrão atende WhatsApp: número validado no servidor, ícone local e
+  link HTTPS derivado para `wa.me`.
 
 ### `FormSection` e `ErrorSummary`
 

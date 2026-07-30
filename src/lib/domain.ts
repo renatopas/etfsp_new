@@ -49,6 +49,8 @@ export interface AlumniListItem {
 export interface PublicAlumniProfile extends AlumniListItem {
   email?: string;
   phone?: string;
+  whatsapp?: string;
+  whatsappUrl?: string;
   homepage?: string;
   instagram?: string;
   facebook?: string;

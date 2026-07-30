@@ -31,6 +31,7 @@ banco, mas significa não publicável pelo site.
 | `OcultarEmail`                   | interno             | aplicar no SQL/servidor; não enviar ao componente                    |
 | `Telefone`                       | público condicional | retornar somente se `PublicaTelefone = 1`                            |
 | `PublicaTelefone`                | interno             | aplicar no SQL/servidor; não enviar ao componente                    |
+| `WhatsApp`                       | público opcional    | somente E.164 válido; publicar como link seguro para `wa.me`         |
 | `HomePage`                       | público             | somente URL `http`/`https` validada                                  |
 | `Instagram`                      | público opcional    | publicar somente URL HTTPS válida em `instagram.com`                 |
 | `Facebook`                       | público opcional    | publicar somente URL HTTPS válida em `facebook.com`                  |
@@ -61,7 +62,10 @@ contrato existente do schema:
 
 - e-mail novo segue o padrão existente `OcultarEmail = 0` e, portanto, é
   público; isso deve ser informado claramente antes do envio;
-- telefone novo segue `PublicaTelefone = 0` e permanece interno;
+- telefone não é coletado em novos cadastros; os valores históricos continuam
+  sujeitos a `PublicaTelefone`;
+- WhatsApp é um campo público independente, normalizado para E.164, e vazio
+  permanece `NULL`;
 - cada rede social é pública somente quando sua URL é informada
   voluntariamente no campo correspondente; valor vazio permanece `NULL`;
 - alteração dessas flags em registros existentes continua sendo operação
@@ -112,6 +116,8 @@ interface AlumniListItem {
 interface PublicAlumniProfile extends AlumniListItem {
   email?: string; // já filtrado por OcultarEmail no servidor
   phone?: string; // já filtrado por PublicaTelefone no servidor
+  whatsapp?: string; // E.164 validado no servidor
+  whatsappUrl?: string; // link HTTPS derivado pelo servidor
   homepage?: string;
   instagram?: string;
   facebook?: string;

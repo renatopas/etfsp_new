@@ -2,6 +2,7 @@ import type sqlite from "sqlite3";
 
 const SOCIAL_COLUMNS = ["Instagram", "Facebook", "LinkedIn"] as const;
 const SOCIAL_MIGRATION = "2026-07-29-add-social-networks";
+const WHATSAPP_MIGRATION = "2026-07-29-add-whatsapp";
 
 function all<T>(
   db: sqlite.Database,
@@ -63,6 +64,17 @@ export async function migrate(db: sqlite.Database): Promise<void> {
       `INSERT OR IGNORE INTO SchemaMigrations (ID, AppliedAt)
        VALUES (?, ?)`,
       [SOCIAL_MIGRATION, Date.now()],
+    );
+
+    if (!existingColumns.has("WhatsApp")) {
+      await run(db, "ALTER TABLE ExAlunos ADD COLUMN WhatsApp TEXT");
+    }
+
+    await run(
+      db,
+      `INSERT OR IGNORE INTO SchemaMigrations (ID, AppliedAt)
+       VALUES (?, ?)`,
+      [WHATSAPP_MIGRATION, Date.now()],
     );
     await run(db, "COMMIT");
   } catch (migrationError) {
