@@ -1,6 +1,11 @@
 import { fail, type Actions } from "@sveltejs/kit";
 import { COURSES, type Course } from "$lib/domain";
 import { db } from "$lib/server/index";
+import {
+  normalizeSocialNetworkUrl,
+  SOCIAL_NETWORKS,
+  type SocialNetworkField,
+} from "$lib/server/social-networks";
 import { validateRequest } from "$lib/server/turnstile";
 
 const MIN_YEAR = 1909;
@@ -21,6 +26,7 @@ type FieldName =
   | "Email"
   | "Telefone"
   | "HomePage"
+  | SocialNetworkField
   | "Endereco"
   | "Cidade"
   | "Estado"
@@ -80,6 +86,9 @@ export const actions: Actions = {
           "Email",
           "Telefone",
           "HomePage",
+          "Instagram",
+          "Facebook",
+          "LinkedIn",
           "Endereco",
           "Cidade",
           "Estado",
@@ -96,6 +105,14 @@ export const actions: Actions = {
     const startYear = year(values.AnoInicio);
     const endYear = year(values.AnoTermino);
     const normalizedHomepage = homepage(values.HomePage);
+    const normalizedSocialNetworks = Object.fromEntries(
+      (Object.keys(SOCIAL_NETWORKS) as SocialNetworkField[]).map((field) => [
+        field,
+        values[field]
+          ? normalizeSocialNetworkUrl(values[field], field)
+          : undefined,
+      ]),
+    ) as Record<SocialNetworkField, string | undefined>;
 
     if (values.Nome.length < 5 || values.Nome.length > 120)
       errors.Nome = "Informe o nome completo, com 5 a 120 caracteres.";
@@ -121,6 +138,13 @@ export const actions: Actions = {
       errors.Telefone = "O telefone deve ter no máximo 30 caracteres.";
     if (values.HomePage && !normalizedHomepage)
       errors.HomePage = "Informe uma página com endereço http ou https válido.";
+    for (const field of Object.keys(SOCIAL_NETWORKS) as SocialNetworkField[]) {
+      if (values[field] && !normalizedSocialNetworks[field]) {
+        errors[field] =
+          `Informe uma URL HTTPS válida de ${SOCIAL_NETWORKS[field].label}, ` +
+          `com no máximo 500 caracteres.`;
+      }
+    }
     if (values.Endereco.length > 200)
       errors.Endereco = "O endereço deve ter no máximo 200 caracteres.";
     if (values.Cidade.length > 100)
@@ -162,8 +186,8 @@ export const actions: Actions = {
 
     try {
       await run(
-        `INSERT INTO ExAlunos (Nome, Apelidos, Curso, AnoInicio, AnoTermino, Email, HomePage, Endereco, Cidade, Estado, CEP, Pais, Telefone, DadoPubl, ComoEncontrou, ComoEncontrouExtra, DtCadastro)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO ExAlunos (Nome, Apelidos, Curso, AnoInicio, AnoTermino, Email, HomePage, Instagram, Facebook, LinkedIn, Endereco, Cidade, Estado, CEP, Pais, Telefone, DadoPubl, ComoEncontrou, ComoEncontrouExtra, DtCadastro)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           values.Nome,
           optional(values.Apelidos),
@@ -172,6 +196,9 @@ export const actions: Actions = {
           endYear,
           values.Email,
           optional(normalizedHomepage ?? ""),
+          optional(normalizedSocialNetworks.Instagram ?? ""),
+          optional(normalizedSocialNetworks.Facebook ?? ""),
+          optional(normalizedSocialNetworks.LinkedIn ?? ""),
           optional(values.Endereco),
           optional(values.Cidade),
           optional(values.Estado),

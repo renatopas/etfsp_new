@@ -139,9 +139,69 @@
       id="HomePage"
       name="HomePage"
       value={values.HomePage ?? ""}
+      type="url"
       inputmode="url"
+      autocomplete="url"
       maxlength="250"
     />
+    <p>Se preenchida, a página pessoal aparecerá no seu perfil público.</p>
+    <label for="Instagram">Instagram <span>opcional</span></label><input
+      id="Instagram"
+      name="Instagram"
+      value={values.Instagram ?? ""}
+      type="url"
+      inputmode="url"
+      autocomplete="url"
+      maxlength="500"
+      placeholder="https://www.instagram.com/seu-perfil"
+      aria-invalid={Boolean(error("Instagram"))}
+      aria-describedby={error("Instagram")
+        ? "Instagram-error Instagram-help"
+        : "Instagram-help"}
+    />{#if error("Instagram")}<p id="Instagram-error" class="field-error">
+        {error("Instagram")}
+      </p>{/if}
+    <p id="Instagram-help">
+      Informe a URL HTTPS completa. Ela será publicada no seu perfil.
+    </p>
+    <label for="Facebook">Facebook <span>opcional</span></label><input
+      id="Facebook"
+      name="Facebook"
+      value={values.Facebook ?? ""}
+      type="url"
+      inputmode="url"
+      autocomplete="url"
+      maxlength="500"
+      placeholder="https://www.facebook.com/seu-perfil"
+      aria-invalid={Boolean(error("Facebook"))}
+      aria-describedby={error("Facebook")
+        ? "Facebook-error Facebook-help"
+        : "Facebook-help"}
+    />{#if error("Facebook")}<p id="Facebook-error" class="field-error">
+        {error("Facebook")}
+      </p>{/if}
+    <p id="Facebook-help">
+      Informe a URL HTTPS completa. Ela será publicada no seu perfil.
+    </p>
+    <label for="LinkedIn">LinkedIn <span>opcional</span></label><input
+      id="LinkedIn"
+      name="LinkedIn"
+      value={values.LinkedIn ?? ""}
+      type="url"
+      inputmode="url"
+      autocomplete="url"
+      maxlength="500"
+      placeholder="https://www.linkedin.com/in/seu-perfil"
+      aria-invalid={Boolean(error("LinkedIn"))}
+      aria-describedby={error("LinkedIn")
+        ? "LinkedIn-error LinkedIn-help"
+        : "LinkedIn-help"}
+    />{#if error("LinkedIn")}<p id="LinkedIn-error" class="field-error">
+        {error("LinkedIn")}
+      </p>{/if}
+    <p id="LinkedIn-help">
+      Informe a URL HTTPS completa. Ela será publicada no seu perfil.
+    </p>
   </fieldset>
   <fieldset>
     <legend>Informações opcionais</legend>

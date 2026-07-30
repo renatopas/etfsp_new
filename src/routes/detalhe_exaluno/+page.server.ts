@@ -2,6 +2,7 @@ import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import type { PublicAlumniProfile } from "$lib/domain";
 import { db } from "$lib/server/index";
+import { normalizeSocialNetworkUrl } from "$lib/server/social-networks";
 
 interface ProfileRow {
   ID: number;
@@ -13,6 +14,9 @@ interface ProfileRow {
   Email: string | null;
   Telefone: string | null;
   HomePage: string | null;
+  Instagram: string | null;
+  Facebook: string | null;
+  LinkedIn: string | null;
   ICQ: string | null;
   DadoPubl: string | null;
   Comentarios: string | null;
@@ -94,6 +98,15 @@ function mapProfile(row: ProfileRow): PublicAlumniProfile {
     email: toOptionalText(row.Email),
     phone: toOptionalText(row.Telefone),
     homepage: normalizeHomepage(row.HomePage),
+    instagram: row.Instagram
+      ? normalizeSocialNetworkUrl(row.Instagram, "Instagram")
+      : undefined,
+    facebook: row.Facebook
+      ? normalizeSocialNetworkUrl(row.Facebook, "Facebook")
+      : undefined,
+    linkedin: row.LinkedIn
+      ? normalizeSocialNetworkUrl(row.LinkedIn, "LinkedIn")
+      : undefined,
     icq: toOptionalText(row.ICQ),
     publicInfo: toOptionalText(row.DadoPubl),
     comments: toOptionalText(row.Comentarios),
@@ -115,6 +128,9 @@ export const load: PageServerLoad = async ({ url }) => {
       CASE WHEN e.OcultarEmail = 0 THEN e.Email END AS Email,
       CASE WHEN e.PublicaTelefone = 1 THEN e.Telefone END AS Telefone,
       e.HomePage,
+      e.Instagram,
+      e.Facebook,
+      e.LinkedIn,
       e.ICQ,
       e.DadoPubl,
       e.Comentarios,

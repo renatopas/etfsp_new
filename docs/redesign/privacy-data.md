@@ -32,6 +32,9 @@ banco, mas significa não publicável pelo site.
 | `Telefone`                       | público condicional | retornar somente se `PublicaTelefone = 1`                            |
 | `PublicaTelefone`                | interno             | aplicar no SQL/servidor; não enviar ao componente                    |
 | `HomePage`                       | público             | somente URL `http`/`https` validada                                  |
+| `Instagram`                      | público opcional    | publicar somente URL HTTPS válida em `instagram.com`                 |
+| `Facebook`                       | público opcional    | publicar somente URL HTTPS válida em `facebook.com`                  |
+| `LinkedIn`                       | público opcional    | publicar somente URL HTTPS válida em `linkedin.com`                  |
 | `ICQ`                            | público             | compatibilidade histórica; omitir quando vazio                       |
 | `DadoPubl`                       | público             | o próprio nome do campo define finalidade pública                    |
 | `Comentarios`                    | público             | texto fornecido para o perfil; renderizar como texto, não HTML bruto |
@@ -59,6 +62,8 @@ contrato existente do schema:
 - e-mail novo segue o padrão existente `OcultarEmail = 0` e, portanto, é
   público; isso deve ser informado claramente antes do envio;
 - telefone novo segue `PublicaTelefone = 0` e permanece interno;
+- cada rede social é pública somente quando sua URL é informada
+  voluntariamente no campo correspondente; valor vazio permanece `NULL`;
 - alteração dessas flags em registros existentes continua sendo operação
   administrativa fora do site público.
 
@@ -108,6 +113,9 @@ interface PublicAlumniProfile extends AlumniListItem {
   email?: string; // já filtrado por OcultarEmail no servidor
   phone?: string; // já filtrado por PublicaTelefone no servidor
   homepage?: string;
+  instagram?: string;
+  facebook?: string;
+  linkedin?: string;
   icq?: string;
   publicInfo?: string;
   comments?: string;

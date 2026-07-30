@@ -2,6 +2,7 @@ import sqlite3
 import pandas as pd
 import datetime
 import os
+from urllib.parse import urlsplit, urlunsplit
 
 exalunos = pd.read_csv("./ExAlunos.csv")
 fotos = pd.read_csv("./Foto.csv")
@@ -34,6 +35,41 @@ def dma_to_unix(val: str) -> int:
     assert day.year == int(val_split[2])
     return round(day.timestamp() * 1000)
 
+SOCIAL_DOMAINS = {
+    "Instagram": "instagram.com",
+    "Facebook": "facebook.com",
+    "LinkedIn": "linkedin.com",
+}
+
+
+def social_url(row, field: str):
+    if field not in row.index or not isinstance(row[field], str):
+        return None
+
+    value = row[field].strip()
+    if not value or len(value) > 500:
+        return None
+
+    try:
+        parsed = urlsplit(value)
+        hostname = (parsed.hostname or "").lower()
+        domain = SOCIAL_DOMAINS[field]
+        if (
+            parsed.scheme != "https"
+            or not (hostname == domain or hostname.endswith("." + domain))
+            or parsed.username
+            or parsed.password
+            or parsed.netloc.lower() != hostname
+        ):
+            return None
+        normalized = urlunsplit(
+            (parsed.scheme, parsed.netloc, parsed.path, parsed.query, "")
+        )
+        return normalized if len(normalized) <= 500 else None
+    except ValueError:
+        return None
+
+
 for (_, row) in exalunos.iterrows():
     try:
         data_cadastro = row["DtCadastro"]
@@ -58,6 +94,9 @@ for (_, row) in exalunos.iterrows():
         row["OcultarEmail"] = row["OcultarEmail"] == "VERDADEIRO"
         row["InscricaoInicialML"] = row["InscricaoInicialML"] == "VERDADEIRO"
         row["NaoVerificaDuplicidade"] = row["NaoVerificaDuplicidade"] == "VERDADEIRO"
+        row["Instagram"] = social_url(row, "Instagram")
+        row["Facebook"] = social_url(row, "Facebook")
+        row["LinkedIn"] = social_url(row, "LinkedIn")
 
         cur.execute("INSERT INTO ExAlunos (" \
             "ID," \
@@ -78,6 +117,9 @@ for (_, row) in exalunos.iterrows():
             "Pais," \
             "Telefone," \
             "HomePage," \
+            "Instagram," \
+            "Facebook," \
+            "LinkedIn," \
             "DadoPubl," \
             "ComoEncontrou," \
             "ComoEncontrouExtra," \
@@ -116,6 +158,9 @@ for (_, row) in exalunos.iterrows():
             ":Pais," \
             ":Telefone," \
             ":HomePage," \
+            ":Instagram," \
+            ":Facebook," \
+            ":LinkedIn," \
             ":DadoPubl," \
             ":ComoEncontrou," \
             ":ComoEncontrouExtra," \

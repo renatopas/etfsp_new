@@ -50,6 +50,9 @@ export interface PublicAlumniProfile extends AlumniListItem {
   email?: string;
   phone?: string;
   homepage?: string;
+  instagram?: string;
+  facebook?: string;
+  linkedin?: string;
   icq?: string;
   publicInfo?: string;
   comments?: string;

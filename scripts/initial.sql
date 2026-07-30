@@ -19,6 +19,9 @@ CREATE TABLE ExAlunos (
   Pais TEXT,
   Telefone TEXT,
   HomePage TEXT,
+  Instagram TEXT,
+  Facebook TEXT,
+  LinkedIn TEXT,
   DadoPubl TEXT,
   ComoEncontrou TEXT,
   ComoEncontrouExtra TEXT,
@@ -38,6 +41,17 @@ CREATE TABLE ExAlunos (
   NaoVerificaDuplicidade INTEGER NOT NULL CHECK (NaoVerificaDuplicidade IN (0, 1)) DEFAULT 0,
   lixo TEXT
 ) STRICT;
+
+CREATE TABLE SchemaMigrations (
+  ID TEXT PRIMARY KEY,
+  AppliedAt INTEGER NOT NULL
+) STRICT;
+
+INSERT INTO SchemaMigrations (ID, AppliedAt)
+VALUES (
+  '2026-07-29-add-social-networks',
+  CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
+);
 
 CREATE TABLE Fotos (
   idFoto INTEGER PRIMARY KEY AUTOINCREMENT,

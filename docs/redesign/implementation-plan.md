@@ -255,6 +255,8 @@ preserva a URL e o contexto via histórico do navegador.
 - não retornar `ComoEncontrou` ou `ComoEncontrouExtra`;
 - contar somente fotos `Excluido = 0` e obter foto pessoal não excluída;
 - normalizar homepage para `http`/`https` no servidor;
+- validar novamente Instagram, Facebook e LinkedIn contra HTTPS e o domínio
+  oficial antes de incluí-los no contrato público;
 - remover logs de dados e tipos `Partial` excessivamente permissivos.
 
 **Aceite:** inspecionar o payload serializado confirma ausência de campos
@@ -273,6 +275,8 @@ internos; registro excluído não pode ser consultado pelo ID.
   fornecido pelo usuário;
 - oferecer retorno para ex-alunos e link de fotos somente quando aplicável;
 - corrigir URLs relativas de imagens.
+- apresentar redes sociais preenchidas com ícone local, nome acessível e link
+  seguro em nova aba.
 
 **Aceite:** a tela funciona com qualquer combinação de campos opcionais e não
 vaza informação condicionada.
@@ -307,6 +311,8 @@ genérico e código de correlação.
 - validar curso e “Como encontrou” por allowlist;
 - validar relação entre os anos e usar o ano civil atual;
 - normalizar homepage e e-mail;
+- validar e normalizar as URLs opcionais de Instagram, Facebook e LinkedIn,
+  limitadas a 500 caracteres e ao domínio HTTPS oficial;
 - remover “Operacao” e “TipoCurso” da entrada nova;
 - não coletar, validar nem inserir ICQ em novos cadastros, preservando a coluna
   e valores históricos;
@@ -332,6 +338,7 @@ não resulta em sucesso; logs não contêm valores pessoais.
 - substituir tabela por `FormSection` e componentes de campo;
 - manter uma única página e colocar os cinco campos obrigatórios primeiro;
 - usar tipos corretos, `autocomplete`, `inputmode` e descrições de privacidade;
+- informar que redes sociais preenchidas serão publicadas no perfil;
 - remover operação de atualização, tipo de curso, reset e imagem decorativa;
 - substituir validação por `alert()` por validação nativa complementar e erros
   retornados pela action;

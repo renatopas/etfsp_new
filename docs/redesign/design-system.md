@@ -172,6 +172,15 @@ Placeholder nunca substitui rótulo. Não validar apenas no evento `keyup`; erro
 são apresentados após saída do campo ou tentativa de envio, evitando repreender
 a pessoa enquanto ela ainda digita.
 
+### Link de rede social
+
+- Combina ícone local com o nome textual da rede; o ícone é decorativo para
+  tecnologias assistivas.
+- Usa URL HTTPS validada no servidor e informa no nome acessível quando abre
+  uma nova aba ou janela.
+- Recebe `target="_blank"` somente junto de `rel="noopener noreferrer"`.
+- Não depende de fonte, script, API ou asset carregado da própria rede social.
+
 ### `FormSection` e `ErrorSummary`
 
 - `FormSection` agrupa campos sob um `h2` e descrição curta, sem criar uma etapa.

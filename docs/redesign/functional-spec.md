@@ -216,9 +216,11 @@ ex-aluno.
 7. Ação “Ver fotos enviadas”, apenas quando a contagem for maior que zero.
 
 Campos vazios não geram rótulos vazios. Homepage deve ser validada no servidor
-ou convertida para uma URL `http`/`https` segura antes de chegar ao link. Links
-externos abertos em nova aba, se usados, recebem `rel="noopener noreferrer"` e
-aviso perceptível; a preferência desta fase é abrir na mesma aba.
+ou convertida para uma URL `http`/`https` segura antes de chegar ao link.
+Instagram, Facebook e LinkedIn são publicados somente como URLs HTTPS validadas
+para o domínio oficial correspondente. Esses links usam ícone e nome textual,
+abrem em nova aba com aviso acessível e recebem
+`rel="noopener noreferrer"`.
 
 ### Identificador e erros
 
@@ -269,6 +271,9 @@ Permitir cadastro aberto em uma única página e sem criar conta.
 | Contato               | E-mail                     | sim         | um endereço válido; não aceitar uma lista em um único campo    |
 | Contato               | Telefone                   | não         | até 30 caracteres; permitir formatação internacional           |
 | Contato               | Homepage                   | não         | URL `http` ou `https`; prefixar `https://` quando omitido      |
+| Contato               | Instagram                  | não         | URL HTTPS completa em domínio oficial; até 500 caracteres      |
+| Contato               | Facebook                   | não         | URL HTTPS completa em domínio oficial; até 500 caracteres      |
+| Contato               | LinkedIn                   | não         | URL HTTPS completa em domínio oficial; até 500 caracteres      |
 | Informações opcionais | Endereço                   | não         | até 200 caracteres; uso interno                                |
 | Informações opcionais | Cidade                     | não         | até 100 caracteres; uso interno                                |
 | Informações opcionais | Estado                     | não         | até 50 caracteres; uso interno                                 |
@@ -280,6 +285,8 @@ Permitir cadastro aberto em uma única página e sem criar conta.
 
 Os limites de ano são 1909 até o ano civil atual. O servidor calcula o ano
 atual; o navegador pode usar o mesmo limite apenas para feedback imediato.
+O formulário informa que cada rede social preenchida será publicada no perfil.
+Campos vazios são persistidos como `NULL`.
 
 ### Privacidade no formulário
 
