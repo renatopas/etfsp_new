@@ -2,6 +2,8 @@ import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import type { PublicAlumniProfile } from "$lib/domain";
 import { db } from "$lib/server/index";
+import { normalizeSocialNetworkUrl } from "$lib/server/social-networks";
+import { normalizeWhatsApp, whatsappUrl } from "$lib/server/whatsapp";
 
 interface ProfileRow {
   ID: number;
@@ -12,7 +14,11 @@ interface ProfileRow {
   AnoTermino: number | null;
   Email: string | null;
   Telefone: string | null;
+  WhatsApp: string | null;
   HomePage: string | null;
+  Instagram: string | null;
+  Facebook: string | null;
+  LinkedIn: string | null;
   ICQ: string | null;
   DadoPubl: string | null;
   Comentarios: string | null;
@@ -93,7 +99,18 @@ function mapProfile(row: ProfileRow): PublicAlumniProfile {
     thumbnail: toOptionalText(row.NomeMiniaturaStored),
     email: toOptionalText(row.Email),
     phone: toOptionalText(row.Telefone),
+    whatsapp: row.WhatsApp ? normalizeWhatsApp(row.WhatsApp) : undefined,
+    whatsappUrl: row.WhatsApp ? whatsappUrl(row.WhatsApp) : undefined,
     homepage: normalizeHomepage(row.HomePage),
+    instagram: row.Instagram
+      ? normalizeSocialNetworkUrl(row.Instagram, "Instagram")
+      : undefined,
+    facebook: row.Facebook
+      ? normalizeSocialNetworkUrl(row.Facebook, "Facebook")
+      : undefined,
+    linkedin: row.LinkedIn
+      ? normalizeSocialNetworkUrl(row.LinkedIn, "LinkedIn")
+      : undefined,
     icq: toOptionalText(row.ICQ),
     publicInfo: toOptionalText(row.DadoPubl),
     comments: toOptionalText(row.Comentarios),
@@ -114,7 +131,11 @@ export const load: PageServerLoad = async ({ url }) => {
       e.AnoTermino,
       CASE WHEN e.OcultarEmail = 0 THEN e.Email END AS Email,
       CASE WHEN e.PublicaTelefone = 1 THEN e.Telefone END AS Telefone,
+      e.WhatsApp,
       e.HomePage,
+      e.Instagram,
+      e.Facebook,
+      e.LinkedIn,
       e.ICQ,
       e.DadoPubl,
       e.Comentarios,

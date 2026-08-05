@@ -2,6 +2,7 @@
   import type { PageProps } from "./$types";
   import Meta from "$lib/Meta.svelte";
   import PageHeader from "$lib/components/PageHeader.svelte";
+  import SocialIcon from "$lib/components/SocialIcon.svelte";
 
   let { data }: PageProps = $props();
 
@@ -11,7 +12,16 @@
       : (data.startYear?.toString() ?? data.endYear?.toString()),
   );
   const hasContact = $derived(
-    Boolean(data.email || data.phone || data.homepage || data.icq),
+    Boolean(
+      data.email ||
+        data.phone ||
+        data.whatsapp ||
+        data.homepage ||
+        data.instagram ||
+        data.facebook ||
+        data.linkedin ||
+        data.icq,
+    ),
   );
   const hasAbout = $derived(Boolean(data.publicInfo || data.comments));
   const registeredDate = $derived(
@@ -88,10 +98,78 @@
             <dd><a href={`tel:${data.phone}`}>{data.phone}</a></dd>
           </div>
         {/if}
+        {#if data.whatsapp && data.whatsappUrl}
+          <div>
+            <dt>WhatsApp</dt>
+            <dd>
+              <a
+                class="social-link"
+                href={data.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Abrir WhatsApp de ${data.name} em nova janela`}
+              >
+                <SocialIcon network="whatsapp" />
+                <span>{data.whatsapp}</span>
+              </a>
+            </dd>
+          </div>
+        {/if}
         {#if data.homepage}
           <div>
             <dt>Página pessoal</dt>
             <dd><a href={data.homepage}>{data.homepage}</a></dd>
+          </div>
+        {/if}
+        {#if data.instagram}
+          <div>
+            <dt>Instagram</dt>
+            <dd>
+              <a
+                class="social-link"
+                href={data.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Abrir Instagram de ${data.name} em nova janela`}
+              >
+                <SocialIcon network="instagram" />
+                <span>Instagram</span>
+              </a>
+            </dd>
+          </div>
+        {/if}
+        {#if data.facebook}
+          <div>
+            <dt>Facebook</dt>
+            <dd>
+              <a
+                class="social-link"
+                href={data.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Abrir Facebook de ${data.name} em nova janela`}
+              >
+                <SocialIcon network="facebook" />
+                <span>Facebook</span>
+              </a>
+            </dd>
+          </div>
+        {/if}
+        {#if data.linkedin}
+          <div>
+            <dt>LinkedIn</dt>
+            <dd>
+              <a
+                class="social-link"
+                href={data.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Abrir LinkedIn de ${data.name} em nova janela`}
+              >
+                <SocialIcon network="linkedin" />
+                <span>LinkedIn</span>
+              </a>
+            </dd>
           </div>
         {/if}
         {#if data.icq}
@@ -214,6 +292,12 @@
 
   dd {
     margin: 0;
+  }
+
+  .social-link {
+    display: inline-flex;
+    gap: var(--space-2);
+    align-items: center;
   }
 
   .profile__text + .profile__text {

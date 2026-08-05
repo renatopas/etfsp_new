@@ -1,17 +1,15 @@
 import { fail, type Actions } from "@sveltejs/kit";
 import { COURSES, type Course } from "$lib/domain";
 import { db } from "$lib/server/index";
+import {
+  normalizeSocialNetworkUrl,
+  SOCIAL_NETWORKS,
+  type SocialNetworkField,
+} from "$lib/server/social-networks";
 import { validateRequest } from "$lib/server/turnstile";
+import { normalizeWhatsApp } from "$lib/server/whatsapp";
 
 const MIN_YEAR = 1909;
-const FOUND_BY = [
-  "Google",
-  "Indicação de amigos",
-  "Link em outras páginas",
-  "Facebook",
-  "Bing",
-  "Outros",
-] as const;
 type FieldName =
   | "Nome"
   | "Apelidos"
@@ -19,18 +17,27 @@ type FieldName =
   | "AnoInicio"
   | "AnoTermino"
   | "Email"
-  | "Telefone"
+  | "WhatsApp"
   | "HomePage"
-  | "Endereco"
-  | "Cidade"
-  | "Estado"
-  | "CEP"
-  | "Pais"
-  | "ComoEncontrou"
-  | "ComoEncontrouExtra"
+  | SocialNetworkField
   | "DadoPubl";
 type Values = Record<FieldName, string>;
-type Errors = Partial<Record<FieldName | "form", string>>;
+type Errors = Partial<Record<FieldName | "Contato" | "form", string>>;
+
+const FIELD_NAMES: FieldName[] = [
+  "Nome",
+  "Apelidos",
+  "Curso",
+  "AnoInicio",
+  "AnoTermino",
+  "Email",
+  "WhatsApp",
+  "Instagram",
+  "Facebook",
+  "LinkedIn",
+  "HomePage",
+  "DadoPubl",
+];
 
 function text(formData: FormData, name: FieldName): string {
   return (formData.get(name)?.toString() ?? "").trim();
@@ -39,12 +46,21 @@ function text(formData: FormData, name: FieldName): string {
 function isCourse(value: string): value is Course {
   return (COURSES as readonly string[]).includes(value);
 }
+
 function year(value: string): number | undefined {
   return /^\d{4}$/.test(value) ? Number(value) : undefined;
 }
-function optional(value: string): string | null {
+
+function optional(value: string | undefined): string | null {
   return value || null;
 }
+
+function email(value: string): string | undefined {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && !/[,;]/.test(value)
+    ? value
+    : undefined;
+}
+
 function homepage(value: string): string | undefined {
   if (!value) return undefined;
   try {
@@ -58,6 +74,7 @@ function homepage(value: string): string | undefined {
     return undefined;
   }
 }
+
 function run(sql: string, params: unknown[]): Promise<void> {
   return new Promise((resolve, reject) =>
     db.run(sql, params, (queryError) =>
@@ -70,32 +87,25 @@ export const actions: Actions = {
   default: async ({ request }) => {
     const formData = await request.formData();
     const values = Object.fromEntries(
-      (
-        [
-          "Nome",
-          "Apelidos",
-          "Curso",
-          "AnoInicio",
-          "AnoTermino",
-          "Email",
-          "Telefone",
-          "HomePage",
-          "Endereco",
-          "Cidade",
-          "Estado",
-          "CEP",
-          "Pais",
-          "ComoEncontrou",
-          "ComoEncontrouExtra",
-          "DadoPubl",
-        ] as FieldName[]
-      ).map((name) => [name, text(formData, name)]),
+      FIELD_NAMES.map((name) => [name, text(formData, name)]),
     ) as Values;
     const errors: Errors = {};
     const currentYear = new Date().getFullYear();
     const startYear = year(values.AnoInicio);
     const endYear = year(values.AnoTermino);
+    const normalizedEmail = values.Email ? email(values.Email) : undefined;
+    const normalizedWhatsApp = values.WhatsApp
+      ? normalizeWhatsApp(values.WhatsApp)
+      : undefined;
     const normalizedHomepage = homepage(values.HomePage);
+    const normalizedSocialNetworks = Object.fromEntries(
+      (Object.keys(SOCIAL_NETWORKS) as SocialNetworkField[]).map((field) => [
+        field,
+        values[field]
+          ? normalizeSocialNetworkUrl(values[field], field)
+          : undefined,
+      ]),
+    ) as Record<SocialNetworkField, string | undefined>;
 
     if (values.Nome.length < 5 || values.Nome.length > 120)
       errors.Nome = "Informe o nome completo, com 5 a 120 caracteres.";
@@ -112,36 +122,43 @@ export const actions: Actions = {
     )
       errors.AnoTermino =
         "Informe um ano válido, igual ou posterior ao ingresso.";
-    if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.Email) ||
-      /[,;]/.test(values.Email)
-    )
+    if (values.Email && !normalizedEmail)
       errors.Email = "Informe um único endereço de e-mail válido.";
-    if (values.Telefone.length > 30)
-      errors.Telefone = "O telefone deve ter no máximo 30 caracteres.";
+    if (values.WhatsApp && !normalizedWhatsApp)
+      errors.WhatsApp =
+        "Informe o WhatsApp com código do país, como +55 11 99999-9999.";
     if (values.HomePage && !normalizedHomepage)
       errors.HomePage = "Informe uma página com endereço http ou https válido.";
-    if (values.Endereco.length > 200)
-      errors.Endereco = "O endereço deve ter no máximo 200 caracteres.";
-    if (values.Cidade.length > 100)
-      errors.Cidade = "A cidade deve ter no máximo 100 caracteres.";
-    if (values.Estado.length > 50)
-      errors.Estado = "O estado deve ter no máximo 50 caracteres.";
-    if (values.CEP.length > 20)
-      errors.CEP = "O CEP deve ter no máximo 20 caracteres.";
-    if (values.Pais.length > 80)
-      errors.Pais = "O país deve ter no máximo 80 caracteres.";
-    if (
-      values.ComoEncontrou &&
-      !(FOUND_BY as readonly string[]).includes(values.ComoEncontrou)
-    )
-      errors.ComoEncontrou = "Selecione uma opção válida.";
-    if (values.ComoEncontrouExtra.length > 160)
-      errors.ComoEncontrouExtra =
-        "O detalhe deve ter no máximo 160 caracteres.";
+    for (const field of Object.keys(SOCIAL_NETWORKS) as SocialNetworkField[]) {
+      if (values[field] && !normalizedSocialNetworks[field]) {
+        errors[field] =
+          `Informe uma URL HTTPS válida de ${SOCIAL_NETWORKS[field].label}, ` +
+          `com no máximo 500 caracteres.`;
+      }
+    }
     if (values.DadoPubl.length > 2000)
       errors.DadoPubl =
-        "As informações para o perfil devem ter no máximo 2.000 caracteres.";
+        "O texto para o perfil deve ter no máximo 2.000 caracteres.";
+
+    const hasValidContact = Boolean(
+      normalizedEmail ||
+        normalizedWhatsApp ||
+        normalizedHomepage ||
+        normalizedSocialNetworks.Instagram ||
+        normalizedSocialNetworks.Facebook ||
+        normalizedSocialNetworks.LinkedIn,
+    );
+    const hasContactError = Boolean(
+      errors.Email ||
+        errors.WhatsApp ||
+        errors.HomePage ||
+        errors.Instagram ||
+        errors.Facebook ||
+        errors.LinkedIn,
+    );
+    if (!hasValidContact && !hasContactError)
+      errors.Contato = "Informe pelo menos uma forma de contato.";
+
     if (Object.keys(errors).length)
       return fail(400, { success: false, errors, values });
 
@@ -162,25 +179,23 @@ export const actions: Actions = {
 
     try {
       await run(
-        `INSERT INTO ExAlunos (Nome, Apelidos, Curso, AnoInicio, AnoTermino, Email, HomePage, Endereco, Cidade, Estado, CEP, Pais, Telefone, DadoPubl, ComoEncontrou, ComoEncontrouExtra, DtCadastro)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO ExAlunos (
+          Nome, Apelidos, Curso, AnoInicio, AnoTermino, Email, WhatsApp,
+          Instagram, Facebook, LinkedIn, HomePage, DadoPubl, DtCadastro
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           values.Nome,
           optional(values.Apelidos),
           values.Curso,
           startYear,
           endYear,
-          values.Email,
-          optional(normalizedHomepage ?? ""),
-          optional(values.Endereco),
-          optional(values.Cidade),
-          optional(values.Estado),
-          optional(values.CEP),
-          optional(values.Pais) ?? "Brasil",
-          optional(values.Telefone),
+          optional(normalizedEmail),
+          optional(normalizedWhatsApp),
+          optional(normalizedSocialNetworks.Instagram),
+          optional(normalizedSocialNetworks.Facebook),
+          optional(normalizedSocialNetworks.LinkedIn),
+          optional(normalizedHomepage),
           optional(values.DadoPubl),
-          optional(values.ComoEncontrou),
-          optional(values.ComoEncontrouExtra),
           Date.now(),
         ],
       );
