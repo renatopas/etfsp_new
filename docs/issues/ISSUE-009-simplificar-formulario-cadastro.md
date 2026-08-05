@@ -48,14 +48,14 @@ O título ou a descrição do bloco deve informar “Informe pelo menos um”. N
 campo individual é obrigatório, mas o conjunto deve conter ao menos um contato
 preenchido e válido.
 
-| Campo          | Coluna       | Regra quando preenchido                                 |
-| -------------- | ------------ | ------------------------------------------------------- |
-| E-mail         | `Email`      | um único endereço válido                                |
-| WhatsApp       | `WhatsApp`   | número internacional normalizado; público               |
-| Instagram      | `Instagram`  | URL HTTPS válida no domínio oficial; até 500 caracteres |
-| Facebook       | `Facebook`   | URL HTTPS válida no domínio oficial; até 500 caracteres |
-| LinkedIn       | `LinkedIn`   | URL HTTPS válida no domínio oficial; até 500 caracteres |
-| Página pessoal | `HomePage`   | URL HTTP ou HTTPS válida; manter a normalização vigente |
+| Campo          | Coluna      | Regra quando preenchido                                 |
+| -------------- | ----------- | ------------------------------------------------------- |
+| E-mail         | `Email`     | um único endereço válido                                |
+| WhatsApp       | `WhatsApp`  | número internacional normalizado; público               |
+| Instagram      | `Instagram` | URL HTTPS válida no domínio oficial; até 500 caracteres |
+| Facebook       | `Facebook`  | URL HTTPS válida no domínio oficial; até 500 caracteres |
+| LinkedIn       | `LinkedIn`  | URL HTTPS válida no domínio oficial; até 500 caracteres |
+| Página pessoal | `HomePage`  | URL HTTP ou HTTPS válida; manter a normalização vigente |
 
 ### Contrato do WhatsApp
 
