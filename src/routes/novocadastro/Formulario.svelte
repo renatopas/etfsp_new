@@ -293,6 +293,12 @@
     </div>
   </fieldset>
 
+  <p class="privacy-notice">
+    Ao enviar o cadastro, você declara estar ciente de que os dados informados
+    serão publicados para consulta por qualquer visitante, conforme a
+    <a href="/politica-de-privacidade">Política de Privacidade</a>.
+  </p>
+
   <div class="turnstile">
     <p>Confirme o desafio antes de enviar.</p>
     <Turnstile />
@@ -399,6 +405,7 @@
 
   .section-help,
   .update,
+  .privacy-notice,
   .turnstile p {
     color: var(--color-text-muted);
     font-size: var(--text-sm);

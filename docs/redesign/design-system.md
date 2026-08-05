@@ -134,7 +134,7 @@ O CSS deve ser mobile-first. Não existe largura fixa da página.
 
 ### `SiteFooter`
 
-- Nota de site não oficial e contato.
+- Nota de site não oficial, contato e link para a Política de Privacidade.
 - Texto compacto, contraste normal e área de toque adequada no e-mail.
 
 ### `PageContainer` e `PageHeader`

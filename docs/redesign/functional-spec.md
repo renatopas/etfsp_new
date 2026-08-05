@@ -27,6 +27,7 @@ o trabalho de redesign. Regras de banco e privacidade continuam sujeitas a
 
 - Exibir que o site é não oficial e voltado aos ex-alunos da ETFSP/CEFET-SP/IFSP.
 - Manter um único contato com o responsável pelo site.
+- Exibir link para a Política de Privacidade em `/politica-de-privacidade`.
 - Não repetir a navegação inteira nem incluir redes sociais inexistentes.
 
 ### 1.3 Carregamento, vazio e erro
@@ -290,6 +291,8 @@ descontinuados mesmo quando enviados em POST manipulado.
 
 ### Privacidade no formulário
 
+- Antes do envio, informar que os dados serão publicados para consulta por
+  qualquer visitante e oferecer link para `/politica-de-privacidade`.
 - Abaixo do e-mail, informar se ele será publicado conforme o contrato vigente.
 - Campos internos exibem a frase “Uso interno — não aparece no perfil”.
 - O campo de informações para o perfil exibe “Este texto aparecerá no seu
@@ -324,6 +327,18 @@ que uma conta foi criada.
 - Validação não usa `alert()`.
 - O HTML e os logs da resposta não contêm campos internos além do necessário
   para reexibir o próprio formulário após erro.
+
+## 6.1 Política de Privacidade — `/politica-de-privacidade`
+
+- A página é pública, pode ser lida sem JavaScript e informa a data da última
+  atualização.
+- Explica que os dados fornecidos no cadastro e as fotos têm finalidade pública
+  e podem ser consultados sem login.
+- Descreve as finalidades do diretório, o possível acesso por terceiros e o uso
+  opcional do Umami para estatísticas de acesso.
+- Informa que a exclusão de dados ou fotos pode ser solicitada a qualquer
+  momento por `exclusao@etfsp.com`.
+- O rodapé global e o formulário de cadastro apontam para a página.
 
 ## 7. Galeria — `/lista_foto`
 
