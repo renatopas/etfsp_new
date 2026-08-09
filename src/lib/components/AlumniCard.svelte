@@ -7,7 +7,7 @@
 
   let { alumnus }: Props = $props();
 
-  const detailHref = $derived(`/detalhe_exaluno?id=${alumnus.id}`);
+  const detailHref = $derived(`/exalunos/${alumnus.id}`);
   const period = $derived(
     alumnus.startYear && alumnus.endYear
       ? `${alumnus.startYear}–${alumnus.endYear}`

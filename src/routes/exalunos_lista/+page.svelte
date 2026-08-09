@@ -8,6 +8,7 @@
   import PageHeader from "$lib/components/PageHeader.svelte";
   import Pagination from "$lib/components/Pagination.svelte";
   import SearchForm from "$lib/components/SearchForm.svelte";
+  import { absoluteSiteUrl } from "$lib/site";
 
   let { data }: PageProps = $props();
 
@@ -52,8 +53,10 @@
 </script>
 
 <Meta
+  canonical={absoluteSiteUrl("/exalunos_lista")}
   title="Relação de ex-alunos"
   description="Consulte os perfis públicos dos ex-alunos da ETFSP."
+  robots={data.noindex ? "noindex,follow" : undefined}
 />
 
 <PageHeader

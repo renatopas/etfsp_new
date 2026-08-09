@@ -1,9 +1,11 @@
 <script lang="ts">
   import Meta from "$lib/Meta.svelte";
   import PageHeader from "$lib/components/PageHeader.svelte";
+  import { absoluteSiteUrl } from "$lib/site";
 </script>
 
 <Meta
+  canonical={absoluteSiteUrl("/politica-de-privacidade")}
   title="Política de Privacidade — ETFSP.com"
   description="Saiba quais dados são publicados pelo ETFSP.com, como são utilizados e como solicitar sua exclusão."
 />

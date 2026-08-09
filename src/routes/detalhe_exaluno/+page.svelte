@@ -1,10 +1,46 @@
 <script lang="ts">
-  import type { PageProps } from "./$types";
+  import type { PublicAlumniProfile } from "$lib/domain";
   import Meta from "$lib/Meta.svelte";
   import PageHeader from "$lib/components/PageHeader.svelte";
   import SocialIcon from "$lib/components/SocialIcon.svelte";
+  import { absoluteSiteUrl } from "$lib/site";
 
-  let { data }: PageProps = $props();
+  interface Props {
+    data: PublicAlumniProfile;
+  }
+
+  let { data }: Props = $props();
+
+  const canonical = $derived(absoluteSiteUrl(`/exalunos/${data.id}`));
+  const profileImage = $derived(
+    data.thumbnail
+      ? absoluteSiteUrl(`/Fotos/${encodeURIComponent(data.thumbnail)}`)
+      : undefined,
+  );
+  const structuredData = $derived({
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    url: canonical,
+    mainEntity: {
+      "@type": "Person",
+      name: data.name,
+      url: canonical,
+      ...(profileImage ? { image: profileImage } : {}),
+    },
+  });
+  const structuredDataMarkup = $derived(
+    JSON.stringify(structuredData).replace(
+      /[<>&\u2028\u2029]/g,
+      (character) =>
+        ({
+          "<": "\\u003c",
+          ">": "\\u003e",
+          "&": "\\u0026",
+          "\u2028": "\\u2028",
+          "\u2029": "\\u2029",
+        })[character] as string,
+    ),
+  );
 
   const period = $derived(
     data.startYear && data.endYear
@@ -37,9 +73,18 @@
 </script>
 
 <Meta
+  {canonical}
   title={`${data.name} — Ex-alunos ETFSP`}
   description={`Perfil público de ${data.name}, ex-aluno da ETFSP.`}
+  image={profileImage}
+  type="profile"
 />
+
+<svelte:head>
+  <svelte:element this={"script"} type="application/ld+json">
+    {structuredDataMarkup}
+  </svelte:element>
+</svelte:head>
 
 <a class="back-link" href="/exalunos_lista">← Voltar à relação de ex-alunos</a>
 

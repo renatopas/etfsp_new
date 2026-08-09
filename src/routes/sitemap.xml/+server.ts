@@ -1,21 +1,19 @@
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/server/index";
+import { absoluteSiteUrl } from "$lib/site";
 
-const SITE_URL = "https://etfsp.com";
+const MAX_URLS = 50_000;
 
 const STATIC_PATHS = [
   "/",
   "/exalunos",
   "/exalunos_lista",
   "/lista_foto",
-  "/novocadastro",
-  "/cadfoto",
   "/politica-de-privacidade",
 ] as const;
 
 interface AlumniSitemapRow {
   ID: number;
-  DtCadastro: number | null;
 }
 
 function all<T>(sql: string): Promise<T[]> {
@@ -45,43 +43,30 @@ function escapeXml(value: string): string {
   );
 }
 
-function validLastModified(timestamp: number | null): string | undefined {
-  if (
-    timestamp === null ||
-    !Number.isSafeInteger(timestamp) ||
-    timestamp <= 0
-  ) {
-    return undefined;
-  }
-
-  const date = new Date(timestamp);
-  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
-}
-
-function urlEntry(location: string, lastModified?: string): string {
-  return [
-    "  <url>",
-    `    <loc>${escapeXml(location)}</loc>`,
-    ...(lastModified ? [`    <lastmod>${lastModified}</lastmod>`] : []),
-    "  </url>",
-  ].join("\n");
+function urlEntry(location: string): string {
+  return ["  <url>", `    <loc>${escapeXml(location)}</loc>`, "  </url>"].join(
+    "\n",
+  );
 }
 
 export const GET: RequestHandler = async () => {
   const alumni = await all<AlumniSitemapRow>(
-    `SELECT ID, DtCadastro
+    `SELECT ID
     FROM ExAlunos
     WHERE Excluido = 0
-    ORDER BY ID`,
+    ORDER BY ID
+    LIMIT ${MAX_URLS - STATIC_PATHS.length + 1}`,
   );
 
+  if (alumni.length + STATIC_PATHS.length > MAX_URLS) {
+    throw new Error("Sitemap URL limit exceeded");
+  }
+
   const entries = [
-    ...STATIC_PATHS.map((path) => urlEntry(new URL(path, SITE_URL).href)),
-    ...alumni.map((person) => {
-      const profileUrl = new URL("/detalhe_exaluno", SITE_URL);
-      profileUrl.searchParams.set("id", String(person.ID));
-      return urlEntry(profileUrl.href, validLastModified(person.DtCadastro));
-    }),
+    ...STATIC_PATHS.map((path) => urlEntry(absoluteSiteUrl(path))),
+    ...alumni.map((person) =>
+      urlEntry(absoluteSiteUrl(`/exalunos/${person.ID}`)),
+    ),
   ];
 
   const body = [

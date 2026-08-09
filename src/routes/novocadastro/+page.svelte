@@ -3,12 +3,15 @@
   import PageHeader from "$lib/components/PageHeader.svelte";
   import Formulario from "./Formulario.svelte";
   import Sucesso from "./Sucesso.svelte";
+  import { absoluteSiteUrl } from "$lib/site";
   let { form } = $props();
 </script>
 
 <Meta
+  canonical={absoluteSiteUrl("/novocadastro")}
   title="Cadastre-se"
   description="Cadastre-se na relação de ex-alunos da ETFSP."
+  robots="noindex,follow"
 />
 {#if form?.success && form.data?.course && form.data?.startYear}
   <Sucesso

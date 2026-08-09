@@ -5,6 +5,7 @@
   import PageHeader from "$lib/components/PageHeader.svelte";
   import Pagination from "$lib/components/Pagination.svelte";
   import EmptyState from "$lib/components/EmptyState.svelte";
+  import { absoluteSiteUrl } from "$lib/site";
   let { data }: PageProps = $props();
   let dialog: HTMLDialogElement;
   let selected = $state<(typeof data.photos)[number] | undefined>();
@@ -40,8 +41,10 @@
 </script>
 
 <Meta
+  canonical={absoluteSiteUrl("/lista_foto")}
   title="Fotos"
   description="Consulte as fotos enviadas pelos ex-alunos da ETFSP."
+  robots={data.noindex ? "noindex,follow" : undefined}
 /><PageHeader
   title="Fotos"
   description="Busque fotos por título, curso e período."

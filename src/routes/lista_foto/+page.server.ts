@@ -112,6 +112,7 @@ export const load: PageServerLoad = async ({ url }) => {
   );
   return {
     photos: rows.map(map),
+    noindex: url.search.length > 0,
     filters: {
       title,
       course,

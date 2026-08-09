@@ -1,6 +1,6 @@
 # ISSUE-011 — Melhorar URLs, rastreamento e indexação
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Áreas:** SEO técnico, perfis de ex-alunos, listagens e metadados
 
@@ -336,3 +336,29 @@ devem ser emitidos na URL legada, que apenas redireciona.
 
 Não se prevê alteração em `scripts/initial.sql`, `scripts/make_db.py`, na view
 `qryExAlunos` ou nos dados existentes.
+
+## Decisões tomadas
+
+- Confirmada `https://etfsp.com` sem `www` como origem canônica da aplicação.
+- Toda URL de relação ou galeria com query, inclusive paginação, recebe
+  `noindex,follow` e aponta canonical para a página base.
+- Perfis públicos não excluídos permanecem indexáveis nominalmente.
+- JSON-LD contém somente nome, URL canônica e foto pessoal pública opcional;
+  curso, período, contatos, redes sociais e textos livres foram omitidos.
+- O banco de desenvolvimento possui 4.575 perfis públicos, portanto um único
+  sitemap permanece suficiente. O endpoint detecta o limite de 50.000 URLs em
+  vez de truncar silenciosamente.
+
+## Resultado da implementação
+
+- Criada `/exalunos/[id]` sobre um carregador server-only compartilhado; a rota
+  legada valida o ID e responde `308` diretamente para a URL canônica.
+- Atualizados cartões, navegação e sitemap para usar a rota nova.
+- Evoluído `Meta.svelte` com canonical, Open Graph, Twitter, imagem absoluta,
+  tipo de página e `noindex,follow` opcional.
+- Aplicada a política de não indexação às variantes por query, paginações,
+  cadastro e upload, sem bloqueá-las no `robots.txt`.
+- Criado `/robots.txt` e ajustado `/sitemap.xml` para omitir páginas
+  operacionais, URLs legadas, registros excluídos e `lastmod` impreciso.
+- Adicionado JSON-LD mínimo e serializado com segurança aos perfis públicos.
+- Não houve alteração de schema, view ou dados persistidos.

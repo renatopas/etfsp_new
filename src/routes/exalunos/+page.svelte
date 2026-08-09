@@ -3,6 +3,7 @@
   import PageHeader from "$lib/components/PageHeader.svelte";
   import SearchForm from "$lib/components/SearchForm.svelte";
   import type { AlumniOrder } from "$lib/domain";
+  import { absoluteSiteUrl } from "$lib/site";
 
   const orderOptions: Array<{ value: AlumniOrder; label: string }> = [
     { value: "nome", label: "Nome" },
@@ -14,6 +15,7 @@
 </script>
 
 <Meta
+  canonical={absoluteSiteUrl("/exalunos")}
   title="Ex-alunos da Escola Técnica Federal de São Paulo"
   description="Busque ex-alunos pelo nome ou consulte a relação de ex-alunos da ETFSP, CEFET-SP e IFSP."
 />

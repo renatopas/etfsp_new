@@ -202,6 +202,7 @@ export const load: PageServerLoad = async ({ url }) => {
   return {
     alunos: rows.map(mapAlumnus),
     filters: { busca, curso, ordem, recentes },
+    noindex: url.search.length > 0,
     pagination: { page, totalPages, total },
   };
 };

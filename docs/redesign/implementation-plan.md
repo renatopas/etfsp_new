@@ -570,6 +570,19 @@ obtê-lo pela rota.
 - executar `pnpm run build`;
 - registrar qualquer validação manual e limitação no handoff.
 
+### RED-806 — URLs canônicas e indexação
+
+**Estado:** concluída pela `ISSUE-011`.
+
+- adotada a rota canônica `/exalunos/{id}`, com redirecionamento permanente da
+  URL legada;
+- centralizados canonical, Open Graph, Twitter e diretiva de robôs;
+- marcadas como `noindex,follow` as variantes por query, paginações e páginas
+  operacionais;
+- adicionados `robots.txt`, sitemap somente com URLs indexáveis e JSON-LD
+  mínimo para os perfis;
+- mantidos parâmetros GET para busca, filtro, ordenação e paginação.
+
 ## Definição de pronto por fase
 
 Uma fase está concluída quando:

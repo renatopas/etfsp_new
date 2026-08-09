@@ -2,9 +2,11 @@
   import Meta from "$lib/Meta.svelte";
   import PageHeader from "$lib/components/PageHeader.svelte";
   import SearchForm from "$lib/components/SearchForm.svelte";
+  import { absoluteSiteUrl } from "$lib/site";
 </script>
 
 <Meta
+  canonical={absoluteSiteUrl("/")}
   title="Ex-alunos da Escola Técnica Federal de São Paulo"
   description="Encontre colegas e participe do cadastro de ex-alunos da ETFSP, CEFET-SP e IFSP."
 />

@@ -49,6 +49,19 @@ o trabalho de redesign. Regras de banco e privacidade continuam sujeitas a
 - Recursos básicos continuam funcionais sem JavaScript. Autocomplete,
   pré-visualização e atualização sem recarregar são melhorias progressivas.
 
+### 1.5 Rastreamento e indexação
+
+- A origem canônica do site é `https://etfsp.com`.
+- Toda página HTML possui uma única URL canônica absoluta.
+- Busca, filtros, ordenação não padrão, modo de cadastros recentes e paginação
+  permanecem rastreáveis, mas recebem `noindex,follow`.
+- Cadastro e envio de foto recebem `noindex,follow`; páginas canônicas de
+  conteúdo público permanecem indexáveis.
+- `/robots.txt` permite o rastreamento e anuncia
+  `https://etfsp.com/sitemap.xml`.
+- O sitemap lista somente URLs canônicas e registros não excluídos, sem usar
+  data de cadastro como data de modificação.
+
 ## 2. Início — `/`
 
 ### Objetivo
@@ -198,7 +211,7 @@ sugerir que a ausência autoriza criar cadastro em nome de outra pessoa.
 - A busca literal por `100%` ou `_` não amplia indevidamente a consulta SQL.
 - Miniaturas mantêm proporção e reservam espaço para evitar saltos de layout.
 
-## 5. Perfil público — `/detalhe_exaluno?id=`
+## 5. Perfil público — `/exalunos/{id}`
 
 ### Objetivo
 
@@ -228,11 +241,16 @@ campo histórico distinto e só aparece quando sua flag de publicação permite.
 
 ### Identificador e erros
 
-- `id` deve ser um inteiro positivo completo; valores como `12abc`, negativos,
-  zero ou ausentes são inválidos.
+- `{id}` deve ser um inteiro positivo completo; valores como `12abc`,
+  negativos, zero ou ausentes são inválidos.
 - ID inválido retorna 400; registro inexistente ou excluído retorna 404.
 - A consulta seleciona explicitamente somente as colunas públicas necessárias.
 - O perfil nunca recebe um registro completo para ocultá-lo apenas no Svelte.
+- A URL legada `/detalhe_exaluno?id={id}` responde com `308` diretamente para
+  `/exalunos/{id}`. Parâmetros extras não são propagados e a compatibilidade é
+  mantida por tempo indeterminado.
+- O perfil declara a nova URL como canonical e emite JSON-LD `ProfilePage` com
+  apenas nome, URL e foto pessoal pública opcional, sem meios de contato.
 
 ### Critérios de aceite
 
