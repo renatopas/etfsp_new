@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageProps } from "./$types";
-  import { COURSES } from "$lib/domain";
+  import { COURSES, courseLabel } from "$lib/domain";
   import Meta from "$lib/Meta.svelte";
   import PageHeader from "$lib/components/PageHeader.svelte";
   import Pagination from "$lib/components/Pagination.svelte";
@@ -65,7 +65,7 @@
     name="curso"
     value={data.filters.course ?? ""}
     ><option value="">Todos os cursos</option>{#each COURSES as course}<option
-        value={course}>{course}</option
+        value={course}>{courseLabel(course)}</option
       >{/each}</select
   >
   <fieldset>

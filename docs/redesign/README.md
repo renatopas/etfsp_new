@@ -55,6 +55,7 @@ tablet e computador.
 | ----------- | ------------------------------- | ------------------------------------------------- |
 | Início      | `/`                             | Apresentar o site e iniciar rapidamente uma busca |
 | Ex-alunos   | `/exalunos` e `/exalunos_lista` | Buscar, ordenar e consultar ex-alunos             |
+| Por curso   | `/exalunos/curso/{slug}`        | Consultar a relação temática de cada curso        |
 | Perfil      | `/exalunos/{id}`                | Exibir somente os dados públicos de uma pessoa    |
 | Fotos       | `/lista_foto`                   | Consultar e filtrar a galeria                     |
 | Enviar foto | `/cadfoto`                      | Identificar o remetente e enviar uma imagem       |
@@ -63,6 +64,10 @@ tablet e computador.
 A URL legada `/detalhe_exaluno?id={id}` é mantida por redirecionamento
 permanente para `/exalunos/{id}`, preservando favoritos e links externos sem
 criar uma segunda versão indexável do perfil.
+
+O filtro legado `/exalunos_lista?curso={SIGLA}` também é preservado por
+redirecionamento permanente para a página descritiva correspondente em
+`/exalunos/curso/{slug}`.
 
 ## Ordem de leitura
 

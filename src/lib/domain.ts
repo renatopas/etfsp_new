@@ -1,14 +1,56 @@
-export const COURSES = [
-  "PRD",
-  "TEL",
-  "ELO",
-  "ELE",
-  "EDI",
-  "MEC",
-  "INF",
-] as const;
+export const COURSE_CATALOG = {
+  MEC: {
+    name: "Técnico em Mecânica",
+    shortName: "Mecânica",
+    slug: "mecanica",
+  },
+  ELE: {
+    name: "Técnico em Eletrotécnica",
+    shortName: "Eletrotécnica",
+    slug: "eletrotecnica",
+  },
+  EDI: {
+    name: "Técnico em Edificações",
+    shortName: "Edificações",
+    slug: "edificacoes",
+  },
+  ELO: {
+    name: "Técnico em Eletrônica",
+    shortName: "Eletrônica",
+    slug: "eletronica",
+  },
+  PRD: {
+    name: "Técnico em Processamento de Dados",
+    shortName: "Processamento de Dados",
+    slug: "processamento-de-dados",
+  },
+  TEL: {
+    name: "Técnico em Telecomunicações",
+    shortName: "Telecomunicações",
+    slug: "telecomunicacoes",
+  },
+  INF: {
+    name: "Técnico em Informática Industrial",
+    shortName: "Informática Industrial",
+    slug: "informatica-industrial",
+  },
+} as const;
 
-export type Course = (typeof COURSES)[number];
+export type Course = keyof typeof COURSE_CATALOG;
+
+export const COURSES = Object.keys(COURSE_CATALOG) as Course[];
+
+export function isCourse(value: string | null): value is Course {
+  return value !== null && Object.hasOwn(COURSE_CATALOG, value);
+}
+
+export function courseFromSlug(slug: string): Course | undefined {
+  return COURSES.find((course) => COURSE_CATALOG[course].slug === slug);
+}
+
+export function courseLabel(course: Course): string {
+  return `${course} — ${COURSE_CATALOG[course].name}`;
+}
 
 export const ALUMNI_ORDER_TO_LEGACY = {
   nome: "ALFA",

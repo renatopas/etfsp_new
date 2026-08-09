@@ -583,6 +583,20 @@ obtê-lo pela rota.
   mínimo para os perfis;
 - mantidos parâmetros GET para busca, filtro, ordenação e paginação.
 
+### RED-807 — Páginas indexáveis por curso
+
+**Estado:** concluída pela `ISSUE-012`.
+
+- centralizadas siglas, nomes oficiais, nomes curtos e slugs dos sete cursos em
+  um catálogo tipado no código, sem mudança de banco;
+- criadas páginas canônicas em `/exalunos/curso/{slug}`, reutilizando consulta,
+  cartões, filtros e paginação da relação;
+- mantida a compatibilidade de `?curso=` e aliases por sigla com
+  redirecionamento permanente;
+- adicionados links contextuais e as sete páginas temáticas ao sitemap;
+- mantidas como `noindex,follow` as variantes de busca, ordenação, recentes e
+  paginação dentro de cada curso.
+
 ## Definição de pronto por fase
 
 Uma fase está concluída quando:

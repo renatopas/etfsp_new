@@ -1,8 +1,11 @@
 import type { PageServerLoad } from "./$types";
+import { redirect } from "@sveltejs/kit";
 import {
   ALUMNI_ORDER_TO_LEGACY,
+  COURSE_CATALOG,
   COURSES,
   LEGACY_ALUMNI_ORDER_TO_ORDER,
+  isCourse,
   type AlumniListItem,
   type AlumniOrder,
   type Course,
@@ -98,10 +101,6 @@ function normalizeSearch(value: string | null): string {
   return value?.trim().slice(0, 120) ?? "";
 }
 
-function isCourse(value: string): value is Course {
-  return (COURSES as readonly string[]).includes(value);
-}
-
 function normalizeCourse(url: URL): Course | undefined {
   const courses = url.searchParams.getAll("curso");
   if (courses.length !== 1) {
@@ -137,9 +136,9 @@ function mapAlumnus(row: AlumniRow): AlumniListItem {
   };
 }
 
-export const load: PageServerLoad = async ({ url }) => {
+export async function _loadAlumniList(url: URL, forcedCourse?: Course) {
   const busca = normalizeSearch(url.searchParams.get("busca"));
-  const curso = normalizeCourse(url);
+  const curso = forcedCourse ?? normalizeCourse(url);
   const ordem = normalizeOrder(url);
   const recentes =
     url.searchParams.get("recentes") === "1" ||
@@ -201,8 +200,43 @@ export const load: PageServerLoad = async ({ url }) => {
 
   return {
     alunos: rows.map(mapAlumnus),
+    courseLanding: forcedCourse
+      ? {
+          code: forcedCourse,
+          ...COURSE_CATALOG[forcedCourse],
+        }
+      : undefined,
     filters: { busca, curso, ordem, recentes },
     noindex: url.search.length > 0,
     pagination: { page, totalPages, total },
   };
+}
+
+export function _courseRedirectUrl(url: URL, course: Course): string {
+  const destination = new URL(
+    `/exalunos/curso/${COURSE_CATALOG[course].slug}`,
+    url,
+  );
+  const busca = normalizeSearch(url.searchParams.get("busca"));
+  const ordem = normalizeOrder(url);
+  const recentes =
+    url.searchParams.get("recentes") === "1" ||
+    url.searchParams.get("Restricao") === "LAST";
+  const pagina = normalizePage(url.searchParams.get("pagina"));
+
+  if (busca) destination.searchParams.set("busca", busca);
+  if (ordem !== "nome") destination.searchParams.set("ordem", ordem);
+  if (recentes) destination.searchParams.set("recentes", "1");
+  if (pagina > 1) destination.searchParams.set("pagina", String(pagina));
+
+  return `${destination.pathname}${destination.search}`;
+}
+
+export const load: PageServerLoad = async ({ url }) => {
+  const course = normalizeCourse(url);
+  if (course) {
+    redirect(308, _courseRedirectUrl(url, course));
+  }
+
+  return _loadAlumniList(url);
 };

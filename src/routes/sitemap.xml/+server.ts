@@ -1,4 +1,5 @@
 import type { RequestHandler } from "./$types";
+import { COURSE_CATALOG, COURSES } from "$lib/domain";
 import { db } from "$lib/server/index";
 import { absoluteSiteUrl } from "$lib/site";
 
@@ -11,6 +12,11 @@ const STATIC_PATHS = [
   "/lista_foto",
   "/politica-de-privacidade",
 ] as const;
+
+const COURSE_PATHS = COURSES.map(
+  (course) => `/exalunos/curso/${COURSE_CATALOG[course].slug}`,
+);
+const FIXED_URL_COUNT = STATIC_PATHS.length + COURSE_PATHS.length;
 
 interface AlumniSitemapRow {
   ID: number;
@@ -55,15 +61,16 @@ export const GET: RequestHandler = async () => {
     FROM ExAlunos
     WHERE Excluido = 0
     ORDER BY ID
-    LIMIT ${MAX_URLS - STATIC_PATHS.length + 1}`,
+    LIMIT ${MAX_URLS - FIXED_URL_COUNT + 1}`,
   );
 
-  if (alumni.length + STATIC_PATHS.length > MAX_URLS) {
+  if (alumni.length + FIXED_URL_COUNT > MAX_URLS) {
     throw new Error("Sitemap URL limit exceeded");
   }
 
   const entries = [
     ...STATIC_PATHS.map((path) => urlEntry(absoluteSiteUrl(path))),
+    ...COURSE_PATHS.map((path) => urlEntry(absoluteSiteUrl(path))),
     ...alumni.map((person) =>
       urlEntry(absoluteSiteUrl(`/exalunos/${person.ID}`)),
     ),

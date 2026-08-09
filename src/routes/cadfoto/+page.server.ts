@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
-import { COURSES } from "$lib/domain";
+import { isCourse } from "$lib/domain";
 import { db, FOTOS_DIR } from "$lib/server/index";
 const MAX_SIZE = 5 * 1024 * 1024,
   MAX_PIXELS = 40_000_000,
@@ -83,7 +83,7 @@ export const actions: Actions = {
       !title ||
       title.length < 4 ||
       title.length > 250 ||
-      !(COURSES as readonly string[]).includes(course) ||
+      !isCourse(course) ||
       className.length < 1 ||
       className.length > 15
     )

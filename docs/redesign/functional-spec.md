@@ -169,6 +169,17 @@ nomes em minúsculas da tabela acima.
 - Busca, curso, ordenação e cadastros recentes podem ser combinados.
 - A filtragem é feita no servidor com parâmetro SQL; ela não acrescenta colunas
   retornadas ao navegador.
+- As sete categorias canônicas possuem páginas indexáveis em
+  `/exalunos/curso/{slug}`, com nome completo, sigla, contagem e os mesmos
+  cartões da relação.
+- O catálogo compartilhado relaciona sigla histórica, nome oficial, nome curto
+  e slug; seletores exibem “SIGLA — nome oficial” e continuam enviando a sigla.
+- `/exalunos_lista?curso={SIGLA}` redireciona permanentemente para a página
+  descritiva do curso, preservando apenas os demais parâmetros reconhecidos.
+- A página base do curso é indexável. Busca, ordenação, recentes e paginação no
+  curso recebem `noindex,follow` e canonical para a página base.
+- Slug desconhecido responde `404`; siglas em maiúsculas ou minúsculas no
+  caminho funcionam apenas como aliases com redirecionamento permanente.
 
 ### Resultados
 

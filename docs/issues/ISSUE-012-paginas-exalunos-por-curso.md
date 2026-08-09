@@ -1,6 +1,6 @@
 # ISSUE-012 — Criar páginas indexáveis de ex-alunos por curso
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Áreas:** Consulta de ex-alunos, URLs, SEO técnico e catálogo de cursos
 
@@ -426,3 +426,31 @@ migração próprias e não deve alterar os slugs públicos existentes.
 
 Não se prevê alteração em `scripts/initial.sql`, `scripts/make_db.py`,
 `src/lib/server/migrations.ts`, na view `qryExAlunos` ou nos dados existentes.
+
+## Decisões tomadas
+
+- Confirmados os nomes curtos propostos para títulos e `h1`.
+- Aliases por sigla em maiúsculas ou minúsculas respondem `308` para o slug
+  descritivo e preservam somente parâmetros reconhecidos e normalizados.
+- Seletores passam a apresentar “SIGLA — nome oficial”, mantendo a sigla como
+  valor submetido e persistido.
+- As sete categorias permanecem no sitemap; não há categoria vazia no banco de
+  desenvolvimento no momento da implementação.
+
+## Resultado da implementação
+
+- Criado catálogo tipado com sigla, nome oficial, nome curto e slug, do qual
+  derivam `Course`, `COURSES`, validação, rótulos e resolução de slug.
+- Criada `/exalunos/curso/[curso]`, reutilizando a consulta e o componente da
+  relação geral sem duplicar SQL ou ampliar o modelo público.
+- A página de cada curso possui título, descrição, `h1`, canonical e contexto
+  próprios; variantes com query permanecem `noindex,follow`.
+- URLs legadas com um único curso válido e aliases por sigla redirecionam em um
+  único `308`, removendo parâmetros padrão e desconhecidos.
+- Adicionados links HTML rastreáveis por curso em `/exalunos` e na relação
+  geral, sem ampliar o menu global.
+- Os sete slugs canônicos foram incluídos no sitemap; aliases e queries foram
+  omitidos.
+- Formulários e filtros exibem os nomes oficiais, mas continuam enviando e
+  persistindo somente as siglas históricas.
+- Não houve alteração de schema, view ou dados persistidos.

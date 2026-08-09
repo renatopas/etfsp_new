@@ -1,7 +1,7 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import Button from "$lib/components/Button.svelte";
-  import { COURSES } from "$lib/domain";
+  import { COURSES, courseLabel } from "$lib/domain";
   import type { SearchResult } from "./search_id/+server";
   type FormValues = Partial<
     Record<
@@ -143,7 +143,7 @@
       required
       value={values.CursoFoto ?? ""}
       ><option value="">Selecione</option>{#each COURSES as course}<option
-          value={course}>{course}</option
+          value={course}>{courseLabel(course)}</option
         >{/each}</select
     ><label for="TurmaFoto">Turma <span>obrigatório</span></label><input
       id="TurmaFoto"
