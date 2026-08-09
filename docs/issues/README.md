@@ -27,3 +27,4 @@ do site.
 - [ISSUE-008 — Redes sociais no cadastro e no perfil de ex-alunos](./ISSUE-008-redes-sociais-exalunos.md)
 - [ISSUE-009 — Simplificar e melhorar o formulário de cadastro](./ISSUE-009-simplificar-formulario-cadastro.md)
 - [ISSUE-010 — Criar página de Política de Privacidade](./ISSUE-010-politica-de-privacidade.md)
+- [ISSUE-011 — Melhorar URLs, rastreamento e indexação](./ISSUE-011-urls-e-indexacao.md)
