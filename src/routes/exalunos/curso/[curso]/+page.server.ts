@@ -1,10 +1,7 @@
-import { error, redirect } from "@sveltejs/kit";
+import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { courseFromSlug, isCourse } from "$lib/domain";
-import {
-  _courseRedirectUrl,
-  _loadAlumniList,
-} from "../../../exalunos_lista/+page.server";
+import { _loadAlumniList } from "../../../exalunos_lista/+page.server";
 
 export const load: PageServerLoad = async ({ params, url }) => {
   const course = courseFromSlug(params.curso);
@@ -12,7 +9,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
   if (!course) {
     const alias = params.curso.toUpperCase();
     if (isCourse(alias)) {
-      redirect(308, _courseRedirectUrl(url, alias));
+      return _loadAlumniList(url, alias);
     }
 
     error(404, "Curso não encontrado.");

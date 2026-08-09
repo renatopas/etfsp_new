@@ -32,7 +32,7 @@
       ? `/exalunos/curso/${data.courseLanding.slug}`
       : "/exalunos_lista",
   );
-  const canonical = $derived(absoluteSiteUrl(basePath));
+  const canonical = $derived(absoluteSiteUrl(data.canonicalPath));
   const pageTitle = $derived(
     data.courseLanding
       ? `Ex-alunos de ${data.courseLanding.shortName}`
@@ -43,17 +43,22 @@
       ? `Encontre ex-alunos do curso ${data.courseLanding.name} da ETFSP, CEFET-SP e IFSP.`
       : "Consulte os perfis públicos dos ex-alunos da ETFSP.",
   );
+  const metaTitle = $derived(
+    data.pagination.page > 1
+      ? `${pageTitle} — Página ${data.pagination.page}`
+      : pageTitle,
+  );
 
   const preservedSearchFilters = $derived({
     curso: data.courseLanding ? undefined : data.filters.curso,
-    ordem: data.filters.ordem,
+    ordem: data.filters.ordem === "nome" ? undefined : data.filters.ordem,
     recentes: data.filters.recentes ? "1" : undefined,
   });
 
   const paginationParameters = $derived({
     busca: data.filters.busca || undefined,
     curso: data.courseLanding ? undefined : data.filters.curso,
-    ordem: data.filters.ordem,
+    ordem: data.filters.ordem === "nome" ? undefined : data.filters.ordem,
     recentes: data.filters.recentes ? "1" : undefined,
   });
 
@@ -62,7 +67,7 @@
       ...(!data.courseLanding && data.filters.curso
         ? { curso: data.filters.curso }
         : {}),
-      ordem: data.filters.ordem,
+      ...(data.filters.ordem !== "nome" ? { ordem: data.filters.ordem } : {}),
       ...(data.filters.recentes ? { recentes: "1" } : {}),
     }).toString()}`.replace(/\?$/, ""),
   );
@@ -70,7 +75,7 @@
   const allCoursesHref = $derived(
     `/exalunos_lista?${new URLSearchParams({
       ...(data.filters.busca ? { busca: data.filters.busca } : {}),
-      ordem: data.filters.ordem,
+      ...(data.filters.ordem !== "nome" ? { ordem: data.filters.ordem } : {}),
       ...(data.filters.recentes ? { recentes: "1" } : {}),
     }).toString()}`.replace(/\?$/, ""),
   );
@@ -78,7 +83,7 @@
 
 <Meta
   {canonical}
-  title={`${pageTitle} — ETFSP`}
+  title={`${metaTitle} — ETFSP`}
   description={pageDescription}
   robots={data.noindex ? "noindex,follow" : undefined}
 />

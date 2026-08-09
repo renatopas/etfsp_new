@@ -29,3 +29,4 @@ do site.
 - [ISSUE-010 — Criar página de Política de Privacidade](./ISSUE-010-politica-de-privacidade.md)
 - [ISSUE-011 — Melhorar URLs, rastreamento e indexação](./ISSUE-011-urls-e-indexacao.md)
 - [ISSUE-012 — Criar páginas indexáveis de ex-alunos por curso](./ISSUE-012-paginas-exalunos-por-curso.md)
+- [ISSUE-013 — Corrigir canonicalização e URLs da paginação de ex-alunos](./ISSUE-013-canonicalizacao-paginacao-exalunos.md)

@@ -340,8 +340,9 @@ Não se prevê alteração em `scripts/initial.sql`, `scripts/make_db.py`, na vi
 ## Decisões tomadas
 
 - Confirmada `https://etfsp.com` sem `www` como origem canônica da aplicação.
-- Toda URL de relação ou galeria com query, inclusive paginação, recebe
-  `noindex,follow` e aponta canonical para a página base.
+- Toda URL de relação ou galeria com busca, filtro ou ordenação alternativa
+  recebe `noindex,follow`. A política de paginação da relação foi posteriormente
+  corrigida pela ISSUE-013: paginação pura é indexável e autocanônica.
 - Perfis públicos não excluídos permanecem indexáveis nominalmente.
 - JSON-LD contém somente nome, URL canônica e foto pessoal pública opcional;
   curso, período, contatos, redes sociais e textos livres foram omitidos.

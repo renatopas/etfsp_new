@@ -230,8 +230,9 @@ usando GET e funcionam sem JavaScript:
 /exalunos/curso/mecanica?pagina=2
 ```
 
-- Qualquer query na página do curso recebe `noindex,follow`.
-- Todas essas variantes declaram canonical para a página base do curso.
+- Busca, ordenação alternativa e recentes recebem `noindex,follow` e canonical
+  para a página base. A paginação pura foi posteriormente tornada indexável e
+  autocanônica pela ISSUE-013.
 - Busca, ordenação, recentes e paginação preservam o curso no caminho.
 - O formulário não deve voltar desnecessariamente para
   `/exalunos_lista?curso=...` durante a navegação normal.
@@ -349,8 +350,9 @@ migração próprias e não deve alterar os slugs públicos existentes.
 - O redirecionamento preserva somente busca, ordenação, recentes e paginação
   reconhecidos e remove valores padrão desnecessários.
 - Links gerados pelo site não dependem do redirecionamento no fluxo normal.
-- A página base de cada curso é indexável; qualquer variante com query recebe
-  `noindex,follow` e canonical para a página base.
+- A página base de cada curso é indexável. Busca, recentes e ordenação
+  alternativa recebem `noindex,follow`; paginação pura é indexável e possui
+  canonical própria, conforme correção posterior da ISSUE-013.
 - O sitemap contém exatamente uma URL canônica para cada curso que deve ser
   indexado e não contém aliases ou variantes por query.
 - Relação geral, curso, busca, ordenação e paginação continuam funcionando sem
@@ -444,7 +446,8 @@ Não se prevê alteração em `scripts/initial.sql`, `scripts/make_db.py`,
 - Criada `/exalunos/curso/[curso]`, reutilizando a consulta e o componente da
   relação geral sem duplicar SQL ou ampliar o modelo público.
 - A página de cada curso possui título, descrição, `h1`, canonical e contexto
-  próprios; variantes com query permanecem `noindex,follow`.
+  próprios. A política inicial de `noindex` para toda query foi corrigida pela
+  ISSUE-013 para permitir paginação pura indexável e autocanônica.
 - URLs legadas com um único curso válido e aliases por sigla redirecionam em um
   único `308`, removendo parâmetros padrão e desconhecidos.
 - Adicionados links HTML rastreáveis por curso em `/exalunos` e na relação

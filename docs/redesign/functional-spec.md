@@ -53,8 +53,10 @@ o trabalho de redesign. Regras de banco e privacidade continuam sujeitas a
 
 - A origem canônica do site é `https://etfsp.com`.
 - Toda página HTML possui uma única URL canônica absoluta.
-- Busca, filtros, ordenação não padrão, modo de cadastros recentes e paginação
-  permanecem rastreáveis, mas recebem `noindex,follow`.
+- Busca, filtros, ordenação não padrão e modo de cadastros recentes permanecem
+  rastreáveis, mas recebem `noindex,follow`.
+- Paginação pura é indexável e cada página possui canonical própria; paginação
+  combinada com uma variante não indexável mantém `noindex,follow`.
 - Cadastro e envio de foto recebem `noindex,follow`; páginas canônicas de
   conteúdo público permanecem indexáveis.
 - `/robots.txt` permite o rastreamento e anuncia
@@ -176,8 +178,9 @@ nomes em minúsculas da tabela acima.
   e slug; seletores exibem “SIGLA — nome oficial” e continuam enviando a sigla.
 - `/exalunos_lista?curso={SIGLA}` redireciona permanentemente para a página
   descritiva do curso, preservando apenas os demais parâmetros reconhecidos.
-- A página base do curso é indexável. Busca, ordenação, recentes e paginação no
-  curso recebem `noindex,follow` e canonical para a página base.
+- A página base e sua paginação pura são indexáveis e autocanônicas. Busca,
+  ordenação alternativa e recentes, inclusive paginados, recebem
+  `noindex,follow` e canonical para a página base.
 - Slug desconhecido responde `404`; siglas em maiúsculas ou minúsculas no
   caminho funcionam apenas como aliases com redirecionamento permanente.
 
@@ -204,8 +207,11 @@ nomes em minúsculas da tabela acima.
 - Exibir “Anterior” e “Próxima”, mais “Página X de Y”.
 - Manter `busca`, `curso`, `ordem` e `recentes` ao trocar de página.
 - Ocultar “Anterior” na primeira página e “Próxima” na última.
-- Se `pagina` exceder a última página, redirecionar ou normalizar para a última
-  página válida; não retornar uma tela vazia enganosa.
+- Omitir `pagina=1` e `ordem=nome` das URLs geradas.
+- Paginação pura usa canonical própria, como `?pagina=2`, e não recebe
+  `noindex`; filtros e ordenações alternativas continuam não indexáveis.
+- Se `pagina` exceder a última página, redirecionar com `308` diretamente para
+  a última página válida; valores inválidos redirecionam para a página 1.
 
 ### Estado vazio
 
