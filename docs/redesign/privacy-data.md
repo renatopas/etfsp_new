@@ -156,6 +156,20 @@ validados. Nunca aceitar um caminho arbitrário vindo da URL.
 - `%` e `_` fornecidos em buscas literais são escapados.
 - Limitar resultados de autocomplete e paginação para reduzir coleta em massa.
 
+### Metadados e indexação
+
+- Perfil público pode usar em metadados e JSON-LD somente nome, URL canônica e
+  foto pessoal pública não excluída.
+- E-mail, telefone, WhatsApp, ICQ, redes sociais, textos livres e dados internos
+  não devem ser copiados para JSON-LD.
+- Sitemap seleciona somente o `ID` técnico de registros com `Excluido = 0` e
+  não inclui nome ou outros dados pessoais.
+- Exclusão lógica remove o perfil do sitemap após a expiração do cache e faz a
+  URL pública responder `404`.
+- URLs de busca, filtros, paginação, cadastro e upload podem ser rastreadas para
+  leitura de `noindex,follow`, mas não devem ser apresentadas como resultados
+  indexáveis.
+
 ## 6. Logs e mensagens
 
 É proibido registrar:

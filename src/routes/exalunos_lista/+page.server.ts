@@ -1,8 +1,11 @@
 import type { PageServerLoad } from "./$types";
+import { redirect } from "@sveltejs/kit";
 import {
   ALUMNI_ORDER_TO_LEGACY,
+  COURSE_CATALOG,
   COURSES,
   LEGACY_ALUMNI_ORDER_TO_ORDER,
+  isCourse,
   type AlumniListItem,
   type AlumniOrder,
   type Course,
@@ -10,7 +13,7 @@ import {
 } from "$lib/domain";
 import { db } from "$lib/server/index";
 
-const PAGE_SIZE = 300;
+const PAGE_SIZE = 600;
 const THIRTY_DAYS_IN_MS = 30 * 24 * 60 * 60 * 1000;
 
 const ORDER_BY: Record<AlumniOrder, string> = {
@@ -98,10 +101,6 @@ function normalizeSearch(value: string | null): string {
   return value?.trim().slice(0, 120) ?? "";
 }
 
-function isCourse(value: string): value is Course {
-  return (COURSES as readonly string[]).includes(value);
-}
-
 function normalizeCourse(url: URL): Course | undefined {
   const courses = url.searchParams.getAll("curso");
   if (courses.length !== 1) {
@@ -137,9 +136,9 @@ function mapAlumnus(row: AlumniRow): AlumniListItem {
   };
 }
 
-export const load: PageServerLoad = async ({ url }) => {
+export async function _loadAlumniList(url: URL, forcedCourse?: Course) {
   const busca = normalizeSearch(url.searchParams.get("busca"));
-  const curso = normalizeCourse(url);
+  const curso = forcedCourse ?? normalizeCourse(url);
   const ordem = normalizeOrder(url);
   const recentes =
     url.searchParams.get("recentes") === "1" ||
@@ -173,6 +172,24 @@ export const load: PageServerLoad = async ({ url }) => {
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const page = Math.min(requestedPage, totalPages);
   const orderBy = recentes ? "e.DtCadastro DESC, e.ID DESC" : ORDER_BY[ordem];
+  const basePath = forcedCourse
+    ? `/exalunos/curso/${COURSE_CATALOG[forcedCourse].slug}`
+    : "/exalunos_lista";
+  const normalizedUrl = new URL(basePath, url);
+
+  if (busca) normalizedUrl.searchParams.set("busca", busca);
+  if (ordem !== "nome") normalizedUrl.searchParams.set("ordem", ordem);
+  if (recentes) normalizedUrl.searchParams.set("recentes", "1");
+  if (page > 1) normalizedUrl.searchParams.set("pagina", String(page));
+
+  const normalizedPath = `${normalizedUrl.pathname}${normalizedUrl.search}`;
+  if (`${url.pathname}${url.search}` !== normalizedPath) {
+    redirect(308, normalizedPath);
+  }
+
+  const noindex = Boolean(busca || ordem !== "nome" || recentes);
+  const canonicalPath =
+    !noindex && page > 1 ? `${basePath}?pagina=${page}` : basePath;
 
   const rows = await all<AlumniRow>(
     `SELECT
@@ -201,7 +218,20 @@ export const load: PageServerLoad = async ({ url }) => {
 
   return {
     alunos: rows.map(mapAlumnus),
+    courseLanding: forcedCourse
+      ? {
+          code: forcedCourse,
+          ...COURSE_CATALOG[forcedCourse],
+        }
+      : undefined,
     filters: { busca, curso, ordem, recentes },
+    canonicalPath,
+    noindex,
     pagination: { page, totalPages, total },
   };
+}
+
+export const load: PageServerLoad = async ({ url }) => {
+  const course = normalizeCourse(url);
+  return _loadAlumniList(url, course);
 };

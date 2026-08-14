@@ -1,6 +1,11 @@
 <script lang="ts">
   import type { PageProps } from "./$types";
-  import { COURSES, type AlumniOrder } from "$lib/domain";
+  import {
+    COURSE_CATALOG,
+    COURSES,
+    courseLabel,
+    type AlumniOrder,
+  } from "$lib/domain";
   import AlumniCard from "$lib/components/AlumniCard.svelte";
   import Button from "$lib/components/Button.svelte";
   import EmptyState from "$lib/components/EmptyState.svelte";
@@ -8,6 +13,7 @@
   import PageHeader from "$lib/components/PageHeader.svelte";
   import Pagination from "$lib/components/Pagination.svelte";
   import SearchForm from "$lib/components/SearchForm.svelte";
+  import { absoluteSiteUrl } from "$lib/site";
 
   let { data }: PageProps = $props();
 
@@ -21,23 +27,47 @@
     { value: "saidaNome", label: "Saída e nome" },
   ];
 
+  const basePath = $derived(
+    data.courseLanding
+      ? `/exalunos/curso/${data.courseLanding.slug}`
+      : "/exalunos_lista",
+  );
+  const canonical = $derived(absoluteSiteUrl(data.canonicalPath));
+  const pageTitle = $derived(
+    data.courseLanding
+      ? `Ex-alunos de ${data.courseLanding.shortName}`
+      : "Relação de ex-alunos",
+  );
+  const pageDescription = $derived(
+    data.courseLanding
+      ? `Encontre ex-alunos do curso ${data.courseLanding.name} da ETFSP, CEFET-SP e IFSP.`
+      : "Consulte os perfis públicos dos ex-alunos da ETFSP.",
+  );
+  const metaTitle = $derived(
+    data.pagination.page > 1
+      ? `${pageTitle} — Página ${data.pagination.page}`
+      : pageTitle,
+  );
+
   const preservedSearchFilters = $derived({
-    curso: data.filters.curso,
-    ordem: data.filters.ordem,
+    curso: data.courseLanding ? undefined : data.filters.curso,
+    ordem: data.filters.ordem === "nome" ? undefined : data.filters.ordem,
     recentes: data.filters.recentes ? "1" : undefined,
   });
 
   const paginationParameters = $derived({
     busca: data.filters.busca || undefined,
-    curso: data.filters.curso,
-    ordem: data.filters.ordem,
+    curso: data.courseLanding ? undefined : data.filters.curso,
+    ordem: data.filters.ordem === "nome" ? undefined : data.filters.ordem,
     recentes: data.filters.recentes ? "1" : undefined,
   });
 
   const resetHref = $derived(
-    `/exalunos_lista?${new URLSearchParams({
-      ...(data.filters.curso ? { curso: data.filters.curso } : {}),
-      ordem: data.filters.ordem,
+    `${basePath}?${new URLSearchParams({
+      ...(!data.courseLanding && data.filters.curso
+        ? { curso: data.filters.curso }
+        : {}),
+      ...(data.filters.ordem !== "nome" ? { ordem: data.filters.ordem } : {}),
       ...(data.filters.recentes ? { recentes: "1" } : {}),
     }).toString()}`.replace(/\?$/, ""),
   );
@@ -45,27 +75,43 @@
   const allCoursesHref = $derived(
     `/exalunos_lista?${new URLSearchParams({
       ...(data.filters.busca ? { busca: data.filters.busca } : {}),
-      ordem: data.filters.ordem,
+      ...(data.filters.ordem !== "nome" ? { ordem: data.filters.ordem } : {}),
       ...(data.filters.recentes ? { recentes: "1" } : {}),
     }).toString()}`.replace(/\?$/, ""),
   );
 </script>
 
 <Meta
-  title="Relação de ex-alunos"
-  description="Consulte os perfis públicos dos ex-alunos da ETFSP."
+  {canonical}
+  title={`${metaTitle} — ETFSP`}
+  description={pageDescription}
+  robots={data.noindex ? "noindex,follow" : undefined}
 />
 
 <PageHeader
-  title="Relação de ex-alunos"
+  title={pageTitle}
   description={data.filters.recentes
     ? "Ex-alunos cadastrados nos últimos 30 dias."
-    : "Encontre colegas pelo nome e consulte seus perfis públicos."}
+    : data.courseLanding
+      ? `${data.courseLanding.name} (${data.courseLanding.code}). Consulte os perfis públicos e encontre antigos colegas.`
+      : "Encontre colegas pelo nome e consulte seus perfis públicos."}
 />
+
+{#if !data.courseLanding}
+  <nav class="course-links" aria-label="Consultar ex-alunos por curso">
+    <span>Por curso:</span>
+    {#each COURSES as course}
+      <a href={`/exalunos/curso/${COURSE_CATALOG[course].slug}`}>
+        {COURSE_CATALOG[course].shortName}
+        <span>({course})</span>
+      </a>
+    {/each}
+  </nav>
+{/if}
 
 <section class="directory-search" aria-label="Buscar na relação de ex-alunos">
   <SearchForm
-    action="/exalunos_lista"
+    action={basePath}
     buttonLabel="Buscar"
     label="Buscar por nome"
     query={data.filters.busca}
@@ -85,7 +131,7 @@
       </p>
     </div>
 
-    <form class="filter-form" method="GET" action="/exalunos_lista">
+    <form class="filter-form" method="GET" action={basePath}>
       {#if data.filters.busca}
         <input type="hidden" name="busca" value={data.filters.busca} />
       {/if}
@@ -93,15 +139,25 @@
         <input type="hidden" name="recentes" value="1" />
       {/if}
       <div class="filter-form__fields">
-        <div>
-          <label for="curso">Curso</label>
-          <select id="curso" name="curso" value={data.filters.curso ?? ""}>
-            <option value="">Todos os cursos</option>
-            {#each COURSES as course}
-              <option value={course}>{course}</option>
-            {/each}
-          </select>
-        </div>
+        {#if data.courseLanding}
+          <div class="course-context">
+            <span>Curso</span>
+            <strong
+              >{data.courseLanding.code} — {data.courseLanding.name}</strong
+            >
+            <a href="/exalunos_lista">Ver todos os cursos</a>
+          </div>
+        {:else}
+          <div>
+            <label for="curso">Curso</label>
+            <select id="curso" name="curso" value={data.filters.curso ?? ""}>
+              <option value="">Todos os cursos</option>
+              {#each COURSES as course}
+                <option value={course}>{courseLabel(course)}</option>
+              {/each}
+            </select>
+          </div>
+        {/if}
         <div>
           <label for="ordem">Ordenar por</label>
           <select id="ordem" name="ordem" value={data.filters.ordem}>
@@ -117,7 +173,7 @@
 
   {#if data.filters.recentes}
     <p class="recent-notice">
-      <a href="/exalunos_lista">Ver toda a relação de ex-alunos</a>
+      <a href={basePath}>Ver toda a relação de ex-alunos</a>
     </p>
   {/if}
 
@@ -128,7 +184,7 @@
       {/each}
     </div>
     <Pagination
-      basePath="/exalunos_lista"
+      {basePath}
       currentPage={data.pagination.page}
       totalPages={data.pagination.totalPages}
       parameters={paginationParameters}
@@ -154,6 +210,22 @@
   .directory-results {
     max-width: var(--content-max-readable);
     margin-inline: auto;
+  }
+
+  .course-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    max-width: var(--content-max-readable);
+    margin: 0 auto;
+  }
+
+  .course-links > span {
+    font-weight: 700;
+  }
+
+  .course-links a span {
+    color: var(--color-text-muted);
   }
 
   .directory-search {

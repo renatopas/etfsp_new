@@ -2,7 +2,7 @@
   import { enhance } from "$app/forms";
   import Turnstile from "$lib/Turnstile.svelte";
   import Button from "$lib/components/Button.svelte";
-  import { COURSES } from "$lib/domain";
+  import { COURSES, courseLabel } from "$lib/domain";
 
   let {
     form,
@@ -97,7 +97,7 @@
       >
         <option value="">Selecione</option>
         {#each COURSES as course}
-          <option value={course}>{course}</option>
+          <option value={course}>{courseLabel(course)}</option>
         {/each}
       </select>
       {#if error("Curso")}

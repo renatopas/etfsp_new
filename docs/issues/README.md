@@ -27,3 +27,8 @@ do site.
 - [ISSUE-008 — Redes sociais no cadastro e no perfil de ex-alunos](./ISSUE-008-redes-sociais-exalunos.md)
 - [ISSUE-009 — Simplificar e melhorar o formulário de cadastro](./ISSUE-009-simplificar-formulario-cadastro.md)
 - [ISSUE-010 — Criar página de Política de Privacidade](./ISSUE-010-politica-de-privacidade.md)
+- [ISSUE-011 — Melhorar URLs, rastreamento e indexação](./ISSUE-011-urls-e-indexacao.md)
+- [ISSUE-012 — Criar páginas indexáveis de ex-alunos por curso](./ISSUE-012-paginas-exalunos-por-curso.md)
+- [ISSUE-013 — Corrigir canonicalização e URLs da paginação de ex-alunos](./ISSUE-013-canonicalizacao-paginacao-exalunos.md)
+- [ISSUE-014 — Preservar orientação das fotos enviadas](./ISSUE-014-preservar-orientacao-fotos.md)
+- [ISSUE-015 — Navegar entre fotos no visualizador da galeria](./ISSUE-015-navegacao-visualizador-fotos.md)

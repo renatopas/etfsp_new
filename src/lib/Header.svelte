@@ -45,7 +45,10 @@
   });
 
   function isCurrent(item: NavigationItem): boolean {
-    return item.paths.includes(pathname);
+    return (
+      item.paths.includes(pathname) ||
+      (item.href === "/exalunos" && pathname.startsWith("/exalunos/"))
+    );
   }
 
   function closeMenu() {

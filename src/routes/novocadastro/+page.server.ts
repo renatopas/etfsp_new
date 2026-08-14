@@ -1,5 +1,5 @@
 import { fail, type Actions } from "@sveltejs/kit";
-import { COURSES, type Course } from "$lib/domain";
+import { isCourse } from "$lib/domain";
 import { db } from "$lib/server/index";
 import {
   normalizeSocialNetworkUrl,
@@ -41,10 +41,6 @@ const FIELD_NAMES: FieldName[] = [
 
 function text(formData: FormData, name: FieldName): string {
   return (formData.get(name)?.toString() ?? "").trim();
-}
-
-function isCourse(value: string): value is Course {
-  return (COURSES as readonly string[]).includes(value);
 }
 
 function year(value: string): number | undefined {

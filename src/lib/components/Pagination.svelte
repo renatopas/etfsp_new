@@ -17,8 +17,12 @@
       }
     }
 
-    searchParams.set("pagina", page.toString());
-    return `${basePath}?${searchParams.toString()}`;
+    if (page > 1) {
+      searchParams.set("pagina", page.toString());
+    }
+
+    const query = searchParams.toString();
+    return query ? `${basePath}?${query}` : basePath;
   }
 </script>
 

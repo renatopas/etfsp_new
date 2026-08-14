@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
-import { COURSES } from "$lib/domain";
+import { isCourse } from "$lib/domain";
 import { db, FOTOS_DIR } from "$lib/server/index";
 const MAX_SIZE = 5 * 1024 * 1024,
   MAX_PIXELS = 40_000_000,
@@ -83,7 +83,7 @@ export const actions: Actions = {
       !title ||
       title.length < 4 ||
       title.length > 250 ||
-      !(COURSES as readonly string[]).includes(course) ||
+      !isCourse(course) ||
       className.length < 1 ||
       className.length > 15
     )
@@ -107,16 +107,19 @@ export const actions: Actions = {
       width = 0,
       height = 0;
     try {
-      const image = sharp(await file.arrayBuffer(), {
+      const input = await file.arrayBuffer();
+      const originalResult = await sharp(input, {
         limitInputPixels: MAX_PIXELS,
-      });
-      const metadata = await image.metadata();
-      width = metadata.width ?? 0;
-      height = metadata.height ?? 0;
+      })
+        .autoOrient()
+        .webp()
+        .toBuffer({ resolveWithObject: true });
+      original = originalResult.data;
+      width = originalResult.info.width;
+      height = originalResult.info.height;
       if (!width || !height) throw new Error();
-      original = await image.clone().webp().toBuffer();
-      thumb = await image
-        .clone()
+      thumb = await sharp(input, { limitInputPixels: MAX_PIXELS })
+        .autoOrient()
         .resize(320, 240, { fit: "inside", withoutEnlargement: true })
         .webp()
         .toBuffer();

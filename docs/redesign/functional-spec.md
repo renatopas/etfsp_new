@@ -49,6 +49,21 @@ o trabalho de redesign. Regras de banco e privacidade continuam sujeitas a
 - Recursos básicos continuam funcionais sem JavaScript. Autocomplete,
   pré-visualização e atualização sem recarregar são melhorias progressivas.
 
+### 1.5 Rastreamento e indexação
+
+- A origem canônica do site é `https://etfsp.com`.
+- Toda página HTML possui uma única URL canônica absoluta.
+- Busca, filtros, ordenação não padrão e modo de cadastros recentes permanecem
+  rastreáveis, mas recebem `noindex,follow`.
+- Paginação pura é indexável e cada página possui canonical própria; paginação
+  combinada com uma variante não indexável mantém `noindex,follow`.
+- Cadastro e envio de foto recebem `noindex,follow`; páginas canônicas de
+  conteúdo público permanecem indexáveis.
+- `/robots.txt` permite o rastreamento e anuncia
+  `https://etfsp.com/sitemap.xml`.
+- O sitemap lista somente URLs canônicas e registros não excluídos, sem usar
+  data de cadastro como data de modificação.
+
 ## 2. Início — `/`
 
 ### Objetivo
@@ -156,6 +171,18 @@ nomes em minúsculas da tabela acima.
 - Busca, curso, ordenação e cadastros recentes podem ser combinados.
 - A filtragem é feita no servidor com parâmetro SQL; ela não acrescenta colunas
   retornadas ao navegador.
+- As sete categorias canônicas possuem páginas indexáveis em
+  `/exalunos/curso/{slug}`, com nome completo, sigla, contagem e os mesmos
+  cartões da relação.
+- O catálogo compartilhado relaciona sigla histórica, nome oficial, nome curto
+  e slug; seletores exibem “SIGLA — nome oficial” e continuam enviando a sigla.
+- `/exalunos_lista?curso={SIGLA}` redireciona permanentemente para a página
+  descritiva do curso, preservando apenas os demais parâmetros reconhecidos.
+- A página base e sua paginação pura são indexáveis e autocanônicas. Busca,
+  ordenação alternativa e recentes, inclusive paginados, recebem
+  `noindex,follow` e canonical para a página base.
+- Slug desconhecido responde `404`; siglas em maiúsculas ou minúsculas no
+  caminho funcionam apenas como aliases com redirecionamento permanente.
 
 ### Resultados
 
@@ -180,8 +207,11 @@ nomes em minúsculas da tabela acima.
 - Exibir “Anterior” e “Próxima”, mais “Página X de Y”.
 - Manter `busca`, `curso`, `ordem` e `recentes` ao trocar de página.
 - Ocultar “Anterior” na primeira página e “Próxima” na última.
-- Se `pagina` exceder a última página, redirecionar ou normalizar para a última
-  página válida; não retornar uma tela vazia enganosa.
+- Omitir `pagina=1` e `ordem=nome` das URLs geradas.
+- Paginação pura usa canonical própria, como `?pagina=2`, e não recebe
+  `noindex`; filtros e ordenações alternativas continuam não indexáveis.
+- Se `pagina` exceder a última página, redirecionar com `308` diretamente para
+  a última página válida; valores inválidos redirecionam para a página 1.
 
 ### Estado vazio
 
@@ -198,7 +228,7 @@ sugerir que a ausência autoriza criar cadastro em nome de outra pessoa.
 - A busca literal por `100%` ou `_` não amplia indevidamente a consulta SQL.
 - Miniaturas mantêm proporção e reservam espaço para evitar saltos de layout.
 
-## 5. Perfil público — `/detalhe_exaluno?id=`
+## 5. Perfil público — `/exalunos/{id}`
 
 ### Objetivo
 
@@ -228,11 +258,16 @@ campo histórico distinto e só aparece quando sua flag de publicação permite.
 
 ### Identificador e erros
 
-- `id` deve ser um inteiro positivo completo; valores como `12abc`, negativos,
-  zero ou ausentes são inválidos.
+- `{id}` deve ser um inteiro positivo completo; valores como `12abc`,
+  negativos, zero ou ausentes são inválidos.
 - ID inválido retorna 400; registro inexistente ou excluído retorna 404.
 - A consulta seleciona explicitamente somente as colunas públicas necessárias.
 - O perfil nunca recebe um registro completo para ocultá-lo apenas no Svelte.
+- A URL legada `/detalhe_exaluno?id={id}` responde com `308` diretamente para
+  `/exalunos/{id}`. Parâmetros extras não são propagados e a compatibilidade é
+  mantida por tempo indeterminado.
+- O perfil declara a nova URL como canonical e emite JSON-LD `ProfilePage` com
+  apenas nome, URL e foto pessoal pública opcional, sem meios de contato.
 
 ### Critérios de aceite
 
@@ -389,6 +424,16 @@ Permitir ver fotos rapidamente e refinar o acervo sem uma grade rígida.
   JavaScript estiver disponível.
 - O diálogo contém título, metadados, botão textual “Fechar” e fecha com
   `Escape`. O foco retorna à miniatura de origem.
+- O diálogo permite percorrer as fotos carregadas na página atual por botões
+  anterior/próxima, pelas setas do teclado e por gesto horizontal em
+  dispositivos com toque. A navegação respeita os limites da página, informa a
+  posição atual e não carrega resultados de outras páginas.
+- O gesto horizontal usa distância mínima e não deve confundir rolagem vertical
+  ou toque simples com uma troca de foto.
+- A imagem ampliada usa a largura disponível sem ser reduzida por um limite
+  fixo de altura. O diálogo pode rolar verticalmente e o gesto nativo de pinça
+  para zoom permanece disponível; gestos com mais de um dedo não acionam a
+  navegação entre fotos.
 - Sem JavaScript, o link abre o arquivo da foto na mesma aba.
 - Não implementar comentários, curtidas, download em lote ou compartilhamento.
 
@@ -461,7 +506,12 @@ presumir que todos conhecem o termo.
   do arquivo.
 - `AnoFoto` e `AnoFormatura` válidos são persistidos nas colunas
   correspondentes da tabela `Fotos`.
-- O servidor gera nomes controlados, converte a imagem e cria miniatura.
+- O servidor normaliza a orientação visual indicada pelo EXIF, inclusive os
+  casos espelhados, antes de gerar o WebP e a miniatura. `OrigLargura` e
+  `OrigAltura` registram as dimensões da imagem já orientada; outros metadados
+  EXIF não são preservados deliberadamente.
+- O servidor gera nomes controlados, converte a imagem e cria miniatura a
+  partir da mesma orientação normalizada.
 - Escrita dos arquivos e do registro deve terminar antes do sucesso.
 - Uma falha não pode deixar um registro que aponta para arquivo inexistente; a
   implementação deve compensar ou ordenar as operações de forma segura.

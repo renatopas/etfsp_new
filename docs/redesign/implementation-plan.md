@@ -570,6 +570,47 @@ obtê-lo pela rota.
 - executar `pnpm run build`;
 - registrar qualquer validação manual e limitação no handoff.
 
+### RED-806 — URLs canônicas e indexação
+
+**Estado:** concluída pela `ISSUE-011`.
+
+- adotada a rota canônica `/exalunos/{id}`, com redirecionamento permanente da
+  URL legada;
+- centralizados canonical, Open Graph, Twitter e diretiva de robôs;
+- marcadas como `noindex,follow` as variantes por busca, filtros e páginas
+  operacionais; a política original de paginação foi posteriormente corrigida
+  pela `ISSUE-013`;
+- adicionados `robots.txt`, sitemap somente com URLs indexáveis e JSON-LD
+  mínimo para os perfis;
+- mantidos parâmetros GET para busca, filtro, ordenação e paginação.
+
+### RED-807 — Páginas indexáveis por curso
+
+**Estado:** concluída pela `ISSUE-012`.
+
+- centralizadas siglas, nomes oficiais, nomes curtos e slugs dos sete cursos em
+  um catálogo tipado no código, sem mudança de banco;
+- criadas páginas canônicas em `/exalunos/curso/{slug}`, reutilizando consulta,
+  cartões, filtros e paginação da relação;
+- mantida a compatibilidade de `?curso=` e aliases por sigla com
+  redirecionamento permanente;
+- adicionados links contextuais e as sete páginas temáticas ao sitemap;
+- mantidas como `noindex,follow` as variantes de busca, ordenação e recentes; a
+  paginação pura foi posteriormente tornada indexável pela `ISSUE-013`.
+
+### RED-808 — Canonicalização da paginação
+
+**Estado:** concluída pela `ISSUE-013`.
+
+- fixado o contrato de 300 resultados por página na relação geral e nos cursos;
+- paginação pura passou a ser indexável e autocanônica;
+- removidos `ordem=nome`, `pagina=1`, parâmetros desconhecidos e formas legadas
+  das URLs finais por redirecionamento `308`;
+- páginas inválidas ou acima do total são redirecionadas diretamente para a
+  página válida correspondente;
+- links para a página 1 omitem query e o sitemap continua listando somente o
+  início de cada coleção.
+
 ## Definição de pronto por fase
 
 Uma fase está concluída quando:

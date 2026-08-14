@@ -2,7 +2,8 @@
   import Meta from "$lib/Meta.svelte";
   import PageHeader from "$lib/components/PageHeader.svelte";
   import SearchForm from "$lib/components/SearchForm.svelte";
-  import type { AlumniOrder } from "$lib/domain";
+  import { COURSE_CATALOG, COURSES, type AlumniOrder } from "$lib/domain";
+  import { absoluteSiteUrl } from "$lib/site";
 
   const orderOptions: Array<{ value: AlumniOrder; label: string }> = [
     { value: "nome", label: "Nome" },
@@ -14,6 +15,7 @@
 </script>
 
 <Meta
+  canonical={absoluteSiteUrl("/exalunos")}
   title="Ex-alunos da Escola Técnica Federal de São Paulo"
   description="Busque ex-alunos pelo nome ou consulte a relação de ex-alunos da ETFSP, CEFET-SP e IFSP."
 />
@@ -43,6 +45,20 @@
     </div>
   </section>
 
+  <section class="alumni-entry__courses" aria-labelledby="consultar-curso">
+    <h2 id="consultar-curso">Consultar por curso</h2>
+    <ul>
+      {#each COURSES as course}
+        <li>
+          <a href={`/exalunos/curso/${COURSE_CATALOG[course].slug}`}>
+            {COURSE_CATALOG[course].shortName}
+            <span>({course})</span>
+          </a>
+        </li>
+      {/each}
+    </ul>
+  </section>
+
   <form class="alumni-entry__order" method="GET" action="/exalunos_lista">
     <label for="ordem-exalunos">Ordenar por</label>
     <div>
@@ -63,6 +79,7 @@
 
   .alumni-entry__search,
   .alumni-entry__quick-actions,
+  .alumni-entry__courses,
   .alumni-entry__order {
     padding: var(--space-6);
     border: 1px solid var(--color-border);
@@ -72,6 +89,7 @@
   }
 
   .alumni-entry__quick-actions,
+  .alumni-entry__courses,
   .alumni-entry__order {
     margin-top: var(--space-6);
   }
@@ -89,6 +107,17 @@
     flex-wrap: wrap;
     gap: var(--space-3);
     margin-top: var(--space-4);
+  }
+
+  .alumni-entry__courses ul {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    padding-left: var(--space-6);
+  }
+
+  .alumni-entry__courses span {
+    color: var(--color-text-muted);
   }
 
   label {

@@ -1,5 +1,5 @@
 import type { PageServerLoad } from "./$types";
-import { COURSES, type Course, type PublicPhoto } from "$lib/domain";
+import { isCourse, type PublicPhoto } from "$lib/domain";
 import { db } from "$lib/server/index";
 const PAGE_SIZE = 100;
 const MIN_YEAR = 1909;
@@ -44,9 +44,7 @@ function escapeLike(value: string) {
 function map(row: Row): PublicPhoto {
   return {
     title: row.TituloFoto?.trim() || undefined,
-    course: (COURSES as readonly string[]).includes(row.CursoFoto ?? "")
-      ? (row.CursoFoto as Course)
-      : undefined,
+    course: isCourse(row.CursoFoto) ? row.CursoFoto : undefined,
     className: row.TurmaFoto?.trim() || undefined,
     photoYear: row.AnoFoto ?? undefined,
     graduationYear: row.AnoFormatura ?? undefined,
@@ -57,9 +55,7 @@ function map(row: Row): PublicPhoto {
 export const load: PageServerLoad = async ({ url }) => {
   const title = text(url.searchParams.get("titulo"), 250);
   const courseValue = url.searchParams.get("curso");
-  const course = (COURSES as readonly string[]).includes(courseValue ?? "")
-    ? (courseValue as Course)
-    : undefined;
+  const course = isCourse(courseValue) ? courseValue : undefined;
   const type =
     url.searchParams.get("tipo") === "carometro" ? "carometro" : "gerais";
   const photoFrom = validYear(url.searchParams.get("fotoDe"));
@@ -112,6 +108,7 @@ export const load: PageServerLoad = async ({ url }) => {
   );
   return {
     photos: rows.map(map),
+    noindex: url.search.length > 0,
     filters: {
       title,
       course,
