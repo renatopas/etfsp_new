@@ -1,6 +1,6 @@
 # ISSUE-015 — Navegar entre fotos no visualizador da galeria
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Consulta e visualização de fotos
 
@@ -158,3 +158,22 @@ JavaScript desabilitado.
 
 Não se prevê alteração server-side, de schema, migração, importador legado ou
 dependências do projeto.
+
+## Resultado da implementação
+
+- O visualizador mantém o índice da miniatura selecionada e navega na ordem de
+  `data.photos`, sem consultas adicionais ou passagem automática de página.
+- Foram adicionados botões anterior/próxima com estados desabilitados nos
+  limites, indicador de posição e atualização sincronizada da imagem, título,
+  texto alternativo e metadados.
+- As teclas `ArrowLeft` e `ArrowRight` funcionam apenas dentro do diálogo; o
+  botão “Fechar”, `Escape`, o retorno do foco e o `href` das miniaturas foram
+  preservados.
+- O gesto usa Pointer Events apenas para toque, captura o ponteiro e exige pelo
+  menos 50 px de deslocamento predominantemente horizontal. A área da imagem
+  mantém `touch-action: pan-y` para preservar a rolagem vertical.
+- Não foi adicionada dependência, rota, estado na URL nem alteração server-side.
+- A especificação funcional da galeria foi atualizada com as novas formas de
+  navegação e seus limites.
+- `pnpm run check`, `pnpm run lint` e `pnpm run build` passaram em 14 de agosto
+  de 2026.

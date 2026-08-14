@@ -1,6 +1,6 @@
 # ISSUE-014 — Preservar orientação das fotos enviadas
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Envio e processamento de fotos
 
@@ -114,3 +114,18 @@ preservado.
 
 Não se prevê alteração de schema, migração, importador legado ou componentes
 visuais.
+
+## Resultado da implementação
+
+- A imagem recebida passa por `sharp().autoOrient()` antes da conversão do
+  arquivo principal e antes do redimensionamento da miniatura.
+- Arquivo principal e miniatura são gerados a partir da mesma entrada e com a
+  mesma normalização de orientação.
+- `OrigLargura` e `OrigAltura` agora vêm das informações do WebP principal já
+  orientado, inclusive com os eixos trocados nas orientações 5 a 8.
+- Um teste isolado com as orientações EXIF 1 a 8 confirmou as dimensões visuais
+  esperadas e a ausência do campo de orientação nos WebPs resultantes.
+- Não houve alteração de schema, formatos aceitos, limites ou tratamento de
+  falhas de escrita.
+- `pnpm run check`, `pnpm run lint` e `pnpm run build` passaram em 14 de agosto
+  de 2026.

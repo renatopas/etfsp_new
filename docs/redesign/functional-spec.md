@@ -424,6 +424,12 @@ Permitir ver fotos rapidamente e refinar o acervo sem uma grade rígida.
   JavaScript estiver disponível.
 - O diálogo contém título, metadados, botão textual “Fechar” e fecha com
   `Escape`. O foco retorna à miniatura de origem.
+- O diálogo permite percorrer as fotos carregadas na página atual por botões
+  anterior/próxima, pelas setas do teclado e por gesto horizontal em
+  dispositivos com toque. A navegação respeita os limites da página, informa a
+  posição atual e não carrega resultados de outras páginas.
+- O gesto horizontal usa distância mínima e não deve confundir rolagem vertical
+  ou toque simples com uma troca de foto.
 - Sem JavaScript, o link abre o arquivo da foto na mesma aba.
 - Não implementar comentários, curtidas, download em lote ou compartilhamento.
 
@@ -496,7 +502,12 @@ presumir que todos conhecem o termo.
   do arquivo.
 - `AnoFoto` e `AnoFormatura` válidos são persistidos nas colunas
   correspondentes da tabela `Fotos`.
-- O servidor gera nomes controlados, converte a imagem e cria miniatura.
+- O servidor normaliza a orientação visual indicada pelo EXIF, inclusive os
+  casos espelhados, antes de gerar o WebP e a miniatura. `OrigLargura` e
+  `OrigAltura` registram as dimensões da imagem já orientada; outros metadados
+  EXIF não são preservados deliberadamente.
+- O servidor gera nomes controlados, converte a imagem e cria miniatura a
+  partir da mesma orientação normalizada.
 - Escrita dos arquivos e do registro deve terminar antes do sucesso.
 - Uma falha não pode deixar um registro que aponta para arquivo inexistente; a
   implementação deve compensar ou ordenar as operações de forma segura.
