@@ -430,6 +430,10 @@ Permitir ver fotos rapidamente e refinar o acervo sem uma grade rígida.
   posição atual e não carrega resultados de outras páginas.
 - O gesto horizontal usa distância mínima e não deve confundir rolagem vertical
   ou toque simples com uma troca de foto.
+- A imagem ampliada usa a largura disponível sem ser reduzida por um limite
+  fixo de altura. O diálogo pode rolar verticalmente e o gesto nativo de pinça
+  para zoom permanece disponível; gestos com mais de um dedo não acionam a
+  navegação entre fotos.
 - Sem JavaScript, o link abre o arquivo da foto na mesma aba.
 - Não implementar comentários, curtidas, download em lote ou compartilhamento.
 

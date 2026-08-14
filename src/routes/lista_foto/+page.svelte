@@ -10,6 +10,8 @@
   let dialog: HTMLDialogElement;
   let selectedIndex = $state<number | undefined>();
   let pointerStart = $state<{ id: number; x: number; y: number }>();
+  const activeTouchPointers = new Set<number>();
+  let gestureHadMultiplePointers = false;
   const selected = $derived(
     selectedIndex === undefined ? undefined : data.photos[selectedIndex],
   );
@@ -65,10 +67,22 @@
   }
   function handlePointerDown(event: PointerEvent) {
     if (event.pointerType !== "touch") return;
-    (event.currentTarget as HTMLDivElement).setPointerCapture(event.pointerId);
+    activeTouchPointers.add(event.pointerId);
+    if (activeTouchPointers.size > 1) {
+      gestureHadMultiplePointers = true;
+      pointerStart = undefined;
+      return;
+    }
     pointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
   }
   function handlePointerUp(event: PointerEvent) {
+    if (event.pointerType !== "touch") return;
+    activeTouchPointers.delete(event.pointerId);
+    if (gestureHadMultiplePointers) {
+      pointerStart = undefined;
+      if (activeTouchPointers.size === 0) gestureHadMultiplePointers = false;
+      return;
+    }
     if (!pointerStart || event.pointerId !== pointerStart.id) return;
     const horizontal = event.clientX - pointerStart.x;
     const vertical = event.clientY - pointerStart.y;
@@ -78,6 +92,11 @@
       return;
     if (horizontal > 0) previous();
     else next();
+  }
+  function handlePointerCancel(event: PointerEvent) {
+    activeTouchPointers.delete(event.pointerId);
+    pointerStart = undefined;
+    if (activeTouchPointers.size === 0) gestureHadMultiplePointers = false;
   }
 </script>
 
@@ -220,6 +239,8 @@
   onclose={() => {
     selectedIndex = undefined;
     pointerStart = undefined;
+    activeTouchPointers.clear();
+    gestureHadMultiplePointers = false;
   }}
 >
   {#if selected && selectedIndex !== undefined}<div class="dialog-header">
@@ -230,7 +251,7 @@
       class="photo-viewer"
       onpointerdown={handlePointerDown}
       onpointerup={handlePointerUp}
-      onpointercancel={() => (pointerStart = undefined)}
+      onpointercancel={handlePointerCancel}
     >
       <img
         src={selected.imageUrl}
@@ -361,13 +382,13 @@
     display: grid;
     place-items: center;
     margin-top: var(--space-3);
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
   }
   .photo-viewer img {
     display: block;
+    width: auto;
+    height: auto;
     max-width: 100%;
-    max-height: 62vh;
-    object-fit: contain;
   }
   .viewer-controls {
     margin-top: var(--space-3);

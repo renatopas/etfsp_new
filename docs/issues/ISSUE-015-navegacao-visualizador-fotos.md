@@ -169,9 +169,14 @@ dependências do projeto.
 - As teclas `ArrowLeft` e `ArrowRight` funcionam apenas dentro do diálogo; o
   botão “Fechar”, `Escape`, o retorno do foco e o `href` das miniaturas foram
   preservados.
-- O gesto usa Pointer Events apenas para toque, captura o ponteiro e exige pelo
-  menos 50 px de deslocamento predominantemente horizontal. A área da imagem
-  mantém `touch-action: pan-y` para preservar a rolagem vertical.
+- O gesto usa Pointer Events apenas para toque e exige pelo menos 50 px de
+  deslocamento predominantemente horizontal.
+- Após validação em dispositivo móvel, foi removido o limite de `62vh` que
+  deixava a imagem pequena, especialmente no modo paisagem. A foto usa toda a
+  largura disponível e o diálogo pode rolar verticalmente.
+- A área da imagem permite `pan-y` e `pinch-zoom`. Gestos com múltiplos dedos
+  são acompanhados separadamente e nunca acionam a troca de foto, preservando o
+  zoom nativo por pinça.
 - Não foi adicionada dependência, rota, estado na URL nem alteração server-side.
 - A especificação funcional da galeria foi atualizada com as novas formas de
   navegação e seus limites.
