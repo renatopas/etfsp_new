@@ -30,3 +30,5 @@ do site.
 - [ISSUE-011 — Melhorar URLs, rastreamento e indexação](./ISSUE-011-urls-e-indexacao.md)
 - [ISSUE-012 — Criar páginas indexáveis de ex-alunos por curso](./ISSUE-012-paginas-exalunos-por-curso.md)
 - [ISSUE-013 — Corrigir canonicalização e URLs da paginação de ex-alunos](./ISSUE-013-canonicalizacao-paginacao-exalunos.md)
+- [ISSUE-014 — Preservar orientação das fotos enviadas](./ISSUE-014-preservar-orientacao-fotos.md)
+- [ISSUE-015 — Navegar entre fotos no visualizador da galeria](./ISSUE-015-navegacao-visualizador-fotos.md)
