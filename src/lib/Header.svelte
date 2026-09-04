@@ -1,55 +1,117 @@
 <script lang="ts">
-  type Tab = "Home" | "CadastreSe" | "ExAlunos" | "Fotos";
+  import { page } from "$app/state";
+  import { onMount, tick } from "svelte";
+  import Button from "./components/Button.svelte";
+  import PageContainer from "./components/PageContainer.svelte";
 
-  interface Props {
-    selected?: Tab;
+  interface NavigationItem {
+    href: string;
+    label: string;
+    paths: string[];
   }
 
-  const SELECTED_STYLE = "background-color: #c30; color: #fff;";
+  const navigationItems: NavigationItem[] = [
+    { href: "/", label: "Início", paths: ["/"] },
+    {
+      href: "/exalunos",
+      label: "Ex-alunos",
+      paths: ["/exalunos", "/exalunos_lista", "/detalhe_exaluno"],
+    },
+    {
+      href: "/lista_foto",
+      label: "Fotos",
+      paths: ["/lista_foto", "/cadfoto"],
+    },
+    { href: "/novocadastro", label: "Cadastre-se", paths: ["/novocadastro"] },
+  ];
 
-  let { selected }: Props = $props();
+  let menuOpen = $state(false);
+  let menuButton = $state<HTMLButtonElement>();
+  let navigationEnhanced = $state(false);
+  let pathname = $derived(page.url.pathname);
+
+  onMount(() => {
+    navigationEnhanced = true;
+
+    const wideNavigation = window.matchMedia("(min-width: 48rem)");
+    const closeMobileMenu = (event: MediaQueryListEvent) => {
+      if (!event.matches) {
+        menuOpen = false;
+      }
+    };
+
+    wideNavigation.addEventListener("change", closeMobileMenu);
+    return () => wideNavigation.removeEventListener("change", closeMobileMenu);
+  });
+
+  function isCurrent(item: NavigationItem): boolean {
+    return (
+      item.paths.includes(pathname) ||
+      (item.href === "/exalunos" && pathname.startsWith("/exalunos/"))
+    );
+  }
+
+  function closeMenu() {
+    menuOpen = false;
+  }
+
+  async function handleKeydown(event: KeyboardEvent) {
+    if (event.key === "Escape" && menuOpen) {
+      menuOpen = false;
+      await tick();
+      menuButton?.focus();
+    }
+  }
 </script>
 
-<div id="layoutpage" style="border: 0">
-  <div id="header">
-    <a
-      title="Ex-alunos da Escola Técnica / Instituto Federal de São Paulo"
-      href="/"
-    >
-      <img style="position: absolute;" src="/images/header.jpg" />
-      <img
-        style="z-index: 1000; position: relative;"
-        src="/images/logoex.gif"
-        alt="Ex-alunos da Escola Técnica / Instituto Federal de São Paulo"
-        width="345"
-        height="75"
-        id="imaheader"
-      />
-    </a>
-  </div>
+<svelte:window onkeydown={handleKeydown} />
 
-  <div id="menu">
-    <a
-      title="Voltar para página principal"
-      href="/"
-      class={selected == "Home" ? "selected" : ""}>Home</a
-    >
-    <a
-      title="Cadastre seus dados"
-      href="novocadastro"
-      class={selected == "CadastreSe" ? "selected" : ""}
-    >
-      Cadastre-se</a
-    >
-    <a
-      title="Busca de ex-alunos"
-      href="exalunos"
-      class={selected == "ExAlunos" ? "selected" : ""}>Ex-Alunos</a
-    >
-    <a
-      title="Veja e envie fotos"
-      href="lista_foto"
-      class={selected == "Fotos" ? "selected" : ""}>Fotos</a
-    >
-  </div>
-</div>
+<header class="site-header" class:site-header--enhanced={navigationEnhanced}>
+  <PageContainer>
+    <div class="site-header__content">
+      <a
+        class="site-header__brand"
+        href="/"
+        aria-label="Ex-alunos da Escola Técnica Federal de São Paulo"
+      >
+        <img
+          class="site-header__logo"
+          src="/images/logoex.gif"
+          alt="Ex-alunos da Escola Técnica Federal de São Paulo"
+          width="345"
+          height="75"
+        />
+      </a>
+
+      <Button
+        className="site-header__menu-button"
+        variant="secondary"
+        ariaControls="site-navigation"
+        ariaExpanded={menuOpen}
+        onclick={() => (menuOpen = !menuOpen)}
+        bind:element={menuButton}
+      >
+        Menu
+      </Button>
+
+      <nav
+        id="site-navigation"
+        class:site-navigation--open={menuOpen}
+        class="site-navigation"
+        aria-label="Navegação principal"
+      >
+        <ul>
+          {#each navigationItems as item}
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item) ? "page" : undefined}
+                onclick={closeMenu}>{item.label}</a
+              >
+            </li>
+          {/each}
+        </ul>
+      </nav>
+    </div>
+  </PageContainer>
+</header>
