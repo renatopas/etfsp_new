@@ -1,5 +1,11 @@
 node_modules
 
+# Production
+/Fotos
+/database
+/backups
+/db.sqlite3
+
 # Output
 .output
 .vercel
@@ -23,3 +29,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 *.sqlite3
+*.sql
+*.sql.gz
+*.tar.gz

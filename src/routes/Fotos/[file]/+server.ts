@@ -1,28 +1,39 @@
-import { env } from "$env/dynamic/private";
 import { error, type RequestHandler } from "@sveltejs/kit";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { contentType } from "mime-types";
-import { building } from "$app/environment";
-import { FOTOS_DIR } from "$lib/server";
+import { db, FOTOS_DIR } from "$lib/server/index";
 
+function validName(name: string | undefined): name is string {
+  return (
+    name !== undefined &&
+    name !== "" &&
+    !name.includes("..") &&
+    !/[\\/]/.test(name) &&
+    path.basename(name) === name
+  );
+}
 export const GET: RequestHandler = async ({ params }) => {
-  if (params.file === undefined) {
-    error(404);
-  }
+  if (!validName(params.file)) error(404, "Foto não encontrada.");
+  const file = params.file;
+  const exists = await new Promise<boolean>((resolve, reject) =>
+    db.get(
+      "SELECT 1 FROM Fotos WHERE Excluido = 0 AND (NomeArqStored = ? OR NomeMiniaturaStored = ?) LIMIT 1",
+      [file, file],
+      (queryError, row) =>
+        queryError ? reject(queryError) : resolve(Boolean(row)),
+    ),
+  );
+  if (!exists) error(404, "Foto não encontrada.");
   try {
-    let data = await readFile(path.join(FOTOS_DIR, params.file));
-    const content_type = contentType(params.file as string);
-    if (!content_type) {
-      error(404, { message: "wahwahwahwa" });
-    }
+    const data = await readFile(path.join(FOTOS_DIR, file));
     return new Response(data, {
       headers: {
-        "content-type": content_type,
-        "cache-control": "max-age=86400, public",
+        "content-type": "image/webp",
+        "cache-control": "public, max-age=86400",
+        "x-content-type-options": "nosniff",
       },
     });
-  } catch (e) {
-    error(404, { message: String(e) });
+  } catch {
+    error(404, "Foto não encontrada.");
   }
 };

@@ -1,71 +1,137 @@
 <script lang="ts">
   import Meta from "$lib/Meta.svelte";
+  import PageHeader from "$lib/components/PageHeader.svelte";
+  import SearchForm from "$lib/components/SearchForm.svelte";
+  import { COURSE_CATALOG, COURSES, type AlumniOrder } from "$lib/domain";
+  import { absoluteSiteUrl } from "$lib/site";
+
+  const orderOptions: Array<{ value: AlumniOrder; label: string }> = [
+    { value: "nome", label: "Nome" },
+    { value: "cursoIngresso", label: "Curso e ano de ingresso" },
+    { value: "cursoSaida", label: "Curso e ano de saída" },
+    { value: "ingressoCurso", label: "Ano de ingresso e curso" },
+    { value: "saidaCurso", label: "Ano de saída e curso" },
+  ];
 </script>
 
 <Meta
-  description=""
-  title="Busca - Ex-Alunos da Escola Tecnica / Instituto Federal de Sao Paulo - ETFSP / IFSP / CEFET-SP"
+  canonical={absoluteSiteUrl("/exalunos")}
+  title="Ex-alunos da Escola Técnica Federal de São Paulo"
+  description="Busque ex-alunos pelo nome ou consulte a relação de ex-alunos da ETFSP, CEFET-SP e IFSP."
 />
 
-<h1>Ex-Alunos</h1>
+<section class="alumni-entry">
+  <PageHeader
+    title="Ex-alunos"
+    description="Busque pelo nome de um colega ou consulte a relação de ex-alunos."
+  />
 
-<form action="exalunos_lista">
-  <input type="text" name="busca" size="20" />
-  <input type="submit" class="formbutton" />
-  <font size="1"><i>Ex: "Maria", "Ricardo PRD", "ELO 1997"</i></font>
-</form>
+  <div class="alumni-entry__search">
+    <SearchForm example="Ex.: Maria da Silva" />
+  </div>
 
-<h2>
-  Temos a lista dos ex-alunos com algumas opções e com atualização on-line:
-</h2>
-<ul>
-  <li>
-    <a href="exalunos_lista?Titulo=Últimas Atualizações&Restricao=LAST"
-      >Últimas atualizações</a
-    >
-  </li>
-  <li>
-    <a href="exalunos_lista?ORDEM=ALFA&TITULO=Alfabético"
-      >Geral por ordem alfabética</a
-    >
-  </li>
-  <li>
-    <a
-      href="exalunos_lista?ORDEM=INGRESSOCURSO&Titulo=Por ano de Ingresso e Curso"
-      >Geral por ano de ingresso e curso</a
-    >
-  </li>
-  <li>
-    <a href="exalunos_lista?ORDEM=SAIDACURSO&Titulo=Por ano de Saída e Curso"
-      >Geral por ano de saída e curso</a
-    >
-  </li>
-  <li>
-    <a
-      href="exalunos_lista?ORDEM=CURSOINGRESSO&Titulo=Por curso e ano de ingresso"
-      >Geral por curso e ano de ingresso</a
-    >
-  </li>
-  <li>
-    <a href="exalunos_lista?ORDEM=CURSOSAIDA&Titulo=Por curso e ano de saída"
-      >Geral por curso e ano de saída</a
-    >
-  </li>
-  <li>
-    <a
-      href="exalunos_lista?ORDEM=INGRESSONOME&Titulo=Por ano de Ingresso e Nome"
-      >Geral por ano de ingresso e nome</a
-    >
-  </li>
-  <li>
-    <a href="exalunos_lista?ORDEM=SAIDANOME&Titulo=Por ano de de saída e nome"
-      >Geral por ano de saída e nome</a
-    >
-  </li>
-</ul>
+  <section
+    class="alumni-entry__quick-actions"
+    aria-labelledby="consultas-rapidas"
+  >
+    <h2 id="consultas-rapidas">Consultas rápidas</h2>
+    <div>
+      <a class="button button--secondary" href="/exalunos_lista?ordem=nome"
+        >Ver todos em ordem alfabética</a
+      >
+      <a class="button button--secondary" href="/exalunos_lista?recentes=1"
+        >Ver cadastros recentes</a
+      >
+    </div>
+  </section>
 
-<p>
-  Colabore com o crescimento indicando para amigos e&nbsp; <a
-    href="novocadastro">cadastre-se</a
-  > também! ! !
-</p>
+  <section class="alumni-entry__courses" aria-labelledby="consultar-curso">
+    <h2 id="consultar-curso">Consultar por curso</h2>
+    <ul>
+      {#each COURSES as course}
+        <li>
+          <a href={`/exalunos/curso/${COURSE_CATALOG[course].slug}`}>
+            {COURSE_CATALOG[course].shortName}
+            <span>({course})</span>
+          </a>
+        </li>
+      {/each}
+    </ul>
+  </section>
+
+  <form class="alumni-entry__order" method="GET" action="/exalunos_lista">
+    <label for="ordem-exalunos">Ordenar por</label>
+    <div>
+      <select id="ordem-exalunos" name="ordem">
+        {#each orderOptions as option}
+          <option value={option.value}>{option.label}</option>
+        {/each}
+      </select>
+      <button type="submit" class="button button--primary">Ver relação</button>
+    </div>
+  </form>
+</section>
+
+<style>
+  .alumni-entry {
+    max-width: var(--content-reading);
+  }
+
+  .alumni-entry__search,
+  .alumni-entry__quick-actions,
+  .alumni-entry__courses,
+  .alumni-entry__order {
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .alumni-entry__quick-actions,
+  .alumni-entry__courses,
+  .alumni-entry__order {
+    margin-top: var(--space-6);
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--color-heading);
+    font-size: var(--text-lg);
+    line-height: var(--leading-tight);
+  }
+
+  .alumni-entry__quick-actions > div,
+  .alumni-entry__order > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .alumni-entry__courses ul {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    padding-left: var(--space-6);
+  }
+
+  .alumni-entry__courses span {
+    color: var(--color-text-muted);
+  }
+
+  label {
+    color: var(--color-heading);
+    font-weight: 700;
+  }
+
+  select {
+    min-width: min(100%, 18rem);
+    max-width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text);
+    padding: var(--space-2) var(--space-3);
+  }
+</style>
