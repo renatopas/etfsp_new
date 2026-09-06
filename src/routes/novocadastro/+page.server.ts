@@ -138,19 +138,19 @@ export const actions: Actions = {
 
     const hasValidContact = Boolean(
       normalizedEmail ||
-        normalizedWhatsApp ||
-        normalizedHomepage ||
-        normalizedSocialNetworks.Instagram ||
-        normalizedSocialNetworks.Facebook ||
-        normalizedSocialNetworks.LinkedIn,
+      normalizedWhatsApp ||
+      normalizedHomepage ||
+      normalizedSocialNetworks.Instagram ||
+      normalizedSocialNetworks.Facebook ||
+      normalizedSocialNetworks.LinkedIn,
     );
     const hasContactError = Boolean(
       errors.Email ||
-        errors.WhatsApp ||
-        errors.HomePage ||
-        errors.Instagram ||
-        errors.Facebook ||
-        errors.LinkedIn,
+      errors.WhatsApp ||
+      errors.HomePage ||
+      errors.Instagram ||
+      errors.Facebook ||
+      errors.LinkedIn,
     );
     if (!hasValidContact && !hasContactError)
       errors.Contato = "Informe pelo menos uma forma de contato.";

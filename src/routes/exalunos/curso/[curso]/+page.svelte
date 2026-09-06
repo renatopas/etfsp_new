@@ -2,7 +2,7 @@
   import type { PageProps } from "./$types";
   import AlumniDirectory from "../../../exalunos_lista/+page.svelte";
 
-  let { data }: PageProps = $props();
+  let { data, params }: PageProps = $props();
 </script>
 
-<AlumniDirectory {data} form={null} />
+<AlumniDirectory {data} {params} form={null} />

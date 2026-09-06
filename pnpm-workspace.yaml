@@ -1,0 +1,8 @@
+onlyBuiltDependencies:
+  - "@tailwindcss/oxide"
+  - esbuild
+  - sharp
+  - sqlite3
+
+overrides:
+  cookie: ^0.7.0

@@ -375,6 +375,19 @@ que uma conta foi criada.
   momento por `exclusao@etfsp.com`.
 - O rodapé global e o formulário de cadastro apontam para a página.
 
+## 6.2 Sobre o site — `/sobre`
+
+- A página é pública, indexável e pode ser lida sem JavaScript.
+- Explica que o ETFSP.com é uma iniciativa não oficial voltada a ex-alunos da
+  ETFSP, CEFET-SP e IFSP e apresenta brevemente sua finalidade.
+- Identifica o responsável pelo site, preserva o contato público existente e
+  contém um link para a Política de Privacidade.
+- Exibe a versão da aplicação obtida do campo `version` do `package.json`
+  durante o build, sem publicar os demais campos do arquivo ou informações do
+  ambiente de execução.
+- O rodapé global contém um link “Sobre”, mas não exibe diretamente o número da
+  versão.
+
 ## 7. Galeria — `/lista_foto`
 
 ### Objetivo
