@@ -1,6 +1,6 @@
 services:
   etfsp:
-    image: etfsp:2.0.1
+    image: etfsp:latest
     environment:
       DB_PATH: /database/db.sqlite3
       FOTOS_DIR: /Fotos
