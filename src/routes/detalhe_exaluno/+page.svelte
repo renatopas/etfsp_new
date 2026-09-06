@@ -50,13 +50,13 @@
   const hasContact = $derived(
     Boolean(
       data.email ||
-        data.phone ||
-        data.whatsapp ||
-        data.homepage ||
-        data.instagram ||
-        data.facebook ||
-        data.linkedin ||
-        data.icq,
+      data.phone ||
+      data.whatsapp ||
+      data.homepage ||
+      data.instagram ||
+      data.facebook ||
+      data.linkedin ||
+      data.icq,
     ),
   );
   const hasAbout = $derived(Boolean(data.publicInfo || data.comments));

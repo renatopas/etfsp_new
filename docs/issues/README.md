@@ -32,3 +32,4 @@ do site.
 - [ISSUE-013 — Corrigir canonicalização e URLs da paginação de ex-alunos](./ISSUE-013-canonicalizacao-paginacao-exalunos.md)
 - [ISSUE-014 — Preservar orientação das fotos enviadas](./ISSUE-014-preservar-orientacao-fotos.md)
 - [ISSUE-015 — Navegar entre fotos no visualizador da galeria](./ISSUE-015-navegacao-visualizador-fotos.md)
+- [ISSUE-016 — Atualizar dependências e imagem Docker](./ISSUE-016-atualizar-dependencias-e-imagem-docker.md)

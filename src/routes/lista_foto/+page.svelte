@@ -34,13 +34,13 @@
   const hasFilters = $derived(
     Boolean(
       data.filters.title ||
-        data.filters.course ||
-        data.filters.type === "carometro" ||
-        data.filters.photoFrom ||
-        data.filters.photoTo ||
-        data.filters.graduationFrom ||
-        data.filters.graduationTo ||
-        data.filters.alumnusId,
+      data.filters.course ||
+      data.filters.type === "carometro" ||
+      data.filters.photoFrom ||
+      data.filters.photoTo ||
+      data.filters.graduationFrom ||
+      data.filters.graduationTo ||
+      data.filters.alumnusId,
     ),
   );
   function open(index: number) {
@@ -148,9 +148,9 @@
   <details
     open={Boolean(
       data.filters.photoFrom ||
-        data.filters.photoTo ||
-        data.filters.graduationFrom ||
-        data.filters.graduationTo,
+      data.filters.photoTo ||
+      data.filters.graduationFrom ||
+      data.filters.graduationTo,
     )}
   >
     <summary>Filtros avançados</summary>
