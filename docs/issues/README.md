@@ -33,3 +33,5 @@ do site.
 - [ISSUE-014 — Preservar orientação das fotos enviadas](./ISSUE-014-preservar-orientacao-fotos.md)
 - [ISSUE-015 — Navegar entre fotos no visualizador da galeria](./ISSUE-015-navegacao-visualizador-fotos.md)
 - [ISSUE-016 — Atualizar dependências e imagem Docker](./ISSUE-016-atualizar-dependencias-e-imagem-docker.md)
+- [ISSUE-017 — Criar página “Sobre”](./ISSUE-017-criar-pagina-sobre.md)
+- [ISSUE-018 — Reduzir riscos de exposição no repositório público](./ISSUE-018-reduzir-riscos-de-exposicao-no-repositorio-publico.md)
