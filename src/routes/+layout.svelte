@@ -6,17 +6,24 @@
   import Header from "../lib/Header.svelte";
   import PageContainer from "../lib/components/PageContainer.svelte";
 
+  const UMAMI_TRACKER_ID = "umami-tracker";
+
   let { children } = $props();
 
   onMount(() => {
     const umamiUrl = env.PUBLIC_UMAMI_URL?.replace(/\/+$/, "");
     const umamiWebsiteId = env.PUBLIC_UMAMI_WEBSITE_ID;
 
-    if (!umamiUrl || !umamiWebsiteId) {
+    if (
+      !umamiUrl ||
+      !umamiWebsiteId ||
+      document.getElementById(UMAMI_TRACKER_ID)
+    ) {
       return;
     }
 
     const tracker = document.createElement("script");
+    tracker.id = UMAMI_TRACKER_ID;
     tracker.defer = true;
     tracker.src = `${umamiUrl}/script.js`;
     tracker.dataset.websiteId = umamiWebsiteId;

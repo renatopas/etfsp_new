@@ -1,6 +1,6 @@
 # ISSUE-018 — Reduzir riscos de exposição no repositório público
 
-**Estado:** Aguardando validação
+**Estado:** Aguardando validação externa
 
 **Área:** Segurança, privacidade e implantação
 
@@ -194,3 +194,39 @@ requisição ao `script.js`, conforme a configuração, e nenhuma requisição a
 
 Não se prevê alteração de schema, migração, banco, fotos, autenticação ou
 conteúdo público dos perfis.
+
+## Resultado da implementação
+
+- Removida do `.gitignore` a exceção que permitia versionar `.env.test`.
+- O `.dockerignore` agora exclui arquivos `.env`, fotos, bancos, diretórios de
+  dados e backups, dumps SQL e arquivos compactados de dados persistentes.
+- Corrigido também o nome do diretório gerado `.svelte-kit` nas exclusões do
+  contexto Docker.
+- Removido de `src/app.html` o bloco fixo e duplicado do Umami, incluindo a
+  referência a `recorder.js` e o Website ID embutido.
+- O Umami permanece opcional e é carregado somente por
+  `src/routes/+layout.svelte` quando `PUBLIC_UMAMI_URL` e
+  `PUBLIC_UMAMI_WEBSITE_ID` estão configurados.
+- O script dinâmico recebeu um identificador estável e a inserção é ignorada se
+  já houver um rastreador no documento, evitando carregamento duplicado.
+- A tag `latest` do Umami foi preservada conforme decisão do responsável pelo
+  projeto.
+- `git check-ignore --no-index` confirmou as exclusões de `.env`, `.env.test`,
+  `.env.production`, `Fotos/`, `database/`, `backups/` e `db.sqlite3`; o arquivo
+  `.env.example` permanece elegível para versionamento.
+- `docker compose config --quiet` passou com valores fictícios fornecidos
+  somente ao processo de validação.
+- `docker build --no-cache -t etfsp:issue-018 .` passou. A inspeção da imagem
+  final não encontrou arquivos de ambiente, bancos, fotos, backups ou dumps.
+- `pnpm run check` passou sem erros, mantendo três avisos preexistentes em
+  outros componentes.
+- `pnpm run lint`, `pnpm run build` e `git diff --check` passaram em 5 de
+  setembro de 2026.
+
+## Validação externa pendente
+
+Não foi possível consultar as opções de segurança do GitHub porque o `gh` não
+está autenticado neste ambiente. Antes de concluir a issue, conferir no GitHub
+Secret scanning, Push protection, Dependabot alerts e Dependabot security
+updates. A proteção da branch `main` já foi confirmada pelo responsável pelo
+projeto.

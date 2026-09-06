@@ -1,11 +1,21 @@
 
-# database
+# Environment and persistent data
+.env
+.env.*
+!.env.example
+/Fotos
+/database
+/backups
+/db.sqlite3
 *.sqlite3
 *.sqlite
+*.sql
+*.sql.gz
+*.tar.gz
 
-# generated stuf
+# Generated files
 node_modules
-.svelte_kit
+.svelte-kit
 build
 
 # docker stuff

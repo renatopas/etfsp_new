@@ -1,6 +1,6 @@
 # ISSUE-017 — Criar página “Sobre”
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Conteúdo institucional e identificação da aplicação
 
