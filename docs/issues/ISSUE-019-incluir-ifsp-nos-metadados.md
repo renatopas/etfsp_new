@@ -1,6 +1,6 @@
 # ISSUE-019 — Incluir IFSP nos títulos e descrições das páginas
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Conteúdo, metadados e SEO
 
@@ -208,3 +208,24 @@ referência estritamente histórica.
 
 Não se prevê alteração de schema, migração, banco de dados, diretório de fotos
 ou consultas de dados pessoais.
+
+## Resultado da implementação
+
+- Atualizados títulos e descrições dos perfis, da relação de ex-alunos,
+  da galeria e do cadastro para incluir IFSP junto às referências gerais a
+  ETFSP.
+- Mantidos títulos e descrições já consistentes nas páginas inicial, de
+  entrada de ex-alunos, “Sobre” e Política de Privacidade.
+- Acrescentados IFSP e “Instituto Federal de São Paulo” às palavras-chave
+  globais existentes.
+- Registrada a regra editorial na especificação funcional.
+- Canonical, indexação, domínio e dados pessoais não foram alterados.
+
+## Validação executada
+
+- pnpm run check passou.
+- pnpm run lint passou.
+- pnpm run build passou.
+- A busca final confirmou que as menções de ETFSP nos metadados gerais já
+  acompanham IFSP; ocorrências restantes são nomes institucionais históricos,
+  a marca/domínio ou texto visível já consistente.
