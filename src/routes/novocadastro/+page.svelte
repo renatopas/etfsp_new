@@ -10,7 +10,7 @@
 <Meta
   canonical={absoluteSiteUrl("/novocadastro")}
   title="Cadastre-se"
-  description="Cadastre-se na relação de ex-alunos da ETFSP."
+  description="Cadastre-se na relação de ex-alunos da ETFSP, CEFET-SP e IFSP."
   robots="noindex,follow"
 />
 {#if form?.success && form.data?.course && form.data?.startYear}

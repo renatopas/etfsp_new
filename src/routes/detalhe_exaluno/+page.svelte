@@ -74,8 +74,8 @@
 
 <Meta
   {canonical}
-  title={`${data.name} — Ex-alunos ETFSP`}
-  description={`Perfil público de ${data.name}, ex-aluno da ETFSP.`}
+  title={`${data.name} — Ex-alunos ETFSP / IFSP`}
+  description={`Perfil público de ${data.name}, ex-aluno da ETFSP, CEFET-SP ou IFSP.`}
   image={profileImage}
   type="profile"
 />

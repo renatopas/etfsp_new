@@ -35,3 +35,4 @@ do site.
 - [ISSUE-016 — Atualizar dependências e imagem Docker](./ISSUE-016-atualizar-dependencias-e-imagem-docker.md)
 - [ISSUE-017 — Criar página “Sobre”](./ISSUE-017-criar-pagina-sobre.md)
 - [ISSUE-018 — Reduzir riscos de exposição no repositório público](./ISSUE-018-reduzir-riscos-de-exposicao-no-repositorio-publico.md)
+- [ISSUE-019 — Incluir IFSP nos títulos e descrições das páginas](./ISSUE-019-incluir-ifsp-nos-metadados.md)

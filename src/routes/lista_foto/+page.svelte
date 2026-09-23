@@ -103,7 +103,7 @@
 <Meta
   canonical={absoluteSiteUrl("/lista_foto")}
   title="Fotos"
-  description="Consulte as fotos enviadas pelos ex-alunos da ETFSP."
+  description="Consulte as fotos enviadas pelos ex-alunos da ETFSP, CEFET-SP e IFSP."
   robots={data.noindex ? "noindex,follow" : undefined}
 /><PageHeader
   title="Fotos"

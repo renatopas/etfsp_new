@@ -64,6 +64,18 @@ o trabalho de redesign. Regras de banco e privacidade continuam sujeitas a
 - O sitemap lista somente URLs canônicas e registros não excluídos, sem usar
   data de cadastro como data de modificação.
 
+### 1.6 Títulos e descrições
+
+- Títulos e descrições de metadados que identificam o público de modo geral
+  apresentam a sigla histórica ETFSP e a atual IFSP.
+- Em títulos curtos, usar “ETFSP / IFSP” como sufixo institucional.
+- Em descrições, preferir a sequência “ETFSP, CEFET-SP e IFSP” quando couber
+  naturalmente.
+- Manter a redação específica e útil ao conteúdo de cada página, sem repetição
+  artificial de siglas.
+- Preservar a marca ETFSP.com, o domínio etfsp.com e referências estritamente
+  históricas.
+
 ## 2. Início — `/`
 
 ### Objetivo

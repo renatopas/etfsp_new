@@ -41,7 +41,7 @@
   const pageDescription = $derived(
     data.courseLanding
       ? `Encontre ex-alunos do curso ${data.courseLanding.name} da ETFSP, CEFET-SP e IFSP.`
-      : "Consulte os perfis públicos dos ex-alunos da ETFSP.",
+      : "Consulte os perfis públicos dos ex-alunos da ETFSP, CEFET-SP e IFSP.",
   );
   const metaTitle = $derived(
     data.pagination.page > 1
@@ -83,7 +83,7 @@
 
 <Meta
   {canonical}
-  title={`${metaTitle} — ETFSP`}
+  title={`${metaTitle} — ETFSP / IFSP`}
   description={pageDescription}
   robots={data.noindex ? "noindex,follow" : undefined}
 />
