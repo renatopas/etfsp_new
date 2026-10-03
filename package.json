@@ -11,6 +11,13 @@
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "cloud:data:export": "python3 scripts/cloud_data.py export",
+    "cloud:data:init": "python3 scripts/cloud_data.py init --output .cloud-data",
+    "cloud:data:sample": "python3 scripts/cloud_data.py sample --output .cloud-data",
+    "cloud:data:check": "python3 scripts/cloud_data.py check --data-dir .cloud-data",
+    "cloud:data:pack": "python3 scripts/cloud_data.py pack --data-dir .cloud-data --output .cloud-data.tar.gz",
+    "test:cloud-data": "python3 scripts/test_cloud_data.py",
+    "validate": "pnpm run check && pnpm run lint && pnpm run build",
     "format": "prettier --write .",
     "lint": "prettier --check ."
   },

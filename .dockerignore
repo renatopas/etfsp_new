@@ -7,6 +7,9 @@
 /database
 /backups
 /db.sqlite3
+/.cloud-data
+/.cloud-data.*
+/.cloud-data*.tar.gz
 *.sqlite3
 *.sqlite
 *.sql
@@ -14,6 +17,7 @@
 *.tar.gz
 
 # Generated files
+/fixtures
 node_modules
 .svelte-kit
 build

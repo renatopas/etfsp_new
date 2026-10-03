@@ -1,10 +1,17 @@
 node_modules
+__pycache__/
+*.py[cod]
 
 # Production
 /Fotos
 /database
 /backups
 /db.sqlite3
+
+# Codex Cloud data generated locally
+/.cloud-data
+/.cloud-data.*
+/.cloud-data*.tar.gz
 
 # Output
 .output

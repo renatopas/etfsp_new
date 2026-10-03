@@ -2,7 +2,30 @@
 
 ## Estado
 
-Aguardando validação.
+Concluída em 2 de outubro de 2026.
+
+## Resultado da implementação
+
+- `fixtures/cloud/` contém 30 perfis fictícios e descaracterizados e dois
+  placeholders institucionais; não há nomes, contatos, IDs ou fotos de pessoas
+  reais.
+- `scripts/init_cloud.sh` instala dependências e cria o ambiente de dados sem
+  acessar banco, fotos ou `.env` locais.
+- `scripts/cloud_data.py init` cria o SQLite do zero com o schema canônico,
+  carrega a fixture, copia as fotos e valida o resultado.
+- O modo `export` permanece apenas como ferramenta de manutenção local.
+- `scripts/test_cloud_data.py` comprova inclusive a inicialização quando
+  nenhum banco de origem existe.
+- `docs/codex-cloud.md` contém o install script, a start skill e o handoff.
+- O SQLite gerado em `.cloud-data/` permanece ignorado pelo Git.
+
+A exportação foi repetida em diretório temporário e produziu os mesmos checksums
+de banco e fotos. Os smoke tests cobriram home, lista, perfil, galeria, entrega
+de foto, formulários e um upload em dados fictícios. `pnpm run check`,
+`pnpm run lint` e `pnpm run build` passaram.
+
+A publicação do ambiente e os testes de tarefas Cloud permanecem como trabalho
+posterior, conforme definido no escopo.
 
 ## Contexto
 
@@ -37,9 +60,10 @@ Tornar o repositório reproduzível em um ambiente Codex Cloud, permitindo
 instalar, executar, validar e revisar mudanças sem acesso ao ambiente de
 produção e sem expor dados privados.
 
-A solução deve produzir um pacote de dados sanitizado a partir do estado local,
-documentar como disponibilizá-lo ao ambiente efêmero e padronizar a execução e
-o fluxo Git das tarefas na nuvem.
+A solução deve produzir uma fixture descaracterizada e versionada, criar o
+SQLite do zero em qualquer clone limpo e padronizar a execução e o fluxo Git das
+tarefas na nuvem. O acervo local serve apenas para entender schema e cenários,
+não como conteúdo final da fixture.
 
 Ao final desta issue, o trabalho local deve estar concluído e deve existir um
 handoff reproduzível para abrir uma nova tarefa no Codex Cloud. A validação
@@ -50,15 +74,16 @@ efetiva no Cloud será feita nessa tarefa posterior.
 - Toda implementação, geração e validação que acessar as fontes reais ocorrerá
   localmente.
 - O banco local atual e o acervo local de fotos serão apenas fontes de leitura.
-- Tarefas Cloud futuras consumirão somente o pacote sanitizado ou fixtures
-  sintéticas e não terão acesso ao banco, às fotos ou ao `.env` do WSL.
+- Tarefas Cloud futuras consumirão somente a fixture sanitizada versionada e
+  não terão acesso ao banco, às fotos ou ao `.env` do WSL.
 - O schema canônico continuará sendo `scripts/initial.sql`.
 - As colunas privadas não precisam ser removidas fisicamente do schema se isso
   quebrar queries, views ou tipos existentes. Seus valores devem ficar ausentes,
   nulos ou sintéticos no banco de teste.
 - A seleção de dados deve usar uma lista positiva de campos permitidos, nunca
   uma lista de campos a remover de um `SELECT *`.
-- O pacote sanitizado e seus artefatos derivados não serão versionados.
+- Somente a fixture inteiramente sintética será versionada; o SQLite gerado, o
+  `.env`, exportações intermediárias e fontes locais permanecerão fora do Git.
 - O ambiente Cloud não receberá segredos nem dados de produção.
 - O `.env` local nunca será alterado, substituído nem usado como arquivo de
   saída. Somente `.env.example` poderá ser atualizado.
@@ -133,8 +158,10 @@ Criar um script separado de `scripts/make_db.py` que:
 12. deixe valores privados como `NULL`, vazios ou valores sintéticos seguros,
     conforme as restrições do schema;
 13. valide integridade referencial, view e consultas essenciais;
-14. grave o resultado em um caminho de saída explícito;
-15. nunca altere o banco de origem.
+14. selecione deterministicamente uma amostra representativa de, no máximo,
+    30 ex-alunos e 30 fotos;
+15. grave o resultado em um caminho de saída explícito;
+16. nunca altere o banco de origem.
 
 Se algum fluxo de escrita exigir e-mail, identificador ou outro campo não
 público, o gerador deve criar um valor fictício claramente reconhecível, sem
@@ -211,30 +238,19 @@ Documentar que não devem ser commitados:
 - manifestos que acidentalmente contenham dados identificáveis;
 - segredos ou dumps de produção.
 
-O script, a documentação e fixtures inteiramente fictícias podem ser
-versionados. O pacote gerado deve permanecer fora do Git.
+O script, a documentação e a fixture sanitizada reduzida serão versionados. O
+banco SQLite gerado em `.cloud-data/` deve permanecer fora do Git.
 
 ### 7. Entrega dos dados ao ambiente Cloud
 
-Esta etapa ainda é preparada localmente: ela deve produzir o pacote, as
-instruções e a configuração que uma tarefa Cloud posterior consumirá. Ela não
-pressupõe que a execução local já esteja dentro do ambiente Cloud.
+A carga sanitizada e as fotos reprocessadas devem ficar em `fixtures/cloud/`.
+O workspace recebe esses arquivos pelo próprio Git. O install script cria um
+SQLite novo a partir de `scripts/initial.sql` e carrega a fixture, sem depender
+de transferência privada, filesystem preparado ou persistência de outro
+workspace.
 
-Validar na interface e documentação atuais do Codex qual mecanismo está
-disponível para preparar o filesystem da tarefa. Preparar localmente a primeira
-opção compatível, nesta ordem de preferência:
-
-1. etapa de configuração do ambiente que restaure um pacote sanitizado privado;
-2. download de artefato privado por URL autenticada e temporária, com checksum;
-3. geração de um conjunto mínimo inteiramente fictício dentro do próprio
-   workspace.
-
-Se o produto permitir capturar um filesystem previamente preparado, documentar
-de forma inequívoca de onde ele é capturado. Não assumir que o Cloud vê
-automaticamente o WSL ou arquivos locais ignorados.
-
-O procedimento deve poder ser repetido quando o banco ou as fotos mudarem e não
-deve depender da persistência indefinida de um workspace efêmero.
+O procedimento deve poder ser repetido quando a fixture mudar e não pode
+consultar o WSL durante uma tarefa Cloud.
 
 ### 8. Configuração do ambiente Cloud
 
@@ -400,34 +416,38 @@ integrada ao repositório.
 
 ## Critérios de aceitação
 
-- [ ] Um clone limpo consegue instalar dependências com comando documentado.
-- [ ] O banco sanitizado é gerado sem modificar o banco de origem.
-- [ ] O `.env`, o banco e as fotos de origem permanecem inalterados, conforme
+- [x] Um clone limpo consegue instalar dependências com comando documentado.
+- [x] O banco sanitizado é gerado sem modificar o banco de origem.
+- [x] O `.env`, o banco e as fotos de origem permanecem inalterados, conforme
       verificações anteriores e posteriores à geração.
-- [ ] Uma saída existente não é sobrescrita sem uma ação explícita e segura.
-- [ ] Nenhuma etapa local executa limpeza ampla de arquivos ignorados.
-- [ ] O exportador usa lista positiva de campos.
-- [ ] Nenhum dado privado real aparece no banco, nas fotos, no manifesto, nos
+- [x] Uma saída existente não é sobrescrita sem uma ação explícita e segura.
+- [x] Nenhuma etapa local executa limpeza ampla de arquivos ignorados.
+- [x] O exportador usa lista positiva de campos.
+- [x] A exportação é limitada a 30 ex-alunos e 30 fotos e o validador rejeita
+      pacotes acima desses limites.
+- [x] Nenhum dado privado real aparece no banco, nas fotos, no manifesto, nos
       logs ou no Git.
-- [ ] O schema, a view e as queries necessárias funcionam com valores privados
+- [x] O schema, a view e as queries necessárias funcionam com valores privados
       omitidos ou sintéticos.
-- [ ] Apenas fotos públicas, não excluídas e referenciadas são copiadas.
-- [ ] Banco, fotos, `.env` e demais artefatos gerados estão ignorados pelo Git.
-- [ ] O pacote pode ser reconstruído e validado por comandos documentados.
-- [ ] A configuração preparada define `DB_PATH` e `FOTOS_DIR` sem usar
+- [x] Apenas fotos públicas, não excluídas e referenciadas são copiadas.
+- [x] SQLite gerado, `.env` e fontes locais estão ignorados pelo Git; somente
+      a fixture sanitizada e limitada é versionada.
+- [x] O banco pode ser criado do zero e validado por comandos documentados, sem
+      nenhuma fonte local.
+- [x] A configuração preparada define `DB_PATH` e `FOTOS_DIR` sem usar
       caminhos do WSL.
-- [ ] Turnstile possui configuração de teste sem segredo de produção.
-- [ ] `pnpm run check`, `pnpm run lint` e `pnpm run build` passam localmente
+- [x] Turnstile possui configuração de teste sem segredo de produção.
+- [x] `pnpm run check`, `pnpm run lint` e `pnpm run build` passam localmente
       usando o pacote sanitizado.
-- [ ] Os smoke tests dos fluxos públicos passam localmente usando apenas os dados
+- [x] Os smoke tests dos fluxos públicos passam localmente usando apenas os dados
       sanitizados.
-- [ ] O handoff contém tudo o que uma tarefa posterior precisa para iniciar no
+- [x] O handoff contém tudo o que uma tarefa posterior precisa para iniciar no
       Cloud sem acessar o WSL.
-- [ ] O guia explica tarefa, turno, workspace, ambiente, branch, commit, revisão
+- [x] O guia explica tarefa, turno, workspace, ambiente, branch, commit, revisão
       e recuperação do resultado.
-- [ ] A validação piloto e a validação de tarefas paralelas estão especificadas
+- [x] A validação piloto e a validação de tarefas paralelas estão especificadas
       como uma tarefa posterior ao merge desta preparação.
-- [ ] O procedimento de atualização dos dados está documentado.
+- [x] O procedimento de atualização dos dados está documentado.
 
 ## Validação manual esperada
 

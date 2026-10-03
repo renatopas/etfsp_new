@@ -133,6 +133,26 @@ endereço, CEP, telefone, CPF, prontuário e IP. O banco também possui flags co
 - A view `qryExAlunos` sustenta listagem e detalhe. Alterações nela podem afetar
   ambas as telas e a contagem/miniatura de fotos.
 
+## Dados de desenvolvimento e Codex Cloud
+
+- Siga `docs/codex-cloud.md` ao preparar ou usar um ambiente Cloud.
+- Nunca carregue o `.env` como script para descobrir caminhos. Passe
+  `--source-db` e `--source-photos` explicitamente ao exportador.
+- Trate banco, fotos e `.env` locais como fontes externas imutáveis. Uma branch
+  ou o `.gitignore` não os protege de comandos destrutivos.
+- Use `scripts/cloud_data.py export` somente no WSL autorizado e apenas para
+  atualizar a fixture. A inicialização Cloud usa `pnpm run cloud:data:init` e
+  nunca consulta fontes locais.
+- Mantenha `fixtures/cloud/` inteiramente sintética: no máximo 30 perfis
+  fictícios, contatos apenas em `example.invalid` e imagens institucionais
+  genéricas. Não introduza nomes, identificadores, contatos ou fotos reais.
+- Não sobrescreva `.cloud-data` nem arquivos de transporte implicitamente.
+- Não use `scripts/make_db.py`, `git clean -fdx` ou limpeza ampla na
+  preparação Cloud.
+- Antes de compartilhar ou publicar um ambiente, execute
+  `pnpm run cloud:data:check`.
+- Mantenha o ambiente privado até concluir a validação piloto.
+
 ## Critérios para concluir uma mudança
 
 - Escopo pequeno e coerente com a arquitetura atual.
