@@ -97,8 +97,12 @@ VPS; use [`.env.example`](.env.example) como referência.
 Deploy da imagem por SSH:
 
 ```sh
-just ssh=<HOSTNAME SSH> send_docker
+just ssh=<HOSTNAME SSH> send_container
 ```
+
+O comando envia a imagem, recria somente o serviço `etfsp`, aguarda um smoke
+test HTTP local na VPS e restaura a imagem anterior se a ativação falhar. O alias
+SSH padrão é `etfsp` e o diretório remoto padrão é `/home/ubuntu/etfsp`.
 
 Para execução isolada usando Docker CLI:
 
