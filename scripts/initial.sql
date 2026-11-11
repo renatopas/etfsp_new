@@ -82,6 +82,27 @@ CREATE TABLE Fotos (
   Excluido INTEGER NOT NULL CHECK (Excluido IN (0, 1)) DEFAULT 0
 ) STRICT;
 
+CREATE TABLE AdminAudit (
+  ID INTEGER PRIMARY KEY AUTOINCREMENT,
+  Acao TEXT NOT NULL CHECK (Acao IN ('desativar', 'reativar')),
+  ExAlunoID INTEGER NOT NULL REFERENCES ExAlunos (ID) ON UPDATE CASCADE,
+  Operador TEXT NOT NULL CHECK (length(Operador) BETWEEN 1 AND 64),
+  Motivo TEXT NOT NULL CHECK (length(Motivo) BETWEEN 1 AND 200),
+  Data INTEGER NOT NULL
+) STRICT;
+
+CREATE TABLE AdminAuditFotos (
+  AdminAuditID INTEGER NOT NULL REFERENCES AdminAudit (ID) ON DELETE RESTRICT,
+  FotoID INTEGER NOT NULL REFERENCES Fotos (idFoto) ON DELETE RESTRICT,
+  PRIMARY KEY (AdminAuditID, FotoID)
+) STRICT;
+
+INSERT INTO SchemaMigrations (ID, AppliedAt)
+VALUES (
+  '2026-11-10-admin-exaluno',
+  CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
+);
+
 CREATE VIEW qryExAlunos AS
 SELECT
   ID,

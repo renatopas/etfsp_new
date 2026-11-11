@@ -81,6 +81,60 @@ O resultado ainda está na mesma VPS e **não é um backup completo** até ser
 copiado para armazenamento externo. Automatize o envio e teste periodicamente a
 restauração em outra máquina.
 
+## Administração eventual de ex-alunos
+
+A desativação e a reativação de ex-alunos são feitas manualmente por SSH, com um
+comando interativo executado dentro do container da aplicação. O container já
+recebe `DB_PATH=/database/db.sqlite3` e o volume gravável correspondente; não
+carregue o `.env` como script nem informe outro banco por conveniência.
+
+Depois de implantar pela primeira vez uma imagem que contenha a ISSUE-021, faça
+um backup e aplique a migração administrativa explicitamente:
+
+```sh
+ssh etfsp
+cd /home/ubuntu/etfsp
+docker compose exec etfsp pnpm admin:exaluno migrar
+```
+
+A migração é idempotente. Ela cria somente as tabelas de auditoria e registra
+seu identificador em `SchemaMigrations`.
+
+Para localizar e conferir o cadastro:
+
+```sh
+docker compose exec etfsp pnpm admin:exaluno buscar --nome "Nome procurado"
+docker compose exec etfsp pnpm admin:exaluno consultar --id 123
+```
+
+Para alterar o estado, passe à aplicação o usuário da sessão SSH:
+
+```sh
+docker compose exec \
+  -e ADMIN_OPERATOR="$(id -un)" \
+  etfsp \
+  pnpm admin:exaluno desativar --id 123
+
+docker compose exec \
+  -e ADMIN_OPERATOR="$(id -un)" \
+  etfsp \
+  pnpm admin:exaluno reativar --id 123
+```
+
+Os comandos mostram apenas os dados necessários, solicitam um motivo curto e
+exigem que o mesmo ID seja digitado novamente. Não coloque e-mail, CPF,
+telefone, endereço nem o conteúdo da solicitação no motivo.
+
+A desativação marca logicamente o ex-aluno e todas as fotos ativas que ele
+enviou. Os arquivos permanecem em `FOTOS_DIR`, mas deixam de ser entregues pelas
+rotas públicas. A reativação publica novamente **todas** as fotos vinculadas que
+estiverem excluídas, inclusive fotos que já estavam excluídas antes da
+desativação do ex-aluno. Confira com cuidado a contagem mostrada antes de
+confirmar essa operação.
+
+As alterações de cadastro, fotos e auditoria usam uma única transação. Não
+execute `UPDATE` manual no SQLite para substituir esse fluxo.
+
 ## Atualizações
 
 Faça um backup antes de atualizar. Depois:
