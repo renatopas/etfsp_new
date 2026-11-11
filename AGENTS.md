@@ -30,6 +30,7 @@ Comandos de validação:
 
 ```sh
 pnpm run test:admin-exaluno
+pnpm run test:deploy
 pnpm run check
 pnpm run lint
 pnpm run build
@@ -41,10 +42,10 @@ antes de executar; não os use se uma reescrita global de formatação puder
 misturar alterações alheias à tarefa.
 
 Não há uma suíte automatizada abrangente. O comando administrativo de ex-alunos
-possui testes próprios em `pnpm run test:admin-exaluno`; os dados Cloud possuem
-`pnpm run test:cloud-data`. Em mudanças funcionais, execute os testes afetados,
-`pnpm run check` e o build; descreva qualquer validação manual relevante no
-handoff.
+possui testes próprios em `pnpm run test:admin-exaluno`; o deploy possui
+`pnpm run test:deploy`; os dados Cloud possuem `pnpm run test:cloud-data`. Em
+mudanças funcionais, execute os testes afetados, `pnpm run check` e o build;
+descreva qualquer validação manual relevante no handoff.
 
 ## Mapa do repositório
 

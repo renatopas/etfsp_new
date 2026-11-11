@@ -1,5 +1,6 @@
 # set shell := ["bash", "-eux", "-o", "pipefail", "-c"]
 ssh := "etfsp"
+deploy_dir := "/home/ubuntu/etfsp"
 
 run: fmt
   pnpm run dev
@@ -17,4 +18,4 @@ build_docker: fmt
   docker build . -t etfsp:latest -t etfsp:$(jq -r .version < package.json)
 
 send_container: build_docker
-  docker save etfsp:$(jq -r .version < package.json) etfsp:latest | zstd -T8 -5 | pv -W | ssh etfsp 'docker load'
+  ./deploy/send_container.sh "{{ssh}}" "{{deploy_dir}}"

@@ -137,11 +137,38 @@ execute `UPDATE` manual no SQLite para substituir esse fluxo.
 
 ## Atualizações
 
-Faça um backup antes de atualizar. Depois:
+Faça um backup antes de atualizar:
+
+```sh
+ssh etfsp 'cd /home/ubuntu/etfsp && ./backup.sh'
+```
+
+No checkout local, publique a aplicação com:
+
+```sh
+just send_container
+```
+
+O alvo constrói e envia `etfsp:latest`, recria somente o serviço `etfsp` e
+aguarda uma resposta HTTP em `127.0.0.1:3000`. Se a recriação ou o smoke test
+falhar, a tag `etfsp:latest` anterior é restaurada e o serviço é recriado
+novamente. A imagem nova permanece carregada para diagnóstico, mas deixa de ser
+a imagem ativa.
+
+Para outro alias SSH ou diretório remoto:
+
+```sh
+just ssh=outro-host deploy_dir=/outro/diretorio send_container
+```
+
+O envio da imagem não executa migrações de banco. Quando uma release exigir
+migração, execute separadamente o comando documentado pela respectiva issue.
+
+Para atualizar os demais serviços e conferir o conjunto:
 
 ```sh
 docker compose pull
-docker compose up -d
+docker compose up -d umami umami-db
 docker compose ps
 docker compose logs --tail=100 umami umami-db etfsp
 ```

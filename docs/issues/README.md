@@ -38,3 +38,4 @@ do site.
 - [ISSUE-019 — Incluir IFSP nos títulos e descrições das páginas](./ISSUE-019-incluir-ifsp-nos-metadados.md)
 - [ISSUE-020 — Preparar o projeto para trabalho no Codex Cloud](./ISSUE-020-preparar-projeto-para-codex-cloud.md)
 - [ISSUE-021 — Administrar exclusão lógica de ex-alunos por SSH](./ISSUE-021-administrar-exclusao-logica-por-ssh.md)
+- [ISSUE-022 — Recriar e validar o container no deploy](./ISSUE-022-recriar-e-validar-container-no-deploy.md)
