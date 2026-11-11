@@ -35,3 +35,9 @@ compose.yml
 # misc
 *.md
 scripts
+!scripts/
+scripts/*
+!scripts/admin_exaluno.mjs
+!scripts/migrations/
+scripts/migrations/*
+!scripts/migrations/*.sql

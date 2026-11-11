@@ -36,5 +36,6 @@ vite.config.ts.timestamp-*
 
 *.sqlite3
 *.sql
+!/scripts/migrations/*.sql
 *.sql.gz
 *.tar.gz

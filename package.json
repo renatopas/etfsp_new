@@ -16,8 +16,10 @@
     "cloud:data:sample": "python3 scripts/cloud_data.py sample --output .cloud-data",
     "cloud:data:check": "python3 scripts/cloud_data.py check --data-dir .cloud-data",
     "cloud:data:pack": "python3 scripts/cloud_data.py pack --data-dir .cloud-data --output .cloud-data.tar.gz",
+    "admin:exaluno": "node scripts/admin_exaluno.mjs",
+    "test:admin-exaluno": "node --test scripts/test_admin_exaluno.mjs",
     "test:cloud-data": "python3 scripts/test_cloud_data.py",
-    "validate": "pnpm run check && pnpm run lint && pnpm run build",
+    "validate": "pnpm run test:admin-exaluno && pnpm run check && pnpm run lint && pnpm run build",
     "format": "prettier --write .",
     "lint": "prettier --check ."
   },
