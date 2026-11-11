@@ -162,3 +162,14 @@ endereço, CEP, telefone, CPF, prontuário e IP. O banco também possui flags co
 - Operações de banco e arquivo terminam antes de uma resposta de sucesso.
 - `pnpm run check`, `pnpm run lint` e `pnpm run build` passam, ou limitações são
   relatadas claramente.
+
+## Fluxo Git
+
+- Nunca faça alterações diretamente na branch `main`.
+- Antes de editar arquivos, crie uma branch dedicada a partir de uma `main`
+  limpa e atualizada.
+- Mantenha cada branch restrita a uma mudança coerente e use um nome que
+  identifique a issue ou o objetivo do trabalho.
+- Registre as alterações em commits claros e abra um Pull Request para revisão.
+- A integração na `main` deve ocorrer somente pelo Pull Request, respeitando as
+  validações e proteções configuradas no repositório.
