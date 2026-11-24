@@ -39,3 +39,15 @@ do site.
 - [ISSUE-020 — Preparar o projeto para trabalho no Codex Cloud](./ISSUE-020-preparar-projeto-para-codex-cloud.md)
 - [ISSUE-021 — Administrar exclusão lógica de ex-alunos por SSH](./ISSUE-021-administrar-exclusao-logica-por-ssh.md)
 - [ISSUE-022 — Recriar e validar o container no deploy](./ISSUE-022-recriar-e-validar-container-no-deploy.md)
+- [ISSUE-023 — Corrigir defeitos visuais e remover dependências sem uso](./ISSUE-023-corrigir-defeitos-visuais.md)
+- [ISSUE-024 — Base visual: tipografia e remoção do layout legado](./ISSUE-024-base-visual-tipografia.md)
+- [ISSUE-025 — Novo cabeçalho e marca](./ISSUE-025-cabecalho-e-marca.md)
+- [ISSUE-026 — Página inicial mais viva](./ISSUE-026-pagina-inicial.md)
+- [ISSUE-027 — Galeria: grade mais fotográfica e filtros compactos](./ISSUE-027-galeria-grade-e-filtros.md)
+- [ISSUE-028 — Visualizador de fotos em tela cheia](./ISSUE-028-visualizador-tela-cheia.md)
+- [ISSUE-029 — Relação e perfil de ex-alunos](./ISSUE-029-lista-e-perfil-exalunos.md)
+- [ISSUE-030 — Formulários de cadastro e envio de foto](./ISSUE-030-formularios-cadastro-e-foto.md)
+
+As ISSUES 023 a 030 formam a modernização da interface. Ordem sugerida: 023 →
+024 → 025, depois 026 a 030 em qualquer ordem, respeitando a dependência da 028
+em relação à 027.
