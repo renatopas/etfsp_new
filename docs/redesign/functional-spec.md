@@ -468,20 +468,28 @@ Permitir ver fotos rapidamente e refinar o acervo sem uma grade rígida.
 
 ### Visualização ampliada
 
-- Acionar uma miniatura abre a imagem ampliada em diálogo acessível quando
-  JavaScript estiver disponível.
-- O diálogo contém título, metadados, botão textual “Fechar” e fecha com
-  `Escape`. O foco retorna à miniatura de origem.
+- Acionar uma miniatura abre a imagem em um visualizador de tela cheia
+  (`PhotoDialog`, elemento `dialog`) quando JavaScript estiver disponível.
+- O visualizador tem fundo escuro e controles sobrepostos: posição (“2 de 15”)
+  e botão “Fechar” no topo, botões anterior/próxima nas laterais e título com
+  metadados na parte inferior. Com uma única foto, não exibe posição nem setas.
+- Fecha pelo botão “Fechar” e por `Escape`. O foco retorna à miniatura de
+  origem, e a página de fundo não rola enquanto ele está aberto.
 - O diálogo permite percorrer as fotos carregadas na página atual por botões
   anterior/próxima, pelas setas do teclado e por gesto horizontal em
   dispositivos com toque. A navegação respeita os limites da página, informa a
   posição atual e não carrega resultados de outras páginas.
 - O gesto horizontal usa distância mínima e não deve confundir rolagem vertical
   ou toque simples com uma troca de foto.
-- A imagem ampliada usa a largura disponível sem ser reduzida por um limite
-  fixo de altura. O diálogo pode rolar verticalmente e o gesto nativo de pinça
-  para zoom permanece disponível; gestos com mais de um dedo não acionam a
-  navegação entre fotos.
+- A imagem ocupa a maior área possível entre o topo e a legenda, mantendo a
+  proporção, sem cortes e sem ampliação além do tamanho do arquivo
+  (`object-fit: scale-down`), em retrato e paisagem.
+- O gesto nativo de pinça para zoom permanece disponível; gestos com mais de
+  um dedo não acionam a navegação. Enquanto a página estiver ampliada
+  (`visualViewport.scale > 1`), o gesto de um dedo apenas move a área ampliada
+  e não troca de foto.
+- As fotos anterior e seguinte são pré-carregadas. A troca usa esmaecimento de
+  150 ms, desativado com `prefers-reduced-motion: reduce`.
 - Sem JavaScript, o link abre o arquivo da foto na mesma aba.
 - Não implementar comentários, curtidas, download em lote ou compartilhamento.
 

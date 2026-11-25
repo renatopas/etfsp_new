@@ -5,22 +5,10 @@
   import PageHeader from "$lib/components/PageHeader.svelte";
   import Pagination from "$lib/components/Pagination.svelte";
   import EmptyState from "$lib/components/EmptyState.svelte";
+  import PhotoDialog from "$lib/components/PhotoDialog.svelte";
   import { absoluteSiteUrl } from "$lib/site";
   let { data }: PageProps = $props();
-  let dialog: HTMLDialogElement;
-  let selectedIndex = $state<number | undefined>();
-  let pointerStart = $state<{ id: number; x: number; y: number }>();
-  const activeTouchPointers = new Set<number>();
-  let gestureHadMultiplePointers = false;
-  const selected = $derived(
-    selectedIndex === undefined ? undefined : data.photos[selectedIndex],
-  );
-  const hasPrevious = $derived(
-    selectedIndex !== undefined && selectedIndex > 0,
-  );
-  const hasNext = $derived(
-    selectedIndex !== undefined && selectedIndex < data.photos.length - 1,
-  );
+  let viewer = $state<PhotoDialog>();
   const params = $derived({
     titulo: data.filters.title || undefined,
     curso: data.filters.course,
@@ -100,62 +88,6 @@
     }
     return filters;
   });
-
-  function open(index: number) {
-    selectedIndex = index;
-    dialog?.showModal();
-  }
-  function close() {
-    dialog?.close();
-  }
-  function previous() {
-    if (hasPrevious && selectedIndex !== undefined) selectedIndex -= 1;
-  }
-  function next() {
-    if (hasNext && selectedIndex !== undefined) selectedIndex += 1;
-  }
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      previous();
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault();
-      next();
-    }
-  }
-  function handlePointerDown(event: PointerEvent) {
-    if (event.pointerType !== "touch") return;
-    activeTouchPointers.add(event.pointerId);
-    if (activeTouchPointers.size > 1) {
-      gestureHadMultiplePointers = true;
-      pointerStart = undefined;
-      return;
-    }
-    pointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
-  }
-  function handlePointerUp(event: PointerEvent) {
-    if (event.pointerType !== "touch") return;
-    activeTouchPointers.delete(event.pointerId);
-    if (gestureHadMultiplePointers) {
-      pointerStart = undefined;
-      if (activeTouchPointers.size === 0) gestureHadMultiplePointers = false;
-      return;
-    }
-    if (!pointerStart || event.pointerId !== pointerStart.id) return;
-    const horizontal = event.clientX - pointerStart.x;
-    const vertical = event.clientY - pointerStart.y;
-    pointerStart = undefined;
-
-    if (Math.abs(horizontal) < 50 || Math.abs(horizontal) <= Math.abs(vertical))
-      return;
-    if (horizontal > 0) previous();
-    else next();
-  }
-  function handlePointerCancel(event: PointerEvent) {
-    activeTouchPointers.delete(event.pointerId);
-    pointerStart = undefined;
-    if (activeTouchPointers.size === 0) gestureHadMultiplePointers = false;
-  }
 </script>
 
 <Meta
@@ -293,7 +225,7 @@
             href={photo.imageUrl}
             onclick={(event) => {
               event.preventDefault();
-              open(index);
+              viewer?.open(index);
             }}
           >
             <img
@@ -343,66 +275,7 @@
     </EmptyState>
   {/if}
 </section>
-<dialog
-  bind:this={dialog}
-  aria-labelledby="photo-dialog-title"
-  onkeydown={handleKeydown}
-  onclose={() => {
-    selectedIndex = undefined;
-    pointerStart = undefined;
-    activeTouchPointers.clear();
-    gestureHadMultiplePointers = false;
-  }}
->
-  {#if selected && selectedIndex !== undefined}<div class="dialog-header">
-      <h2 id="photo-dialog-title">{selected.title ?? "Foto enviada"}</h2>
-      <button class="button button--quiet" onclick={close}>Fechar</button>
-    </div>
-    <div
-      class="photo-viewer"
-      role="presentation"
-      onpointerdown={handlePointerDown}
-      onpointerup={handlePointerUp}
-      onpointercancel={handlePointerCancel}
-    >
-      <img
-        src={selected.imageUrl}
-        alt={selected.title ? `Foto: ${selected.title}` : "Foto enviada"}
-      />
-    </div>
-    <div class="viewer-controls">
-      <button
-        class="button button--secondary"
-        type="button"
-        aria-label="Foto anterior"
-        disabled={!hasPrevious}
-        onclick={previous}>← Anterior</button
-      >
-      <p class="photo-position" aria-live="polite">
-        Foto {selectedIndex + 1} de {data.photos.length}
-      </p>
-      <button
-        class="button button--secondary"
-        type="button"
-        aria-label="Próxima foto"
-        disabled={!hasNext}
-        onclick={next}>Próxima →</button
-      >
-    </div>
-    {#if selected.course || selected.className || selected.photoYear || selected.graduationYear}
-      <div class="photo-metadata">
-        {#if selected.course || selected.className}<p>
-            {selected.course}{selected.className
-              ? `${selected.course ? " · " : ""}Turma ${selected.className}`
-              : ""}
-          </p>{/if}
-        {#if selected.photoYear}<p>Foto: {selected.photoYear}</p>{/if}
-        {#if selected.graduationYear}<p>
-            Formatura: {selected.graduationYear}
-          </p>{/if}
-      </div>
-    {/if}{/if}
-</dialog>
+<PhotoDialog bind:this={viewer} photos={data.photos} />
 
 <style>
   .filters {
@@ -638,58 +511,5 @@
     .ranges {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
-  }
-  dialog {
-    width: min(90vw, 60rem);
-    max-height: 92vh;
-    overflow: auto;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
-  }
-  .dialog-header,
-  .viewer-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3);
-  }
-  .dialog-header h2 {
-    min-width: 0;
-  }
-  .dialog-header button {
-    flex: 0 0 auto;
-  }
-  .photo-viewer {
-    display: grid;
-    place-items: center;
-    margin-top: var(--space-3);
-    touch-action: pan-y pinch-zoom;
-  }
-  .photo-viewer img {
-    display: block;
-    width: auto;
-    height: auto;
-    max-width: 100%;
-  }
-  .viewer-controls {
-    margin-top: var(--space-3);
-  }
-  .viewer-controls button {
-    min-height: 2.75rem;
-  }
-  .viewer-controls button:disabled {
-    cursor: not-allowed;
-    opacity: 0.45;
-  }
-  .photo-position {
-    text-align: center;
-    color: var(--color-text-muted);
-  }
-  .photo-metadata {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2) var(--space-4);
-    margin-top: var(--space-3);
   }
 </style>

@@ -54,6 +54,13 @@ hexadecimais avulsas.
   --color-danger-surface: #fae7e7;
   --color-focus: #0b70b5;
 
+  /* Visualizador de fotos (fundo escuro) */
+  --color-viewer: #0e1519;
+  --color-viewer-text: #f4f6f7;
+  --color-viewer-text-muted: #b9c5cb;
+  --color-viewer-control: rgb(0 0 0 / 0.55);
+  --color-viewer-control-hover: rgb(0 0 0 / 0.8);
+
   /* Tipografia */
   --font-sans:
     system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -236,8 +243,12 @@ a pessoa enquanto ela ainda digita.
   fundo neutro, cantos arredondados e `object-fit: scale-down` (foto inteira,
   sem corte nem ampliação), seguida de metadados textuais, sem moldura de
   cartão. Hover e foco destacam a miniatura inteira.
-- `PhotoDialog` usa elemento `dialog` quando suportado, título acessível,
-  fechamento por botão e `Escape`, retenção de foco e retorno à origem.
+- `PhotoDialog` (`src/lib/components/PhotoDialog.svelte`) usa elemento
+  `dialog` em tela cheia, título acessível, fechamento por botão e `Escape`,
+  retenção de foco e retorno à origem. É a única superfície escura do site e
+  usa os tokens `--color-viewer*`. Botões sobre a foto têm fundo escuro
+  translúcido e borda clara, área mínima de 44 px e nome acessível em
+  português.
 - O link para a foto permanece válido sem o diálogo.
 
 ### `FilterPanel`
@@ -290,7 +301,8 @@ a pessoa enquanto ela ainda digita.
 ```
 
 - Não remover outline sem substituto equivalente.
-- Transições se limitam a cor, borda e opacidade, em torno de 150 ms.
+- Transições se limitam a cor, borda e opacidade, em torno de 150 ms. A troca
+  de foto no `PhotoDialog` usa esmaecimento de 150 ms.
 - Respeitar `prefers-reduced-motion: reduce` e desativar movimentos não
   essenciais.
 - Não usar carrossel automático, parallax, rolagem forçada ou animação de
