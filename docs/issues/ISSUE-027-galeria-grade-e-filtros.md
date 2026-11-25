@@ -1,6 +1,6 @@
 # ISSUE-027 — Galeria: grade mais fotográfica e filtros compactos
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Consulta de fotos
 
@@ -102,3 +102,49 @@ teste adicionais em uma cópia descartável).
 - `src/lib/components/` (chip de filtro e, se útil, `PhotoCard`)
 
 Não há alteração server-side, de schema ou de migração.
+
+## Decisões registradas
+
+- **Miniaturas sem corte.** As miniaturas usam `object-fit: scale-down` em uma
+  caixa 4:3 com fundo neutro, em vez de `cover`. A foto aparece inteira (o
+  `cover` cortava bordas e, em fotos verticais, podia cortar pessoas) e nunca é
+  ampliada além do arquivo armazenado, o que também resolve o desvio
+  registrado na ISSUE-023. Miniaturas geradas pelo upload são maiores que a
+  coluna e são apenas reduzidas.
+- **Sem descrição sob o título.** A frase “Busque fotos por título, curso e
+  período.” repetia os rótulos do formulário. Foi removida para que “Enviar
+  uma foto” fique ao lado do título e as fotos apareçam mais cedo no celular.
+
+## Resultado da implementação
+
+- Filtros reorganizados em um único formulário `GET`:
+  - título, curso e tipo na mesma linha no computador, um abaixo do outro no
+    celular;
+  - “Tipo de foto” como controle segmentado com rádios nativos, operável por
+    teclado e sem JavaScript;
+  - filtros avançados em `details`, abertos quando ativos e ocupando a largura
+    toda;
+  - “Buscar” ao final.
+- Chips de filtros ativos acima da grade (título, curso, carômetro, ano da
+  foto, formatura e fotos de um ex-aluno), cada um com link que remove apenas
+  aquele filtro; com mais de um, “Limpar filtros”. A contagem virou texto
+  secundário na mesma linha.
+- Grade sem moldura de cartão: miniatura com cantos arredondados, destaque de
+  hover/foco na miniatura inteira, título em uma linha com reticências, curso
+  pelo nome curto e turma, e anos com rótulos textuais. `auto-fill` evita
+  esticar poucos resultados.
+- O visualizador (ISSUE-028) não foi alterado e continua funcionando.
+- Especificação funcional (seção 7) e design system (`PhotoCard`,
+  `FilterPanel` e novo chip de filtro) atualizados.
+- Validação em 25 de novembro de 2026:
+  - `pnpm run validate` e `pnpm run test:cloud-data` passaram (o `check`
+    mantém o aviso anterior de `src/lib/PrettyDate.svelte`).
+  - Em uma cópia descartável da fixture, com 10 fotos gerais (algumas
+    verticais), os filtros foram combinados e cada chip removeu apenas o seu
+    parâmetro.
+  - Em 390 × 844, a primeira linha de fotos aparece inteira sem rolar (de 549
+    a 678 px); em 390 × 664, ela começa visível.
+  - Sem rolagem horizontal em 320 px, com e sem filtros.
+  - O tipo de foto muda por teclado (setas) e a busca envia o valor.
+  - Sem JavaScript, a busca funciona e a miniatura abre o arquivo da foto.
+  - No visualizador, “Próxima foto” avança de “3 de 10” para “4 de 10”.
