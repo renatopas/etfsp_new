@@ -138,11 +138,17 @@ O CSS deve ser mobile-first. Não existe largura fixa da página.
 
 ### `SiteHeader`
 
-- Marca textual ou imagem responsiva com dimensões declaradas.
-- A partir de `48rem`, navegação expandida com os quatro destinos visíveis; o
-  botão “Menu” não é exibido.
-- Abaixo de `48rem`, botão de menu móvel com os mesmos destinos no fluxo da
-  página.
+- Marca em SVG (`src/lib/components/Brand.svelte`), decorativa dentro de um
+  link para `/` com nome acessível.
+- Fundo na superfície do site e linha inferior discreta; sem imagem de fundo e
+  sem o laranja da identidade antiga. O cabeçalho não fica fixo ao rolar.
+- A partir de `48rem`, navegação expandida com os quatro destinos visíveis como
+  links de texto; o botão “Menu” não é exibido.
+- Abaixo de `48rem`, marca e botão “Menu” na mesma linha (altura total de até
+  64 px) e painel com os mesmos destinos no fluxo da página. Sem JavaScript, a
+  navegação aparece aberta e o botão não é exibido.
+- O destino atual usa cor primária, sublinhado de 3 px e `aria-current`.
+- “Cadastre-se” tem aparência de botão primário em todas as larguras.
 - Recebe ou deriva a rota ativa; não exige que cada página passe manualmente um
   nome de aba quando a informação já está disponível em `$page.url.pathname`.
 - Links sempre começam por `/`.
@@ -251,9 +257,12 @@ a pessoa enquanto ela ainda digita.
 
 ## 6. Imagens e identidade existente
 
-- Avaliar o logotipo existente em fundo transparente. Se a resolução for
-  insuficiente, recriar apenas a composição tipográfica; não inventar um brasão
-  ou símbolo institucional.
+- A marca foi recriada em SVG a partir da composição tipográfica do logotipo
+  legado (“EX / ALUNOS”, barra vertical e “Escola Técnica / Federal de São
+  Paulo”), em azul primário e com a serifa dos títulos. Não inventar brasão ou
+  símbolo institucional.
+- A imagem de compartilhamento padrão é `static/images/og-etfsp.png`
+  (1200 × 630), usada por `Meta.svelte` quando a página não informa outra.
 - Remover GIFs usados como setas, bullets, botões “novo” e decoração.
 - Preservar fotos do acervo sem filtros de cor ou cortes irreversíveis.
 - Definir `width` e `height` ou `aspect-ratio` para evitar deslocamento durante o
