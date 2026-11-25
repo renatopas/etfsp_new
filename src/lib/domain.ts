@@ -52,6 +52,15 @@ export function courseLabel(course: Course): string {
   return `${course} — ${COURSE_CATALOG[course].name}`;
 }
 
+/**
+ * Nome curto do curso para exibição. Códigos legados fora do catálogo são
+ * exibidos como estão.
+ */
+export function courseShortName(code: string | undefined): string | undefined {
+  if (!code) return undefined;
+  return isCourse(code) ? COURSE_CATALOG[code].shortName : code;
+}
+
 export const ALUMNI_ORDER_TO_LEGACY = {
   nome: "ALFA",
   cursoIngresso: "CURSOINGRESSO",
