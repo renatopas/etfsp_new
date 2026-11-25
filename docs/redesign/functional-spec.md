@@ -326,8 +326,9 @@ Permitir cadastro aberto em uma única página e sem criar conta.
 - O formulário é uma página única com três grupos visuais: “Dados principais”,
   “Contato” e “Texto para seu perfil”.
 - Nome, curso e os dois anos são os únicos campos individualmente obrigatórios.
-- A página informa uma vez que todos os dados coletados são públicos e explica
-  que `(*)` identifica campo obrigatório.
+- A página informa uma vez que todos os dados coletados são públicos. Os campos
+  obrigatórios trazem o texto “(obrigatório)” junto ao rótulo; os demais não
+  recebem marcação. A mesma convenção vale para o envio de foto.
 - O bloco de contato exige ao menos uma opção válida, sem tornar obrigatório um
   contato específico.
 - Remover o seletor “Operação: Cadastro/Atualização”. O servidor atual não
@@ -531,8 +532,11 @@ cadastro ela será associada.
   “Trocar”.
 - Manter o ID em campo oculto apenas como transporte, nunca como prova de
   identidade.
-- Sem JavaScript, manter o campo numérico de identificação, sujeito à validação
-  no servidor. A ajuda visível da busca limita-se a “Digite pelo menos 3
+- Com JavaScript, exibir somente a busca; o envio sem escolher um resultado é
+  interrompido com a mensagem “Escolha o ex-aluno na lista antes de enviar.” e
+  o foco volta à busca. Sem JavaScript, a busca não é exibida e o campo
+  numérico “Número do cadastro do ex-aluno” aparece, sujeito à validação no
+  servidor. A ajuda visível da busca limita-se a “Digite pelo menos 3
   caracteres.” e não descreve esse mecanismo técnico.
 - O servidor valida que o ID existe e que `Excluido = 0`; o nome enviado pelo
   navegador é ignorado e relido do banco.
@@ -562,8 +566,15 @@ presumir que todos conhecem o termo.
 ### Arquivo e pré-visualização
 
 - O seletor aceita câmera ou biblioteca em celulares sem forçar apenas câmera.
+- Com JavaScript, o campo é uma área com o botão “Escolher foto” e a dica “ou
+  arraste a imagem para cá”; arrastar um arquivo para a área o seleciona. Sem
+  JavaScript, o seletor nativo continua visível e funcional.
 - Após escolher, mostrar pré-visualização, nome e tamanho do arquivo.
+- Formato fora da lista ou arquivo acima de 5 MB é recusado na hora, com
+  mensagem junto ao campo, e a seleção é desfeita.
 - Permitir trocar o arquivo antes de enviar.
+- “É carômetro?” e “É foto pessoal?” são escolhas “Não / Sim” lado a lado, com
+  a explicação logo abaixo da pergunta.
 - A pré-visualização é conveniência; tipo, tamanho e decodificação são validados
   novamente no servidor.
 - Não oferecer botão “Apaga tudo”.

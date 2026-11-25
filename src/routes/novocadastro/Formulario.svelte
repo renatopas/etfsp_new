@@ -15,16 +15,22 @@
   } = $props();
 
   let submitting = $state(false);
+  let summary = $state<HTMLElement>();
   let values = $derived(form?.values ?? {});
   const error = (name: string) => form?.errors?.[name];
+
+  // Leva o foco ao resumo de erros após um envio com problemas.
+  $effect(() => {
+    if (form?.errors && summary) summary.focus();
+  });
 </script>
 
 {#if form?.errors?.form}
-  <div class="notice notice--error" role="alert">{form.errors.form}</div>
+  <div class="error-summary" role="alert">{form.errors.form}</div>
 {/if}
 
 {#if form?.errors && Object.keys(form.errors).some((name) => name !== "form")}
-  <div class="notice notice--error" tabindex="-1" role="alert">
+  <div class="error-summary" tabindex="-1" role="alert" bind:this={summary}>
     <strong>Revise os campos indicados.</strong>
     <ul>
       {#each Object.entries(form.errors).filter(([name]) => name !== "form") as [name, message]}
@@ -36,10 +42,10 @@
 
 <div class="form-intro">
   <p>Todos os dados informados serão publicados no seu perfil.</p>
-  <p>(*) Campo obrigatório.</p>
 </div>
 
 <form
+  class="form"
   method="POST"
   use:enhance={() => {
     submitting = true;
@@ -49,11 +55,14 @@
     };
   }}
 >
-  <fieldset>
+  <fieldset class="form-section">
     <legend>Dados principais</legend>
 
-    <div class="field">
-      <label for="Nome">Nome completo (*)</label>
+    <div class="form-field">
+      <label for="Nome"
+        >Nome completo
+        <span class="form-required">(obrigatório)</span></label
+      >
       <input
         id="Nome"
         name="Nome"
@@ -66,11 +75,11 @@
         aria-describedby={error("Nome") ? "Nome-error" : undefined}
       />
       {#if error("Nome")}
-        <p id="Nome-error" class="field-error">{error("Nome")}</p>
+        <p id="Nome-error" class="form-error">{error("Nome")}</p>
       {/if}
     </div>
 
-    <div class="field">
+    <div class="form-field">
       <label for="Apelidos">Apelido</label>
       <input
         id="Apelidos"
@@ -81,12 +90,15 @@
         aria-describedby={error("Apelidos") ? "Apelidos-error" : undefined}
       />
       {#if error("Apelidos")}
-        <p id="Apelidos-error" class="field-error">{error("Apelidos")}</p>
+        <p id="Apelidos-error" class="form-error">{error("Apelidos")}</p>
       {/if}
     </div>
 
-    <div class="field">
-      <label for="Curso">Curso (*)</label>
+    <div class="form-field">
+      <label for="Curso"
+        >Curso
+        <span class="form-required">(obrigatório)</span></label
+      >
       <select
         id="Curso"
         name="Curso"
@@ -101,13 +113,16 @@
         {/each}
       </select>
       {#if error("Curso")}
-        <p id="Curso-error" class="field-error">{error("Curso")}</p>
+        <p id="Curso-error" class="form-error">{error("Curso")}</p>
       {/if}
     </div>
 
-    <div class="field-grid">
-      <div class="field">
-        <label for="AnoInicio">Ano em que entrou (*)</label>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="AnoInicio"
+          >Ano em que entrou
+          <span class="form-required">(obrigatório)</span></label
+        >
         <input
           id="AnoInicio"
           name="AnoInicio"
@@ -122,12 +137,15 @@
           aria-describedby={error("AnoInicio") ? "AnoInicio-error" : undefined}
         />
         {#if error("AnoInicio")}
-          <p id="AnoInicio-error" class="field-error">{error("AnoInicio")}</p>
+          <p id="AnoInicio-error" class="form-error">{error("AnoInicio")}</p>
         {/if}
       </div>
 
-      <div class="field">
-        <label for="AnoTermino">Ano em que saiu (*)</label>
+      <div class="form-field">
+        <label for="AnoTermino"
+          >Ano em que saiu
+          <span class="form-required">(obrigatório)</span></label
+        >
         <input
           id="AnoTermino"
           name="AnoTermino"
@@ -144,24 +162,25 @@
             : undefined}
         />
         {#if error("AnoTermino")}
-          <p id="AnoTermino-error" class="field-error">{error("AnoTermino")}</p>
+          <p id="AnoTermino-error" class="form-error">{error("AnoTermino")}</p>
         {/if}
       </div>
     </div>
   </fieldset>
 
   <fieldset
+    class="form-section"
     id="Contato"
     aria-describedby={error("Contato") ? "Contato-error" : undefined}
   >
     <legend>Contato</legend>
-    <p class="section-help">Informe pelo menos um.</p>
+    <p class="form-section__help">Informe pelo menos um.</p>
     {#if error("Contato")}
-      <p id="Contato-error" class="field-error">{error("Contato")}</p>
+      <p id="Contato-error" class="form-error">{error("Contato")}</p>
     {/if}
 
-    <div class="contact-grid">
-      <div class="field">
+    <div class="form-grid">
+      <div class="form-field">
         <label for="Email">E-mail</label>
         <input
           id="Email"
@@ -173,11 +192,11 @@
           aria-describedby={error("Email") ? "Email-error" : undefined}
         />
         {#if error("Email")}
-          <p id="Email-error" class="field-error">{error("Email")}</p>
+          <p id="Email-error" class="form-error">{error("Email")}</p>
         {/if}
       </div>
 
-      <div class="field">
+      <div class="form-field">
         <label for="WhatsApp">WhatsApp</label>
         <input
           id="WhatsApp"
@@ -192,11 +211,11 @@
           aria-describedby={error("WhatsApp") ? "WhatsApp-error" : undefined}
         />
         {#if error("WhatsApp")}
-          <p id="WhatsApp-error" class="field-error">{error("WhatsApp")}</p>
+          <p id="WhatsApp-error" class="form-error">{error("WhatsApp")}</p>
         {/if}
       </div>
 
-      <div class="field">
+      <div class="form-field">
         <label for="Instagram">Instagram</label>
         <input
           id="Instagram"
@@ -211,11 +230,11 @@
           aria-describedby={error("Instagram") ? "Instagram-error" : undefined}
         />
         {#if error("Instagram")}
-          <p id="Instagram-error" class="field-error">{error("Instagram")}</p>
+          <p id="Instagram-error" class="form-error">{error("Instagram")}</p>
         {/if}
       </div>
 
-      <div class="field">
+      <div class="form-field">
         <label for="Facebook">Facebook</label>
         <input
           id="Facebook"
@@ -230,11 +249,11 @@
           aria-describedby={error("Facebook") ? "Facebook-error" : undefined}
         />
         {#if error("Facebook")}
-          <p id="Facebook-error" class="field-error">{error("Facebook")}</p>
+          <p id="Facebook-error" class="form-error">{error("Facebook")}</p>
         {/if}
       </div>
 
-      <div class="field">
+      <div class="form-field">
         <label for="LinkedIn">LinkedIn</label>
         <input
           id="LinkedIn"
@@ -249,11 +268,11 @@
           aria-describedby={error("LinkedIn") ? "LinkedIn-error" : undefined}
         />
         {#if error("LinkedIn")}
-          <p id="LinkedIn-error" class="field-error">{error("LinkedIn")}</p>
+          <p id="LinkedIn-error" class="form-error">{error("LinkedIn")}</p>
         {/if}
       </div>
 
-      <div class="field">
+      <div class="form-field">
         <label for="HomePage">Página pessoal</label>
         <input
           id="HomePage"
@@ -268,16 +287,16 @@
           aria-describedby={error("HomePage") ? "HomePage-error" : undefined}
         />
         {#if error("HomePage")}
-          <p id="HomePage-error" class="field-error">{error("HomePage")}</p>
+          <p id="HomePage-error" class="form-error">{error("HomePage")}</p>
         {/if}
       </div>
     </div>
   </fieldset>
 
-  <fieldset>
+  <fieldset class="form-section">
     <legend>Texto para seu perfil</legend>
-    <div class="field">
-      <label for="DadoPubl">Texto (opcional)</label>
+    <div class="form-field">
+      <label for="DadoPubl">Texto</label>
       <textarea
         id="DadoPubl"
         name="DadoPubl"
@@ -288,7 +307,7 @@
         >{values.DadoPubl ?? ""}</textarea
       >
       {#if error("DadoPubl")}
-        <p id="DadoPubl-error" class="field-error">{error("DadoPubl")}</p>
+        <p id="DadoPubl-error" class="form-error">{error("DadoPubl")}</p>
       {/if}
     </div>
   </fieldset>
@@ -317,15 +336,8 @@
 </form>
 
 <style>
-  .form-intro,
-  form,
-  .notice {
-    max-width: var(--content-reading);
-  }
-
   .form-intro {
-    display: grid;
-    gap: var(--space-1);
+    max-width: var(--content-reading);
     margin-bottom: var(--space-4);
     padding: var(--space-4);
     border-left: 4px solid var(--color-primary);
@@ -336,113 +348,24 @@
     margin: 0;
   }
 
-  form {
-    display: grid;
-    gap: var(--space-6);
-  }
-
-  fieldset {
-    display: grid;
-    gap: var(--space-4);
-    margin: 0;
-    padding: var(--space-4);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-surface-muted);
-    box-shadow: var(--shadow-card);
-  }
-
-  legend {
-    padding: 0 var(--space-2);
-    color: var(--color-heading);
-    font-size: var(--text-lg);
-    font-weight: 700;
-  }
-
-  .field,
-  .field-grid,
-  .contact-grid {
-    display: grid;
-    gap: var(--space-2);
-    min-width: 0;
-  }
-
-  .field-grid,
-  .contact-grid {
-    gap: var(--space-4);
-  }
-
-  label {
-    font-weight: 700;
-  }
-
-  input,
-  select,
-  textarea {
-    width: 100%;
-    border: 2px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface);
-    color: var(--color-text);
-    padding: var(--space-2) var(--space-3);
-  }
-
-  input:hover,
-  select:hover,
-  textarea:hover {
-    border-color: var(--color-text-muted);
-  }
-
-  input[aria-invalid="true"],
-  select[aria-invalid="true"],
-  textarea[aria-invalid="true"] {
-    border-color: var(--color-danger);
-  }
-
-  p {
-    margin: 0;
-  }
-
-  .section-help,
-  .update,
   .privacy-notice,
+  .update,
   .turnstile p {
+    margin: 0;
     color: var(--color-text-muted);
     font-size: var(--text-sm);
   }
 
-  .notice {
-    margin-bottom: var(--space-4);
-    padding: var(--space-4);
-    border-radius: var(--radius-sm);
-  }
-
-  .notice--error,
-  .field-error {
-    color: var(--color-danger);
-    background: var(--color-danger-surface);
-  }
-
-  .field-error {
-    padding: var(--space-2);
-    border-left: 3px solid currentColor;
-    font-size: var(--text-sm);
-  }
-
   .turnstile {
+    display: grid;
+    gap: var(--space-2);
     padding: var(--space-4);
-    background: var(--color-surface-muted);
     border-radius: var(--radius-md);
+    background: var(--color-surface-muted);
   }
 
-  .update {
-    margin-top: var(--space-2);
-  }
-
-  @media (min-width: 36rem) {
-    .field-grid,
-    .contact-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  /* Reserva a altura do widget para o botão não se deslocar ao carregar. */
+  .turnstile :global(.cf-turnstile) {
+    min-height: 65px;
   }
 </style>

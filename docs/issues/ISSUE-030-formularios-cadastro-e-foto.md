@@ -1,6 +1,6 @@
 # ISSUE-030 — Formulários de cadastro e envio de foto
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Cadastro e envio de fotos
 
@@ -117,3 +117,50 @@ descartável de banco e de `FOTOS_DIR`.
 - `src/lib/components/` (componentes de campo, se extraídos)
 
 Não há alteração server-side, de schema ou de migração.
+
+## Resultado da implementação
+
+- Estilos de formulário passaram a ser globais em `src/app.css` (`.form`,
+  `.form-section`, `.form-field`, `.form-grid`, `.form-hint`, `.form-error`,
+  `.form-required`, `.error-summary`, `.visually-hidden` e
+  `.segmented__options`, este movido da galeria). Cadastro, envio de foto e
+  filtros da galeria usam a mesma base visual.
+- **Obrigatoriedade:** nos dois formulários há menos campos obrigatórios que
+  opcionais, então apenas os obrigatórios recebem “(obrigatório)”. O “(*)” e a
+  explicação correspondente foram removidos do cadastro.
+- **Cadastro:** campos, ordem, validações e textos de privacidade inalterados.
+  O resumo de erros recebe o foco após um envio com problemas, e a área do
+  Turnstile reserva 65 px para o botão não se deslocar.
+- **Envio de foto:**
+  - com JavaScript, só a busca por nome é exibida; enviar sem escolher um
+    resultado mostra “Escolha o ex-aluno na lista antes de enviar.” e devolve
+    o foco à busca. Sem JavaScript, aparece o campo “Número do cadastro do
+    ex-aluno”;
+  - resultados da busca com nome, apelido, curso pelo nome curto e período, e
+    contagem anunciada para leitores de tela;
+  - área de arquivo com “Escolher foto”, arrastar e soltar, pré-visualização,
+    nome e tamanho. Formato não aceito ou arquivo acima de 5 MB são recusados
+    na hora, com mensagem, e a seleção é desfeita. Sem JavaScript, o seletor
+    nativo continua visível;
+  - curso e turma lado a lado, assim como os dois anos;
+  - “É carômetro?” e “É foto pessoal?” como escolhas “Não / Sim” lado a lado,
+    com a explicação abaixo da pergunta.
+- Servidor, nomes dos campos e regras de validação não foram alterados.
+- Especificação funcional (seções 6 e 8) e design system (campos de
+  formulário) atualizados.
+- Validação em 25 de novembro de 2026, em uma cópia descartável da fixture e da
+  pasta de fotos:
+  - `pnpm run validate` e `pnpm run test:cloud-data` passaram (o `check`
+    mantém o aviso anterior de `src/lib/PrettyDate.svelte`);
+  - com JavaScript, enviar sem ex-aluno e sem foto exibiu as mensagens
+    esperadas antes do envio. Um PNG de 45,9 MB e um arquivo de texto foram
+    recusados na hora. Arrastar uma imagem a selecionou e mostrou a prévia. O
+    envio completo gravou o registro (incluindo foto pessoal e ano) e os
+    arquivos original e miniatura;
+  - sem JavaScript, o campo de número do cadastro e o seletor nativo apareceram
+    e o envio funcionou;
+  - no cadastro, ano de saída anterior ao de entrada e nenhum contato geraram
+    o resumo de erros com foco, o campo marcado como inválido e os valores
+    preservados, sem gravar registro;
+  - sem rolagem horizontal em 320, 390 e 1366 px no cadastro, no envio de foto
+    e na galeria.
