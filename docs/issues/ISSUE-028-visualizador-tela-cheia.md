@@ -1,6 +1,6 @@
 # ISSUE-028 — Visualizador de fotos em tela cheia
 
-**Estado:** Aguardando validação
+**Estado:** Aprovada para implementação
 
 **Área:** Consulta e visualização de fotos
 
@@ -130,3 +130,54 @@ teclado e mouse.
   `src/lib/components/PhotoDialog.svelte`)
 
 Não há alteração server-side, de schema ou de migração.
+
+## Resultado da implementação
+
+- O visualizador foi extraído para `src/lib/components/PhotoDialog.svelte`. A
+  galeria apenas o abre com `open(index)`.
+- Tela cheia com fundo escuro (tokens `--color-viewer*`):
+  - posição (“2 de 15”) e botão “Fechar” (ícone + texto) no topo;
+  - botões circulares anterior/próxima nas laterais, centralizados
+    verticalmente;
+  - título e metadados (curso pelo nome curto, turma e anos) na parte
+    inferior;
+  - áreas seguras (`env(safe-area-inset-*)`) respeitadas;
+  - com uma única foto, posição e setas não aparecem.
+- A imagem é posicionada de forma absoluta na área entre o topo e a legenda,
+  com `object-fit: scale-down`: ocupa o máximo possível sem cortes e sem
+  ampliar arquivos pequenos, em retrato e paisagem.
+- Comportamento da ISSUE-015 preservado (botões, setas, `Escape`, swipe com
+  50 px predominantemente horizontais, gestos de vários dedos ignorados,
+  limites da página, retorno do foco e link sem JavaScript).
+- Novidades:
+  - com a página ampliada (`visualViewport.scale > 1`), o swipe não troca a
+    foto e a área de toque passa a `touch-action: auto`, liberando o
+    deslocamento em todas as direções;
+  - pré-carregamento da foto anterior e da seguinte;
+  - esmaecimento de 150 ms na troca, desativado com movimento reduzido;
+  - a página de fundo não rola com o visualizador aberto e mantém a posição
+    ao fechar.
+- Contraste: texto 17:1 e metadados 10,5:1 sobre o fundo; ícone branco sobre o
+  botão translúcido, mesmo sobre uma foto branca, 4,4:1.
+- Especificação funcional (seção 7) e design system (`PhotoDialog`, tokens e
+  transição) atualizados.
+- **Limitação conhecida:** imagens com fundo transparente (PNG/GIF) aparecem
+  sobre o fundo escuro, e elementos pretos ficam pouco visíveis. Fotos reais
+  raramente têm transparência.
+- Validação automatizada em 25 de novembro de 2026, em uma cópia descartável da
+  fixture com 10 fotos (retrato, paisagem e uma imagem pequena):
+  - `pnpm run validate` e `pnpm run test:cloud-data` passaram (o `check`
+    mantém o aviso anterior de `src/lib/PrettyDate.svelte`);
+  - botões, setas do teclado e limites (próxima desabilitada em “10 de 10”);
+  - toques simulados pelo protocolo do Chrome: swipe para os dois lados troca
+    a foto; arrasto vertical, arrasto curto e gesto com dois dedos não trocam;
+  - com escala 2× simulada, o swipe não troca a foto; de volta a 1×, troca;
+  - fotos vizinhas pré-carregadas;
+  - `Escape` fecha, o foco volta à miniatura e a posição de rolagem é mantida;
+  - imagem centralizada em 390 × 664, 844 × 340 e 1366 × 800;
+  - transição de 150 ms presente e ausente com movimento reduzido;
+  - com uma única foto, sem setas nem posição.
+- **Pendente antes de marcar como concluída:** validação manual em celular real
+  (Android/Chrome e iPhone/Safari) do zoom por pinça, do deslocamento da área
+  ampliada e do swipe após voltar ao zoom normal, conforme a “Validação manual
+  sugerida”.
