@@ -2,6 +2,7 @@
   import type { PageProps } from "./$types";
   import { COURSES, COURSE_CATALOG } from "$lib/domain";
   import Meta from "$lib/Meta.svelte";
+  import AlumniCard from "$lib/components/AlumniCard.svelte";
   import SearchForm from "$lib/components/SearchForm.svelte";
   import { absoluteSiteUrl } from "$lib/site";
 
@@ -56,47 +57,24 @@
   </div>
 </section>
 
-<section class="home-section" aria-labelledby="recent-photos-title">
+<section class="home-section" aria-labelledby="recent-alumni-title">
   <div class="home-section__heading">
-    <h2 id="recent-photos-title">Fotos recentes</h2>
-    {#if data.recentPhotos.length}
-      <a href="/lista_foto">Ver todas as fotos</a>
+    <h2 id="recent-alumni-title">Cadastros recentes</h2>
+    {#if data.recentAlumni.length}
+      <a href="/exalunos_lista">Ver todos os ex-alunos</a>
     {/if}
   </div>
 
-  {#if data.recentPhotos.length}
-    <ul class="photo-strip">
-      {#each data.recentPhotos as photo}
-        <li>
-          <a href="/lista_foto">
-            <img
-              src={photo.thumbnailUrl}
-              alt=""
-              width="320"
-              height="240"
-              loading="lazy"
-            />
-            <span class="photo-strip__title">
-              {photo.title ?? "Foto enviada"}
-            </span>
-            {#if photo.course || photo.photoYear}
-              <span class="photo-strip__meta">
-                {[
-                  photo.course ? COURSE_CATALOG[photo.course].shortName : "",
-                  photo.photoYear ?? "",
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </span>
-            {/if}
-          </a>
-        </li>
+  {#if data.recentAlumni.length}
+    <ul class="alumni-grid">
+      {#each data.recentAlumni as alumnus (alumnus.id)}
+        <li><AlumniCard {alumnus} headingLevel={3} /></li>
       {/each}
     </ul>
   {:else}
     <p class="home-section__empty">
-      Ainda não há fotos publicadas.
-      <a href="/cadfoto">Enviar uma foto</a>
+      Ainda não há cadastros.
+      <a href="/novocadastro">Cadastre-se</a>
     </p>
   {/if}
 </section>
@@ -199,53 +177,18 @@
     color: var(--color-text-muted);
   }
 
-  .photo-strip {
+  .alumni-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-4) var(--space-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: var(--space-3);
     margin: var(--space-4) 0 0;
     padding: 0;
     list-style: none;
   }
 
-  .photo-strip li {
+  .alumni-grid li {
     min-width: 0;
     margin: 0;
-  }
-
-  .photo-strip a {
-    display: grid;
-    gap: var(--space-1);
-    color: var(--color-text);
-    font-weight: 400;
-    text-decoration: none;
-  }
-
-  .photo-strip img {
-    width: 100%;
-    max-width: 320px;
-    aspect-ratio: 4 / 3;
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-muted);
-    object-fit: cover;
-  }
-
-  .photo-strip__title {
-    overflow: hidden;
-    color: var(--color-heading);
-    font-weight: 700;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .photo-strip a:hover .photo-strip__title {
-    color: var(--color-primary-hover);
-    text-decoration: underline;
-  }
-
-  .photo-strip__meta {
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
   }
 
   .course-chips {
@@ -284,12 +227,6 @@
     font-size: var(--text-sm);
   }
 
-  @media (min-width: 40rem) {
-    .photo-strip {
-      grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
-    }
-  }
-
   @media (min-width: 64rem) {
     .home-hero {
       grid-template-areas:
@@ -302,10 +239,6 @@
 
     .home-hero__search {
       align-self: center;
-    }
-
-    .photo-strip {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 </style>

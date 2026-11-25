@@ -6,11 +6,15 @@ import {
   COURSES,
   LEGACY_ALUMNI_ORDER_TO_ORDER,
   isCourse,
-  type AlumniListItem,
   type AlumniOrder,
   type Course,
   type LegacyAlumniOrder,
 } from "$lib/domain";
+import {
+  ALUMNI_LIST_SELECT,
+  toAlumniListItem,
+  type AlumniListRow,
+} from "$lib/server/alumni-list";
 import { db } from "$lib/server/index";
 
 const PAGE_SIZE = 600;
@@ -25,16 +29,6 @@ const ORDER_BY: Record<AlumniOrder, string> = {
   saidaCurso: "e.AnoTermino, e.Curso, lower(e.Nome), e.ID",
   saidaNome: "e.AnoTermino, lower(e.Nome), e.ID",
 };
-
-interface AlumniRow {
-  ID: number;
-  Nome: string;
-  Apelidos: string | null;
-  Curso: string | null;
-  AnoInicio: number | null;
-  AnoTermino: number | null;
-  NomeMiniaturaStored: string | null;
-}
 
 interface CountRow {
   total: number;
@@ -115,27 +109,6 @@ function escapeLike(value: string): string {
   return value.replace(/[\\%_]/g, "\\$&");
 }
 
-function toOptionalText(value: string | null): string | undefined {
-  const text = value?.trim();
-  return text || undefined;
-}
-
-function toOptionalYear(value: number | null): number | undefined {
-  return value !== null && Number.isInteger(value) ? value : undefined;
-}
-
-function mapAlumnus(row: AlumniRow): AlumniListItem {
-  return {
-    id: row.ID,
-    name: row.Nome,
-    nickname: toOptionalText(row.Apelidos),
-    course: toOptionalText(row.Curso),
-    startYear: toOptionalYear(row.AnoInicio),
-    endYear: toOptionalYear(row.AnoTermino),
-    thumbnail: toOptionalText(row.NomeMiniaturaStored),
-  };
-}
-
 export async function _loadAlumniList(url: URL, forcedCourse?: Course) {
   const busca = normalizeSearch(url.searchParams.get("busca"));
   const curso = forcedCourse ?? normalizeCourse(url);
@@ -191,25 +164,8 @@ export async function _loadAlumniList(url: URL, forcedCourse?: Course) {
   const canonicalPath =
     !noindex && page > 1 ? `${basePath}?pagina=${page}` : basePath;
 
-  const rows = await all<AlumniRow>(
-    `SELECT
-      e.ID,
-      e.Nome,
-      e.Apelidos,
-      e.Curso,
-      e.AnoInicio,
-      e.AnoTermino,
-      foto.NomeMiniaturaStored
-    FROM ExAlunos AS e
-    LEFT JOIN Fotos AS foto ON foto.idFoto = (
-      SELECT f.idFoto
-      FROM Fotos AS f
-      WHERE f.idExAlunoUpload = e.ID
-        AND f.Excluido = 0
-        AND f.FotoPessoal = 1
-      ORDER BY f.idFoto DESC
-      LIMIT 1
-    )
+  const rows = await all<AlumniListRow>(
+    `${ALUMNI_LIST_SELECT}
     ${whereClause}
     ORDER BY ${orderBy}
     LIMIT ? OFFSET ?`,
@@ -217,7 +173,7 @@ export async function _loadAlumniList(url: URL, forcedCourse?: Course) {
   );
 
   return {
-    alunos: rows.map(mapAlumnus),
+    alunos: rows.map(toAlumniListItem),
     courseLanding: forcedCourse
       ? {
           code: forcedCourse,

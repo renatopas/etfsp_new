@@ -92,20 +92,22 @@ se cadastre imediatamente.
 4. Links auxiliares “Ver todos os ex-alunos” e “Ver cadastros recentes”.
 5. Números do acervo: “N ex-alunos cadastrados · N fotos”.
 6. Duas ações: “Cadastre-se” e “Enviar uma foto”.
-7. “Fotos recentes”: as 8 fotos gerais mais recentes, com miniatura, título e
-   curso/ano, cada uma com link para a galeria, e a ação “Ver todas as fotos”.
-   Sem fotos, exibir uma frase curta com o link “Enviar uma foto”.
+7. “Cadastros recentes”: os 6 cadastros mais recentes, com o mesmo cartão da
+   relação de ex-alunos e link para o perfil, e a ação “Ver todos os
+   ex-alunos”. Sem cadastros, exibir uma frase curta com o link “Cadastre-se”.
 8. “Ex-alunos por curso”: links para `/exalunos/curso/{slug}` de cada curso.
 9. Uma nota curta informando que o site é não oficial.
 
 No computador (a partir de 64 rem), título, texto, números e ações ficam à
 esquerda e a busca à direita. No celular, a busca vem logo após o texto.
 
-Os números e as fotos recentes são calculados pelo servidor a cada requisição;
-a página não é pré-renderizada. Ex-alunos contam somente com `Excluido = 0`.
-Fotos contam e aparecem somente com `Excluido = 0` e `Carometro = 0`, na mesma
-ordem da galeria. Para cada foto, a página recebe apenas título, curso, ano da
-foto e miniatura. Não criar seção histórica sem conteúdo disponível.
+Os números e os cadastros recentes são calculados pelo servidor a cada
+requisição; a página não é pré-renderizada. Ex-alunos contam e aparecem
+somente com `Excluido = 0`; os cadastros recentes seguem a ordem
+`DtCadastro DESC, ID DESC` e trazem apenas os campos do cartão da relação.
+Fotos contam somente com `Excluido = 0` e `Carometro = 0`. Não exibir faixa de
+fotos recentes: o envio de fotos é raro e deixaria a página quase sempre
+igual. Não criar seção histórica sem conteúdo disponível.
 
 ### Busca
 

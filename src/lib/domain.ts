@@ -113,9 +113,3 @@ export interface PublicPhoto {
   thumbnailUrl: string;
   imageUrl: string;
 }
-
-/** Foto exibida na faixa de fotos recentes da página inicial. */
-export type RecentPhoto = Pick<
-  PublicPhoto,
-  "title" | "course" | "photoYear" | "thumbnailUrl"
->;

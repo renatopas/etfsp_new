@@ -1,15 +1,12 @@
 import type { PageServerLoad } from "./$types";
-import type { RecentPhoto } from "$lib/domain";
-import { db } from "$lib/server/index";
 import {
-  PUBLIC_PHOTO_COLUMNS,
-  VISIBLE_PHOTO_CLAUSE,
-  toPublicPhoto,
-  type PublicPhotoRow,
-} from "$lib/server/public-photos";
+  ALUMNI_LIST_SELECT,
+  toAlumniListItem,
+  type AlumniListRow,
+} from "$lib/server/alumni-list";
+import { db } from "$lib/server/index";
 
-const RECENT_PHOTOS_LIMIT = 8;
-const GENERAL_PHOTOS_WHERE = `WHERE ${VISIBLE_PHOTO_CLAUSE} AND f.Carometro = 0`;
+const RECENT_ALUMNI_LIMIT = 6;
 
 function all<T>(sql: string, params: unknown[] = []): Promise<T[]> {
   return new Promise((resolve, reject) =>
@@ -31,21 +28,19 @@ export const load: PageServerLoad = async () => {
       "SELECT COUNT(*) AS total FROM ExAlunos AS e WHERE e.Excluido = 0",
     ),
     get<{ total: number }>(
-      `SELECT COUNT(*) AS total FROM Fotos AS f ${GENERAL_PHOTOS_WHERE}`,
+      "SELECT COUNT(*) AS total FROM Fotos AS f WHERE f.Excluido = 0 AND f.Carometro = 0",
     ),
-    all<PublicPhotoRow>(
-      `SELECT ${PUBLIC_PHOTO_COLUMNS} FROM Fotos AS f ${GENERAL_PHOTOS_WHERE} ORDER BY f.idFoto DESC LIMIT ?`,
-      [RECENT_PHOTOS_LIMIT],
+    all<AlumniListRow>(
+      `${ALUMNI_LIST_SELECT}
+    WHERE e.Excluido = 0
+    ORDER BY e.DtCadastro DESC, e.ID DESC
+    LIMIT ?`,
+      [RECENT_ALUMNI_LIMIT],
     ),
   ]);
 
-  const recentPhotos: RecentPhoto[] = rows.map((row) => {
-    const { title, course, photoYear, thumbnailUrl } = toPublicPhoto(row);
-    return { title, course, photoYear, thumbnailUrl };
-  });
-
   return {
     stats: { alumni: alumni?.total ?? 0, photos: photos?.total ?? 0 },
-    recentPhotos,
+    recentAlumni: rows.map(toAlumniListItem),
   };
 };
