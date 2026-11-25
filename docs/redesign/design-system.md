@@ -10,9 +10,8 @@ transformar o site em um museu ou acrescentar conteúdo histórico inexistente.
 - Definir tokens globais em `src/app.css` dentro de `:root`.
 - Criar componentes reutilizáveis em `src/lib/components/`.
 - Manter estilos específicos junto ao componente Svelte.
-- Não adicionar Tailwind, framework de componentes ou biblioteca de ícones na
-  primeira implementação. Embora dependências de Tailwind apareçam no projeto,
-  o redesign não deve passar a depender delas sem uma decisão separada.
+- Não adicionar Tailwind, framework de componentes ou biblioteca de ícones. O
+  Tailwind, que estava instalado sem uso, foi removido na ISSUE-023.
 - Preferir SVG simples criado no próprio componente ou texto a imagens GIF
   legadas usadas como botões.
 - Não carregar fontes, scripts ou ícones de CDN.

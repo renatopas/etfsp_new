@@ -267,24 +267,24 @@
 <style>
   .back-link {
     display: inline-block;
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-4);
     font-weight: 700;
   }
 
   .profile {
-    max-width: var(--content-max-readable);
+    max-width: var(--content-max);
     margin: var(--space-6) auto 0;
   }
 
   .profile__summary {
     display: grid;
-    gap: var(--space-5);
+    gap: var(--space-4);
     align-items: start;
-    padding: var(--space-5);
+    padding: var(--space-4);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background: var(--color-surface);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-card);
   }
 
   .profile__photo {
@@ -303,7 +303,7 @@
   }
 
   .profile__section {
-    margin-top: var(--space-7);
+    margin-top: var(--space-8);
   }
 
   h2 {
@@ -346,7 +346,7 @@
   }
 
   .profile__text + .profile__text {
-    margin-top: var(--space-5);
+    margin-top: var(--space-4);
   }
 
   .profile__text p {
@@ -355,7 +355,7 @@
   }
 
   .profile__registration {
-    margin: var(--space-7) 0 var(--space-4);
+    margin: var(--space-8) 0 var(--space-4);
     color: var(--color-text-muted);
     font-size: var(--text-sm);
   }

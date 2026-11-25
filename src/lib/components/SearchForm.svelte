@@ -21,7 +21,7 @@
     query = "",
   }: Props = $props();
 
-  let hintId = `${id}-exemplo`;
+  const hintId = $derived(`${id}-exemplo`);
 </script>
 
 <form class="search-form" method="GET" {action}>

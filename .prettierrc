@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/prettierrc.json",
   "singleQuote": false,
   "trailingComma": "all",
-  "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+  "plugins": ["prettier-plugin-svelte"],
   "overrides": [
     {
       "files": "*.svelte",

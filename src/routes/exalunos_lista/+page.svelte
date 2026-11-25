@@ -208,7 +208,7 @@
 <style>
   .directory-search,
   .directory-results {
-    max-width: var(--content-max-readable);
+    max-width: var(--content-max);
     margin-inline: auto;
   }
 
@@ -216,7 +216,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2) var(--space-4);
-    max-width: var(--content-max-readable);
+    max-width: var(--content-max);
     margin: 0 auto;
   }
 
@@ -237,7 +237,7 @@
   }
 
   .directory-results {
-    margin-top: var(--space-7);
+    margin-top: var(--space-8);
   }
 
   .directory-results__heading {
@@ -253,7 +253,7 @@
 
   h2 {
     color: var(--color-heading);
-    font-size: var(--text-2xl);
+    font-size: var(--text-lg);
   }
 
   .directory-results__heading p,

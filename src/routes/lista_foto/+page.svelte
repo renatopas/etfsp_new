@@ -249,6 +249,7 @@
     </div>
     <div
       class="photo-viewer"
+      role="presentation"
       onpointerdown={handlePointerDown}
       onpointerup={handlePointerUp}
       onpointercancel={handlePointerCancel}
@@ -302,7 +303,7 @@
     border-radius: var(--radius-md);
     background: var(--color-surface);
   }
-  input,
+  input:not([type="radio"]),
   select {
     width: 100%;
     padding: var(--space-2);
@@ -312,9 +313,28 @@
   fieldset {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
+    gap: var(--space-1) var(--space-6);
+    margin: 0;
     border: 0;
     padding: 0;
+  }
+  legend {
+    width: 100%;
+    margin-bottom: var(--space-1);
+    padding: 0;
+  }
+  fieldset label {
+    display: flex;
+    min-height: var(--control-min-height);
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+  }
+  input[type="radio"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    flex: 0 0 auto;
   }
   .ranges {
     display: grid;
@@ -327,7 +347,7 @@
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
     gap: var(--space-2);
     margin-top: var(--space-4);
   }
@@ -342,7 +362,7 @@
   }
   article img {
     display: block;
-    width: min(100%, 320px);
+    width: 100%;
     max-width: 320px;
     aspect-ratio: 4/3;
     object-fit: cover;
