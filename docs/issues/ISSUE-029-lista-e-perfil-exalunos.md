@@ -1,6 +1,6 @@
 # ISSUE-029 — Relação e perfil de ex-alunos
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Consulta de ex-alunos
 
@@ -119,3 +119,53 @@ enviadas. Testar com JavaScript desativado e em 390 px e 1366 px.
   `SocialIcon.svelte`
 
 Não há alteração de schema ou de migração.
+
+## Resultado da implementação
+
+### Relação
+
+- Nome, curso e ordenação em um único formulário `GET` com o botão “Buscar”.
+  Na página por curso, o curso aparece fixo, e “Ver todos os cursos” preserva
+  busca e ordenação. O servidor não mudou: em `/exalunos_lista`, a escolha de
+  um curso continua redirecionando para `/exalunos/curso/{slug}`.
+- Cursos como chips abaixo do formulário; no celular, em uma linha com rolagem
+  horizontal própria.
+- Contagem de resultados como texto secundário; grade de cartões com tantas
+  colunas quanto couberem; nomes como `h3`.
+
+### Cartão e perfil
+
+- `AlumniCard`: sem foto, mostra as iniciais do nome (`src/lib/initials.ts`,
+  ignorando partículas e palavras sem letras). O curso aparece pelo nome curto
+  (`courseShortName` em `src/lib/domain.ts`); códigos fora do catálogo
+  aparecem como estão.
+- Perfil:
+  - cabeçalho em cartão com foto (ou iniciais) de 11 rem no computador e
+    7 rem no celular, nome, apelido, curso por extenso, período e “Ver fotos
+    enviadas”;
+  - contatos como botões com ícone e texto (e-mail, telefone, WhatsApp,
+    domínio da página pessoal, Instagram, Facebook, LinkedIn), com novos
+    ícones de e-mail, telefone e site em `SocialIcon`;
+  - ICQ legado continua exibido como texto;
+  - “Contato” e “Sobre” em duas colunas no computador; “Sobre” limitado à
+    largura de leitura.
+- Os campos exibidos continuam sendo os de `PublicAlumniProfile`; o `load`
+  não foi alterado.
+- Especificação funcional (seções 4 e 5) e design system (`AlumniCard` e botão
+  de contato) atualizados.
+
+### Validação em 25 de novembro de 2026
+
+- `pnpm run validate` e `pnpm run test:cloud-data` passaram (o `check` mantém o
+  aviso anterior de `src/lib/PrettyDate.svelte`).
+- Em uma cópia descartável da fixture, um perfil com todos os contatos públicos
+  exibiu os sete botões. Outro, com e-mail e telefone marcados para não
+  publicar (`OcultarEmail = 1`, `PublicaTelefone = 0`) e um CPF fictício, não
+  expôs esses dados nem no HTML nem no JSON da página.
+- Sem JavaScript, curso + nome + ordem na relação levaram a
+  `/exalunos/curso/mecanica?busca=01&ordem=saidaNome`; “Ver todos os cursos”
+  voltou para a relação preservando os demais parâmetros; a busca na página
+  por curso funcionou.
+- Sem rolagem horizontal em 320, 390 e 1366 px na relação, na página por curso
+  e em perfis com e sem foto e contatos. No celular, o campo de busca começa a
+  cerca de 256 px do topo.

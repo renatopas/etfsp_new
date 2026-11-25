@@ -231,11 +231,21 @@ a pessoa enquanto ela ainda digita.
 
 ### `AlumniCard`
 
-- Foto opcional de 3,5 rem, nome como título, apelido, curso e período, com
-  espaçamento compacto para listas extensas.
+- Foto opcional de 3,5 rem, nome como título, apelido, curso (nome curto) e
+  período, com espaçamento compacto para listas extensas.
 - Não recebe o objeto completo do banco; recebe somente um modelo público.
-- Estado sem foto usa bloco neutro com iniciais apenas se isso não criar
-  complexidade desnecessária; caso contrário, omite a imagem.
+- Sem foto, exibe as iniciais do nome (`src/lib/initials.ts`) sobre
+  `--color-primary-soft`, ocultas para tecnologias assistivas.
+- `headingLevel` (2 ou 3) ajusta o nível do título do nome à hierarquia da
+  página.
+
+### Botão de contato
+
+- Link com aparência de botão: ícone local (`SocialIcon`, que inclui e-mail,
+  telefone e site) e texto visível, altura mínima de 44 px e quebra de textos
+  longos.
+- Contatos externos seguem as regras de “Link de rede social” (nova janela com
+  aviso acessível e `rel="noopener noreferrer"`).
 
 ### `PhotoCard` e `PhotoDialog`
 

@@ -12,7 +12,6 @@
   import Meta from "$lib/Meta.svelte";
   import PageHeader from "$lib/components/PageHeader.svelte";
   import Pagination from "$lib/components/Pagination.svelte";
-  import SearchForm from "$lib/components/SearchForm.svelte";
   import { absoluteSiteUrl } from "$lib/site";
 
   let { data }: PageProps = $props();
@@ -48,12 +47,6 @@
       ? `${pageTitle} — Página ${data.pagination.page}`
       : pageTitle,
   );
-
-  const preservedSearchFilters = $derived({
-    curso: data.courseLanding ? undefined : data.filters.curso,
-    ordem: data.filters.ordem === "nome" ? undefined : data.filters.ordem,
-    recentes: data.filters.recentes ? "1" : undefined,
-  });
 
   const paginationParameters = $derived({
     busca: data.filters.busca || undefined,
@@ -97,79 +90,75 @@
       : "Encontre colegas pelo nome e consulte seus perfis públicos."}
 />
 
+<form
+  class="directory-filters"
+  method="GET"
+  action={basePath}
+  aria-label="Buscar na relação de ex-alunos"
+>
+  {#if data.filters.recentes}
+    <input type="hidden" name="recentes" value="1" />
+  {/if}
+  <div class="field field--name">
+    <label for="busca">Nome do ex-aluno</label>
+    <input
+      id="busca"
+      type="search"
+      name="busca"
+      value={data.filters.busca}
+      autocomplete="name"
+    />
+  </div>
+  {#if data.courseLanding}
+    <div class="field course-context">
+      <span class="field__label">Curso</span>
+      <strong>{data.courseLanding.shortName}</strong>
+      <a href={allCoursesHref}>Ver todos os cursos</a>
+    </div>
+  {:else}
+    <div class="field">
+      <label for="curso">Curso</label>
+      <select id="curso" name="curso" value={data.filters.curso ?? ""}>
+        <option value="">Todos os cursos</option>
+        {#each COURSES as course}
+          <option value={course}>{courseLabel(course)}</option>
+        {/each}
+      </select>
+    </div>
+  {/if}
+  <div class="field">
+    <label for="ordem">Ordenar por</label>
+    <select id="ordem" name="ordem" value={data.filters.ordem}>
+      {#each orderOptions as option}
+        <option value={option.value}>{option.label}</option>
+      {/each}
+    </select>
+  </div>
+  <Button type="submit">Buscar</Button>
+</form>
+
 {#if !data.courseLanding}
-  <nav class="course-links" aria-label="Consultar ex-alunos por curso">
-    <span>Por curso:</span>
-    {#each COURSES as course}
-      <a href={`/exalunos/curso/${COURSE_CATALOG[course].slug}`}>
-        {COURSE_CATALOG[course].shortName}
-        <span>({course})</span>
-      </a>
-    {/each}
+  <nav class="course-chips" aria-labelledby="course-chips-title">
+    <h2 id="course-chips-title">Por curso</h2>
+    <ul>
+      {#each COURSES as course}
+        <li>
+          <a href={`/exalunos/curso/${COURSE_CATALOG[course].slug}`}>
+            {COURSE_CATALOG[course].shortName}
+          </a>
+        </li>
+      {/each}
+    </ul>
   </nav>
 {/if}
 
-<section class="directory-search" aria-label="Buscar na relação de ex-alunos">
-  <SearchForm
-    action={basePath}
-    buttonLabel="Buscar"
-    label="Buscar por nome"
-    query={data.filters.busca}
-    hiddenValues={preservedSearchFilters}
-  />
-</section>
-
 <section class="directory-results" aria-labelledby="results-title">
-  <div class="directory-results__heading">
-    <div>
-      <h2 id="results-title">Resultados</h2>
-      <p aria-live="polite">
-        {data.pagination.total}
-        {data.pagination.total === 1
-          ? "ex-aluno encontrado"
-          : "ex-alunos encontrados"}.
-      </p>
-    </div>
-
-    <form class="filter-form" method="GET" action={basePath}>
-      {#if data.filters.busca}
-        <input type="hidden" name="busca" value={data.filters.busca} />
-      {/if}
-      {#if data.filters.recentes}
-        <input type="hidden" name="recentes" value="1" />
-      {/if}
-      <div class="filter-form__fields">
-        {#if data.courseLanding}
-          <div class="course-context">
-            <span>Curso</span>
-            <strong
-              >{data.courseLanding.code} — {data.courseLanding.name}</strong
-            >
-            <a href="/exalunos_lista">Ver todos os cursos</a>
-          </div>
-        {:else}
-          <div>
-            <label for="curso">Curso</label>
-            <select id="curso" name="curso" value={data.filters.curso ?? ""}>
-              <option value="">Todos os cursos</option>
-              {#each COURSES as course}
-                <option value={course}>{courseLabel(course)}</option>
-              {/each}
-            </select>
-          </div>
-        {/if}
-        <div>
-          <label for="ordem">Ordenar por</label>
-          <select id="ordem" name="ordem" value={data.filters.ordem}>
-            {#each orderOptions as option}
-              <option value={option.value}>{option.label}</option>
-            {/each}
-          </select>
-        </div>
-      </div>
-      <Button type="submit" variant="secondary">Aplicar filtros</Button>
-    </form>
-  </div>
+  <h2 id="results-title" aria-live="polite">
+    {data.pagination.total}
+    {data.pagination.total === 1
+      ? "ex-aluno encontrado"
+      : "ex-alunos encontrados"}
+  </h2>
 
   {#if data.filters.recentes}
     <p class="recent-notice">
@@ -180,7 +169,7 @@
   {#if data.alunos.length > 0}
     <div class="alumni-grid">
       {#each data.alunos as alumnus (alumnus.id)}
-        <AlumniCard {alumnus} />
+        <AlumniCard {alumnus} headingLevel={3} />
       {/each}
     </div>
     <Pagination
@@ -206,105 +195,151 @@
 </section>
 
 <style>
-  .directory-search,
-  .directory-results {
-    max-width: var(--content-max);
-    margin-inline: auto;
-  }
-
-  .course-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2) var(--space-4);
-    max-width: var(--content-max);
-    margin: 0 auto;
-  }
-
-  .course-links > span {
-    font-weight: 700;
-  }
-
-  .course-links a span {
-    color: var(--color-text-muted);
-  }
-
-  .directory-search {
-    margin-top: var(--space-6);
+  .directory-filters {
+    display: grid;
+    gap: var(--space-3);
     padding: var(--space-4);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    background: var(--color-surface-muted);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-1);
+    min-width: 0;
+    align-content: start;
+  }
+
+  .field label,
+  .field__label {
+    color: var(--color-heading);
+    font-size: var(--text-sm);
+    font-weight: 700;
+  }
+
+  .field input,
+  .field select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .course-context strong {
+    display: flex;
+    min-height: var(--control-min-height);
+    align-items: center;
+  }
+
+  .course-context a {
+    font-size: var(--text-sm);
+  }
+
+  .course-chips {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .course-chips h2 {
+    flex: 0 0 auto;
+    margin: 0;
+    color: var(--color-heading);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: 700;
+  }
+
+  .course-chips ul {
+    display: flex;
+    gap: var(--space-2);
+    margin: 0;
+    padding: var(--space-1) 0;
+    overflow-x: auto;
+    list-style: none;
+    scrollbar-width: thin;
+  }
+
+  .course-chips li {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  .course-chips a {
+    display: inline-flex;
+    min-height: var(--control-min-height);
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-primary);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .course-chips a:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
   }
 
   .directory-results {
     margin-top: var(--space-8);
   }
 
-  .directory-results__heading {
-    display: grid;
-    gap: var(--space-4);
-    align-items: end;
-  }
-
-  h2,
-  p {
+  .directory-results h2 {
     margin: 0;
-  }
-
-  h2 {
-    color: var(--color-heading);
-    font-size: var(--text-lg);
-  }
-
-  .directory-results__heading p,
-  .recent-notice {
-    margin-top: var(--space-1);
     color: var(--color-text-muted);
-  }
-
-  .filter-form,
-  .filter-form__fields,
-  .filter-form__fields > div {
-    display: grid;
-    gap: var(--space-2);
-  }
-
-  label {
-    color: var(--color-heading);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
     font-weight: 700;
   }
 
-  select {
-    width: 100%;
-    min-width: 0;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface);
-    color: var(--color-text);
-    padding: var(--space-2) var(--space-3);
-  }
-
   .recent-notice {
-    margin-top: var(--space-4);
+    margin: var(--space-2) 0 0;
+    color: var(--color-text-muted);
   }
 
   .alumni-grid {
     display: grid;
-    gap: var(--space-2);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: var(--space-3);
     margin-top: var(--space-4);
   }
 
-  @media (min-width: 48rem) {
-    .directory-results__heading {
-      grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
-    }
-
-    .alumni-grid {
+  @media (min-width: 30rem) {
+    .directory-filters {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .filter-form__fields {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .field--name {
+      grid-column: 1 / -1;
+    }
+
+    .directory-filters :global(button[type="submit"]) {
+      grid-column: 1 / -1;
+      justify-self: start;
+      min-width: 8rem;
+    }
+  }
+
+  @media (min-width: 56rem) {
+    .directory-filters {
+      grid-template-columns:
+        minmax(0, 2fr) minmax(0, 1.3fr) minmax(0, 1fr)
+        auto;
+      align-items: end;
+    }
+
+    .field--name,
+    .directory-filters :global(button[type="submit"]) {
+      grid-column: auto;
+    }
+
+    .course-chips ul {
+      flex-wrap: wrap;
+      overflow: visible;
     }
   }
 </style>

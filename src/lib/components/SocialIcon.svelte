@@ -2,7 +2,14 @@
   let {
     network,
   }: {
-    network: "instagram" | "facebook" | "linkedin" | "whatsapp";
+    network:
+      | "instagram"
+      | "facebook"
+      | "linkedin"
+      | "whatsapp"
+      | "email"
+      | "phone"
+      | "website";
   } = $props();
 </script>
 
@@ -27,6 +34,20 @@
     <circle class="social-icon__fill" cx="5.75" cy="5.5" r="1.75" />
     <path
       d="M11 20V9h3.3v1.5c.8-1.2 2-1.9 3.6-1.9 3 0 3.6 2.1 3.6 5V20H18v-5.7c0-1.5-.3-2.7-1.8-2.7-1.7 0-2 1.4-2 3.1V20z"
+    />
+  {:else if network === "email"}
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path class="social-icon__stroke" d="M3.5 6.5 12 13l8.5-6.5" />
+  {:else if network === "phone"}
+    <path
+      class="social-icon__stroke"
+      d="M6.6 3.5h2.6l1.3 4.2-1.9 1.4a11 11 0 0 0 6.3 6.3l1.4-1.9 4.2 1.3v2.6a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"
+    />
+  {:else if network === "website"}
+    <circle cx="12" cy="12" r="9" />
+    <path
+      class="social-icon__stroke"
+      d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z"
     />
   {:else}
     <path

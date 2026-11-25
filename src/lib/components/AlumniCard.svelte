@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { AlumniListItem } from "$lib/domain";
+  import { courseShortName, type AlumniListItem } from "$lib/domain";
+  import { initials } from "$lib/initials";
 
   interface Props {
     alumnus: AlumniListItem;
@@ -29,7 +30,9 @@
       />
     </a>
   {:else}
-    <div class="alumni-card__placeholder" aria-hidden="true">ETFSP</div>
+    <div class="alumni-card__placeholder" aria-hidden="true">
+      {initials(alumnus.name)}
+    </div>
   {/if}
 
   <div class="alumni-card__content">
@@ -41,7 +44,7 @@
     {/if}
     {#if alumnus.course || period}
       <p class="alumni-card__details">
-        {[alumnus.course, period].filter(Boolean).join(" · ")}
+        {[courseShortName(alumnus.course), period].filter(Boolean).join(" · ")}
       </p>
     {/if}
   </div>
@@ -79,9 +82,11 @@
   }
 
   .alumni-card__placeholder {
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-size: var(--text-md);
     font-weight: 700;
+    letter-spacing: 0.02em;
   }
 
   .alumni-card__content {

@@ -184,6 +184,12 @@ nomes em minúsculas da tabela acima.
   visitante.
 - A consulta usa parâmetros SQL e filtra registros logicamente excluídos.
 - O valor digitado permanece no campo após a busca.
+- Nome, curso e ordenação ficam em um único formulário `GET` com um único botão
+  “Buscar”, que funciona sem JavaScript. Nas páginas por curso, o curso aparece
+  fixo, com o link “Ver todos os cursos”, que preserva busca e ordenação.
+- Abaixo do formulário, os cursos aparecem como chips com link para
+  `/exalunos/curso/{slug}`. No celular, os chips ficam em uma linha com rolagem
+  horizontal própria, para que a busca apareça na primeira tela.
 - Uma busca vazia retorna todos os registros permitidos.
 - A busca por nome permanece por trecho. Busca por apelido ou ano fica fora do
   escopo para não alterar resultados durante o redesign.
@@ -214,18 +220,20 @@ nomes em minúsculas da tabela acima.
 - Mostrar a contagem: “1 ex-aluno encontrado” ou “N ex-alunos encontrados”.
 - Mostrar até 300 registros por página.
 - Cada item contém somente:
-  - miniatura, quando existir;
+  - miniatura, quando existir; sem foto, as iniciais do nome sobre fundo
+    neutro, ocultas para leitores de tela;
   - nome;
   - apelido, quando existir;
-  - curso;
+  - curso, pelo nome curto (códigos fora do catálogo aparecem como estão);
   - período de ingresso e saída, quando conhecido;
   - acesso ao perfil pelo nome e pela miniatura, quando existir.
 - A área do nome e da miniatura é clicável; não tornar o cartão inteiro um link
   se ele vier a conter outras ações.
 - Não mostrar homepage ou e-mail na listagem.
 - Usar cartões compactos, preservando todos os dados públicos e links previstos.
-  Em celular, usar lista de cartões em uma coluna. Em telas largas, usar a
-  mesma lista em duas colunas; não usar tabela como layout.
+  Em celular, usar lista de cartões em uma coluna; em telas largas, tantas
+  colunas quanto couberem (mínimo de cerca de 19 rem cada). Não usar tabela
+  como layout. Os nomes nos cartões são títulos de nível 3, abaixo da contagem.
 
 ### Paginação
 
@@ -262,14 +270,19 @@ ex-aluno.
 
 ### Conteúdo e ordem
 
-1. Link “Voltar para ex-alunos”.
-2. Foto pessoal, nome e apelido.
-3. Curso e período.
-4. Bloco “Contato”, exibido somente se houver ao menos um contato publicável.
-5. Bloco “Sobre”, com informações públicas e histórico fornecido para
-   publicação.
-6. Data de cadastro.
-7. Ação “Ver fotos enviadas”, apenas quando a contagem for maior que zero.
+1. Link “Voltar à relação de ex-alunos”.
+2. Cabeçalho em cartão com foto pessoal (ou as iniciais do nome, quando não
+   houver foto), nome, apelido, curso pelo nome completo, período e a ação
+   “Ver fotos enviadas”, apenas quando a contagem for maior que zero. No
+   computador, foto e dados ficam lado a lado.
+3. Bloco “Contato”, exibido somente se houver ao menos um contato publicável.
+   Cada contato é um botão com ícone e texto: o endereço de e-mail, o telefone,
+   o número do WhatsApp, o domínio da página pessoal ou o nome da rede social.
+4. Bloco “Sobre”, com informações públicas e histórico fornecido para
+   publicação, em largura de leitura.
+5. Data de cadastro.
+
+No computador, “Contato” e “Sobre” ficam em duas colunas.
 
 Campos vazios não geram rótulos vazios. Homepage deve ser validada no servidor
 ou convertida para uma URL `http`/`https` segura antes de chegar ao link.
