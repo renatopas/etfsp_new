@@ -232,8 +232,10 @@ a pessoa enquanto ela ainda digita.
 
 ### `PhotoCard` e `PhotoDialog`
 
-- `PhotoCard` contém miniatura 4:3 de no máximo 320 × 240 px e metadados
-  textuais; a apresentação pode reduzir a imagem, mas não ampliá-la.
+- `PhotoCard` contém miniatura em caixa 4:3 de no máximo 320 × 240 px, com
+  fundo neutro, cantos arredondados e `object-fit: scale-down` (foto inteira,
+  sem corte nem ampliação), seguida de metadados textuais, sem moldura de
+  cartão. Hover e foco destacam a miniatura inteira.
 - `PhotoDialog` usa elemento `dialog` quando suportado, título acessível,
   fechamento por botão e `Escape`, retenção de foco e retorno à origem.
 - O link para a foto permanece válido sem o diálogo.
@@ -241,8 +243,17 @@ a pessoa enquanto ela ainda digita.
 ### `FilterPanel`
 
 - Filtros principais sempre visíveis.
+- Escolhas curtas e exclusivas (como “Fotos gerais / Carômetro”) usam controle
+  segmentado feito com rádios nativos visualmente ocultos, com foco visível.
 - Filtros avançados em `details/summary`, que já funciona sem JavaScript.
 - O estado abre automaticamente quando algum filtro avançado estiver ativo.
+
+### Chip de filtro ativo
+
+- Link `GET` com o texto do filtro e um “✕” decorativo; o nome acessível é
+  “Remover filtro …”.
+- Remove somente o seu filtro e preserva os demais.
+- Altura mínima de 44 px e formato de pílula.
 
 ### `Pagination`
 

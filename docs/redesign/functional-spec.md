@@ -421,17 +421,24 @@ Permitir ver fotos rapidamente e refinar o acervo sem uma grade rígida.
 
 ### Cabeçalho e filtros
 
-- Título “Fotos”.
-- Ação visível “Enviar uma foto”.
+- Título “Fotos”, com a ação visível “Enviar uma foto” ao lado.
 - Campo “Título ou descrição”.
 - Seletor de curso com “Todos os cursos”.
-- Seletor “Tipo de foto”: “Fotos gerais” e “Carômetro”. O padrão é “Fotos
-  gerais”; não usar uma pergunta Sim/Não ambígua.
-- Filtros avançados recolhíveis, mas acessíveis sem JavaScript:
+- Seletor “Tipo de foto”: “Fotos gerais” e “Carômetro”, apresentado como
+  controle segmentado feito com rádios nativos. O padrão é “Fotos gerais”; não
+  usar uma pergunta Sim/Não ambígua.
+- No computador, título, curso e tipo ficam na mesma linha; no celular, um
+  abaixo do outro.
+- Filtros avançados recolhíveis, mas acessíveis sem JavaScript, abertos
+  automaticamente quando algum deles estiver ativo:
   - ano da foto, de/até;
   - ano de formatura, de/até.
-- Botões “Buscar” e, quando houver filtros, “Limpar filtros”.
+- Botão “Buscar” ao final do formulário.
 - Parâmetros ficam na URL e os controles refletem seus valores.
+- Acima da grade, a contagem de resultados e um chip para cada filtro ativo
+  (título, curso, carômetro, ano da foto, formatura e fotos de um ex-aluno).
+  Cada chip é um link `GET` que remove apenas aquele filtro e volta à primeira
+  página. Com mais de um filtro, exibir também “Limpar filtros”.
 
 ### Regras dos filtros
 
@@ -446,13 +453,16 @@ Permitir ver fotos rapidamente e refinar o acervo sem uma grade rígida.
 
 ### Grade
 
-- Grade responsiva com cartões a partir de aproximadamente 10 rem; usar tantas
-  colunas quanto houver espaço, sem criar rolagem horizontal.
-- Cada cartão contém miniatura, título, curso e apenas os anos disponíveis.
-- Substituir a legenda baseada somente em cores por rótulos “Foto:” e
-  “Formatura:”.
-- Imagens usam proporção 4:3 consistente com `object-fit: cover`, sem
-  deformação ou ampliação além de 320 × 240 px.
+- Grade responsiva com itens a partir de aproximadamente 10 rem; usar tantas
+  colunas quanto houver espaço, sem criar rolagem horizontal. Poucos
+  resultados não esticam os itens.
+- Cada item contém miniatura, título em uma linha (com reticências), curso
+  (nome curto) e turma, e apenas os anos disponíveis, sem moldura de cartão.
+- Substituir a legenda baseada somente em cores por rótulos textuais “Foto” e
+  “Formatura”.
+- A miniatura ocupa uma caixa 4:3 com fundo neutro e `object-fit: scale-down`:
+  a foto aparece inteira, sem cortes, e nunca é ampliada além do tamanho
+  armazenado. Fotos de outra proporção ficam com faixas neutras.
 - Carregamento tardio é permitido fora da primeira linha.
 - Paginar em 100 fotos por página, preservando os filtros.
 
