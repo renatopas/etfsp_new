@@ -1,6 +1,6 @@
 # ISSUE-026 — Página inicial mais viva
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Início
 
@@ -110,3 +110,37 @@ Capturar a página em 390 px e 1366 px.
 - `src/lib/server/` (consulta compartilhada de fotos públicas, se criada)
 
 Não há alteração de schema ou de migração.
+
+## Resultado da implementação
+
+- A rota deixou de ser pré-renderizada e ganhou `load` server-side, com três
+  consultas parametrizadas em paralelo: contagem de ex-alunos
+  (`Excluido = 0`), contagem de fotos gerais e as 8 fotos gerais mais recentes
+  (`Excluido = 0` e `Carometro = 0`, ordem `idFoto DESC`, como na galeria).
+- A regra de foto pública (colunas, filtro de exclusão e conversão) foi
+  extraída para `src/lib/server/public-photos.ts` e passou a ser usada também
+  por `/lista_foto`, sem mudar seu comportamento.
+- O navegador recebe apenas as duas contagens e, para cada foto, título,
+  curso, ano da foto e URL da miniatura (tipo `RecentPhoto` em
+  `src/lib/domain.ts`). Não recebe arquivo original, turma, ID do ex-aluno nem
+  outros metadados.
+- Página reorganizada:
+  - destaque com título, texto, números e ações “Cadastre-se” / “Enviar uma
+    foto”, e busca em um card;
+  - a partir de 64 rem, busca à direita; no celular, logo após o texto;
+  - “Fotos recentes” em grade (2 colunas no celular, 4 no computador), com
+    miniatura 4:3, título com reticências e curso/ano;
+  - “Ex-alunos por curso” como chips com link para as páginas por curso;
+  - estado vazio com “Enviar uma foto”.
+- Especificação funcional (seção 2) atualizada.
+- Validação em 25 de novembro de 2026:
+  - `pnpm run validate` e `pnpm run test:cloud-data` passaram (o `check`
+    mantém o aviso anterior de `src/lib/PrettyDate.svelte`).
+  - Em uma cópia descartável da fixture, com 9 fotos gerais extras, uma
+    excluída e uma de carômetro (as duas mais recentes), a página mostrou 30
+    ex-alunos e 10 fotos. A faixa listou as 8 fotos gerais mais recentes e
+    omitiu a excluída e a de carômetro. O JSON de dados não continha outros
+    campos.
+  - Sem rolagem horizontal em 320, 390, 768 e 1366 px.
+  - No celular (390 × 664 visíveis), a busca começa a 275 px do topo e os
+    botões de ação aparecem na primeira tela.

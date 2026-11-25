@@ -1,8 +1,23 @@
 <script lang="ts">
+  import type { PageProps } from "./$types";
+  import { COURSES, COURSE_CATALOG } from "$lib/domain";
   import Meta from "$lib/Meta.svelte";
-  import PageHeader from "$lib/components/PageHeader.svelte";
   import SearchForm from "$lib/components/SearchForm.svelte";
   import { absoluteSiteUrl } from "$lib/site";
+
+  let { data }: PageProps = $props();
+
+  const number = new Intl.NumberFormat("pt-BR");
+  const alumniLabel = $derived(
+    `${number.format(data.stats.alumni)} ${
+      data.stats.alumni === 1 ? "ex-aluno cadastrado" : "ex-alunos cadastrados"
+    }`,
+  );
+  const photosLabel = $derived(
+    `${number.format(data.stats.photos)} ${
+      data.stats.photos === 1 ? "foto" : "fotos"
+    }`,
+  );
 </script>
 
 <Meta
@@ -11,36 +26,143 @@
   description="Encontre colegas e participe do cadastro de ex-alunos da ETFSP, CEFET-SP e IFSP."
 />
 
-<section class="home-page">
-  <PageHeader
-    title="Encontre seus colegas da Federal de São Paulo"
-    description="Este site reúne ex-alunos, professores e funcionários da ETFSP, CEFET-SP e IFSP."
-  />
+<section class="home-hero" aria-labelledby="home-title">
+  <div class="home-hero__intro">
+    <h1 id="home-title">Encontre seus colegas da Federal de São Paulo</h1>
+    <p class="home-hero__description">
+      Este site reúne ex-alunos, professores e funcionários da ETFSP, CEFET-SP e
+      IFSP.
+    </p>
+  </div>
 
-  <div class="home-page__search">
+  <div class="home-hero__search">
     <SearchForm example="Ex.: Maria da Silva" />
-    <div class="home-page__directory-links" aria-label="Consultar ex-alunos">
+    <div class="home-hero__links" aria-label="Consultar ex-alunos">
       <a href="/exalunos_lista">Ver todos os ex-alunos</a>
       <a href="/exalunos_lista?recentes=1">Ver cadastros recentes</a>
     </div>
   </div>
 
-  <div class="home-page__actions" aria-label="Outras opções">
-    <a class="button button--primary" href="/novocadastro">Cadastre-se</a>
-    <a class="button button--secondary" href="/lista_foto">Ver fotos</a>
+  <div class="home-hero__extra">
+    <p class="home-hero__stats">
+      <span>{alumniLabel}</span>
+      <span aria-hidden="true"> · </span>
+      <span>{photosLabel}</span>
+    </p>
+    <div class="home-hero__actions" aria-label="Participar">
+      <a class="button button--primary" href="/novocadastro">Cadastre-se</a>
+      <a class="button button--secondary" href="/cadfoto">Enviar uma foto</a>
+    </div>
   </div>
-
-  <p class="home-page__note">
-    Site não oficial, mantido para facilitar o reencontro entre colegas.
-  </p>
 </section>
 
+<section class="home-section" aria-labelledby="recent-photos-title">
+  <div class="home-section__heading">
+    <h2 id="recent-photos-title">Fotos recentes</h2>
+    {#if data.recentPhotos.length}
+      <a href="/lista_foto">Ver todas as fotos</a>
+    {/if}
+  </div>
+
+  {#if data.recentPhotos.length}
+    <ul class="photo-strip">
+      {#each data.recentPhotos as photo}
+        <li>
+          <a href="/lista_foto">
+            <img
+              src={photo.thumbnailUrl}
+              alt=""
+              width="320"
+              height="240"
+              loading="lazy"
+            />
+            <span class="photo-strip__title">
+              {photo.title ?? "Foto enviada"}
+            </span>
+            {#if photo.course || photo.photoYear}
+              <span class="photo-strip__meta">
+                {[
+                  photo.course ? COURSE_CATALOG[photo.course].shortName : "",
+                  photo.photoYear ?? "",
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </span>
+            {/if}
+          </a>
+        </li>
+      {/each}
+    </ul>
+  {:else}
+    <p class="home-section__empty">
+      Ainda não há fotos publicadas.
+      <a href="/cadfoto">Enviar uma foto</a>
+    </p>
+  {/if}
+</section>
+
+<section class="home-section" aria-labelledby="courses-title">
+  <h2 id="courses-title">Ex-alunos por curso</h2>
+  <ul class="course-chips">
+    {#each COURSES as course}
+      <li>
+        <a href={`/exalunos/curso/${COURSE_CATALOG[course].slug}`}>
+          {COURSE_CATALOG[course].shortName}
+        </a>
+      </li>
+    {/each}
+  </ul>
+</section>
+
+<p class="home-note">
+  Site não oficial, mantido para facilitar o reencontro entre colegas.
+</p>
+
 <style>
-  .home-page {
-    max-width: var(--content-reading);
+  .home-hero {
+    display: grid;
+    grid-template-areas: "intro" "search" "extra";
+    gap: var(--space-6);
+    align-items: start;
   }
 
-  .home-page__search {
+  .home-hero__intro {
+    grid-area: intro;
+  }
+
+  .home-hero__search {
+    grid-area: search;
+  }
+
+  .home-hero__extra {
+    grid-area: extra;
+  }
+
+  .home-hero__intro h1 {
+    margin: 0;
+  }
+
+  .home-hero__description {
+    margin: var(--space-3) 0 0;
+    max-width: 36rem;
+    color: var(--color-text-muted);
+    font-size: var(--text-md);
+  }
+
+  .home-hero__stats {
+    margin: 0;
+    color: var(--color-heading);
+    font-weight: 700;
+  }
+
+  .home-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .home-hero__search {
     display: grid;
     gap: var(--space-4);
     padding: var(--space-6);
@@ -50,22 +172,140 @@
     box-shadow: var(--shadow-card);
   }
 
-  .home-page__directory-links {
+  .home-hero__links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
+    gap: var(--space-2) var(--space-4);
   }
 
-  .home-page__actions {
+  .home-section {
+    margin-top: var(--space-12);
+  }
+
+  .home-section h2 {
+    margin: 0;
+  }
+
+  .home-section__heading {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-top: var(--space-6);
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
   }
 
-  .home-page__note {
-    margin: var(--space-6) 0 0;
+  .home-section__empty {
+    margin: var(--space-4) 0 0;
+    color: var(--color-text-muted);
+  }
+
+  .photo-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-3);
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .photo-strip li {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .photo-strip a {
+    display: grid;
+    gap: var(--space-1);
+    color: var(--color-text);
+    font-weight: 400;
+    text-decoration: none;
+  }
+
+  .photo-strip img {
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-muted);
+    object-fit: cover;
+  }
+
+  .photo-strip__title {
+    overflow: hidden;
+    color: var(--color-heading);
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .photo-strip a:hover .photo-strip__title {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+  }
+
+  .photo-strip__meta {
     color: var(--color-text-muted);
     font-size: var(--text-sm);
+  }
+
+  .course-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .course-chips li {
+    margin: 0;
+  }
+
+  .course-chips a {
+    display: inline-flex;
+    min-height: var(--control-min-height);
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .course-chips a:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-soft);
+  }
+
+  .home-note {
+    margin: var(--space-12) 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  @media (min-width: 40rem) {
+    .photo-strip {
+      grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .home-hero {
+      grid-template-areas:
+        "intro search"
+        "extra search";
+      grid-template-columns: minmax(0, 1fr) minmax(0, 28rem);
+      column-gap: var(--space-12);
+      row-gap: var(--space-4);
+    }
+
+    .home-hero__search {
+      align-self: center;
+    }
+
+    .photo-strip {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
 </style>

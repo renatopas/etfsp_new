@@ -90,11 +90,22 @@ se cadastre imediatamente.
    funcionários da ETFSP, CEFET-SP e IFSP.
 3. Busca por nome com botão “Buscar ex-aluno”.
 4. Links auxiliares “Ver todos os ex-alunos” e “Ver cadastros recentes”.
-5. Duas ações secundárias: “Cadastre-se” e “Ver fotos”.
-6. Uma nota curta informando que o site é não oficial.
+5. Números do acervo: “N ex-alunos cadastrados · N fotos”.
+6. Duas ações: “Cadastre-se” e “Enviar uma foto”.
+7. “Fotos recentes”: as 8 fotos gerais mais recentes, com miniatura, título e
+   curso/ano, cada uma com link para a galeria, e a ação “Ver todas as fotos”.
+   Sem fotos, exibir uma frase curta com o link “Enviar uma foto”.
+8. “Ex-alunos por curso”: links para `/exalunos/curso/{slug}` de cada curso.
+9. Uma nota curta informando que o site é não oficial.
 
-Não exibir números de cadastros ou fotos sem que sejam calculados pelo servidor
-em tempo real. Não criar seção histórica sem conteúdo disponível.
+No computador (a partir de 64 rem), título, texto, números e ações ficam à
+esquerda e a busca à direita. No celular, a busca vem logo após o texto.
+
+Os números e as fotos recentes são calculados pelo servidor a cada requisição;
+a página não é pré-renderizada. Ex-alunos contam somente com `Excluido = 0`.
+Fotos contam e aparecem somente com `Excluido = 0` e `Carometro = 0`, na mesma
+ordem da galeria. Para cada foto, a página recebe apenas título, curso, ano da
+foto e miniatura. Não criar seção histórica sem conteúdo disponível.
 
 ### Busca
 
