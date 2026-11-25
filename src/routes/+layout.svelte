@@ -46,9 +46,7 @@
   <Header />
   <main id="conteudo-principal" class="site-main" tabindex="-1">
     <PageContainer>
-      <div id="mainbody2">
-        {@render children()}
-      </div>
+      {@render children()}
     </PageContainer>
   </main>
   <Footer />
