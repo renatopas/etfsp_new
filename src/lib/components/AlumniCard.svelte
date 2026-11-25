@@ -3,9 +3,11 @@
 
   interface Props {
     alumnus: AlumniListItem;
+    /** Nível do título com o nome, conforme a hierarquia da página. */
+    headingLevel?: 2 | 3;
   }
 
-  let { alumnus }: Props = $props();
+  let { alumnus, headingLevel = 2 }: Props = $props();
 
   const detailHref = $derived(`/exalunos/${alumnus.id}`);
   const period = $derived(
@@ -31,7 +33,9 @@
   {/if}
 
   <div class="alumni-card__content">
-    <h2><a href={detailHref}>{alumnus.name}</a></h2>
+    <svelte:element this={`h${headingLevel}`} class="alumni-card__name">
+      <a href={detailHref}>{alumnus.name}</a>
+    </svelte:element>
     {#if alumnus.nickname}
       <p class="alumni-card__nickname">{alumnus.nickname}</p>
     {/if}
@@ -84,14 +88,14 @@
     min-width: 0;
   }
 
-  h2 {
+  .alumni-card__name {
     margin: 0;
     color: var(--color-heading);
     font-size: var(--text-base);
     line-height: var(--leading-tight);
   }
 
-  h2 a {
+  .alumni-card__name a {
     color: inherit;
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.14em;
