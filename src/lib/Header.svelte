@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { onMount, tick } from "svelte";
+  import Brand from "./components/Brand.svelte";
   import Button from "./components/Button.svelte";
   import PageContainer from "./components/PageContainer.svelte";
 
@@ -74,13 +75,7 @@
         href="/"
         aria-label="Ex-alunos da Escola Técnica Federal de São Paulo"
       >
-        <img
-          class="site-header__logo"
-          src="/images/logoex.gif"
-          alt="Ex-alunos da Escola Técnica Federal de São Paulo"
-          width="345"
-          height="75"
-        />
+        <Brand />
       </a>
 
       <Button
@@ -105,6 +100,7 @@
             <li>
               <a
                 href={item.href}
+                class:site-navigation__cta={item.href === "/novocadastro"}
                 aria-current={isCurrent(item) ? "page" : undefined}
                 onclick={closeMenu}>{item.label}</a
               >

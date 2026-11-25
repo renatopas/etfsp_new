@@ -372,6 +372,9 @@
   p {
     margin: 0;
   }
+  section {
+    margin-top: var(--space-8);
+  }
   article h3,
   article p {
     margin-top: var(--space-1);

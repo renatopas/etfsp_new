@@ -1,6 +1,6 @@
 # ISSUE-025 — Novo cabeçalho e marca
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Interface geral
 
@@ -112,3 +112,34 @@ Graph após o deploy.
   antigas)
 
 Não há alteração server-side, de schema ou de migração.
+
+## Resultado da implementação
+
+- Marca recriada em SVG (`src/lib/components/Brand.svelte`): “EX” desenhado em
+  formas geométricas, “ALUNOS” em sans-serif pesada, barra vertical e “Escola
+  Técnica / Federal de São Paulo” na serifa dos títulos, tudo em azul. Os
+  textos usam `textLength` para manter a composição mesmo com fonte
+  alternativa. O SVG é decorativo; o nome acessível continua no link.
+- Cabeçalho com fundo branco e linha inferior, sem imagem de fundo e sem
+  laranja. Destinos como links de texto; o atual usa cor primária, sublinhado
+  de 3 px e `aria-current`. “Cadastre-se” tem aparência de botão primário.
+- Altura medida do cabeçalho: 61 px em 320 e 390 px (marca e “Menu” na mesma
+  linha) e 73 px em 768 e 1366 px. Sem rolagem horizontal em nenhuma largura.
+  O menu móvel continua fechando por `Escape`, devolvendo o foco ao botão.
+  Sem JavaScript, a navegação aparece aberta e o botão não é exibido.
+- Rodapé com mais respiro vertical; conteúdo inalterado.
+- Imagem de compartilhamento `static/images/og-etfsp.png` (1200 × 630, 42 KB),
+  gerada a partir da marca. `Meta.svelte` passou a emitir
+  `summary_large_image`, `og:image` absoluto, dimensões e texto alternativo; as
+  metatags duplicadas de `src/app.html` foram removidas. Perfis com foto
+  continuam usando a foto.
+- Removidos `header.jpg`, `logoex.gif` e `logo_cefet.gif` (a antiga imagem de
+  compartilhamento), sem referências restantes.
+- **Correção de efeito colateral da ISSUE-024:** em `/lista_foto`, o título
+  “N fotos encontradas” ficou colado ao formulário de filtros depois da remoção
+  de `#mainbody2`; a seção de resultados recebeu margem superior.
+- Design system atualizado (`SiteHeader` e identidade).
+- Validação em 25 de novembro de 2026: `pnpm run validate` e
+  `pnpm run test:cloud-data` passaram (o `check` mantém o aviso anterior de
+  `src/lib/PrettyDate.svelte`). A prévia em redes sociais deve ser conferida
+  com uma ferramenta de depuração de Open Graph após o deploy.
