@@ -54,7 +54,7 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background: var(--color-surface);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-card);
   }
 
   .alumni-card__photo,
@@ -76,7 +76,7 @@
 
   .alumni-card__placeholder {
     color: var(--color-text-muted);
-    font-size: var(--text-xs);
+    font-size: var(--text-sm);
     font-weight: 700;
   }
 

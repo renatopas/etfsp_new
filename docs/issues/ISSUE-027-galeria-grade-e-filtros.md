@@ -43,6 +43,11 @@ imagem.
 - Estado de foco e hover visível na miniatura inteira.
 - Continuam valendo as regras da ISSUE-007: proporção 4:3, nada de ampliação
   além de 320 × 240 px, `loading="lazy"`, 100 fotos por página.
+- Decidir entre `object-fit: cover` (preenche a caixa 4:3, corta bordas e
+  amplia imagens menores que a coluna) e `scale-down` (nunca amplia nem corta,
+  mas deixa faixas na caixa). As miniaturas são geradas com `fit: "inside"`,
+  então nem todas têm proporção 4:3. Ver a ISSUE-023, “Resultado da
+  implementação”.
 
 ### Cabeçalho
 

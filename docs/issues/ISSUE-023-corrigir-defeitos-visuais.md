@@ -1,6 +1,6 @@
 # ISSUE-023 — Corrigir defeitos visuais e remover dependências sem uso
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Interface geral, galeria e envio de foto
 
@@ -141,3 +141,42 @@ rádios por toque e teclado.
 - `static/images/` (remoções)
 
 Não há alteração server-side, de schema ou de migração.
+
+## Resultado da implementação
+
+- Rádios de `/lista_foto` e `/cadfoto` ficam na mesma linha do rótulo, com
+  área de toque mínima de 44 px. As regras de largura total deixaram de atingir
+  `type="radio"`.
+- Os dois `>` soltos de `/cadfoto` foram removidos. Com isso, “Ano da foto” e
+  “Ano de formatura” passaram a ocupar duas colunas, como já previa o CSS.
+- Tokens inexistentes foram substituídos por tokens existentes, sem criar
+  novos: `--space-5` → `--space-4`, `--space-7` → `--space-8`,
+  `--text-2xl` → `--text-lg`, `--text-xs` → `--text-sm` (respeitando o mínimo
+  de 14 px), `--shadow-sm` → `--shadow-card`. `--content-max-readable` virou
+  `--content-max`: como a variável nunca funcionou, a relação e o perfil
+  sempre ocuparam a largura total; usar `--content-reading` centralizaria esse
+  conteúdo e o desalinharia do título. A largura de leitura fica para as
+  ISSUES 024 e 029. Com os tokens válidos, o card de resumo do perfil e os
+  cards da relação ganharam o espaçamento interno e a sombra previstos.
+- A grade da galeria usa `auto-fill`; um único resultado ocupa uma coluna.
+- **Desvio do critério sobre ampliação:** as miniaturas são geradas com
+  `fit: "inside"` (proporção original, até 320 × 240 px), e a especificação
+  exige caixa 4:3 com `object-fit: cover`. Com `cover`, uma imagem menor que a
+  coluna é necessariamente ampliada. A miniatura continua limitada a 320 px de
+  largura e, com `auto-fill`, as colunas têm cerca de 10 a 11 rem, então as
+  miniaturas geradas pelo upload são reduzidas. Arquivos antigos muito
+  pequenos ainda podem ser ampliados. A escolha entre `cover` e
+  `scale-down`/`contain` foi encaminhada para a ISSUE-027.
+- Os avisos `a11y_no_static_element_interactions` (área do gesto no
+  visualizador, agora com `role="presentation"`, pois botões e teclado oferecem
+  a mesma navegação) e `state_referenced_locally` (`SearchForm`, agora com
+  `$derived`) não aparecem mais. Permanece um aviso anterior, fora do escopo,
+  em `src/lib/PrettyDate.svelte`, componente sem uso.
+- Tailwind removido de `package.json`, `pnpm-lock.yaml`, `vite.config.ts`,
+  `.prettierrc` e `pnpm-workspace.yaml`; `CLAUDE.md` e o design system foram
+  atualizados.
+- Removidas 15 imagens legadas sem referência no repositório.
+- Validação em 25 de novembro de 2026: `pnpm install --frozen-lockfile`,
+  `pnpm run validate` e `pnpm run test:cloud-data` passaram. Capturas em
+  390 px e 1366 px de todas as rotas, sobre uma cópia da fixture sintética,
+  confirmaram as correções sem outras mudanças de layout.

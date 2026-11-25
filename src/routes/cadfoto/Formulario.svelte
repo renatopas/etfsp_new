@@ -169,7 +169,7 @@
       >{#if error("AnoFoto")}<p id="AnoFoto-error" class="field-error">
           {error("AnoFoto")}
         </p>{/if}
-      ><label for="AnoFormatura"
+      <label for="AnoFormatura"
         >Ano de formatura<input
           id="AnoFormatura"
           name="AnoFormatura"
@@ -190,7 +190,6 @@
         >
           {error("AnoFormatura")}
         </p>{/if}
-      >
     </div>
     <fieldset>
       <legend>É carômetro?</legend><label
@@ -255,12 +254,25 @@
   label {
     font-weight: 700;
   }
-  input,
+  input:not([type="radio"]),
   select {
     width: 100%;
     padding: var(--space-2);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
+  }
+  label:has(> input[type="radio"]) {
+    display: flex;
+    min-height: var(--control-min-height);
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+  }
+  input[type="radio"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    flex: 0 0 auto;
   }
   p {
     margin: 0;

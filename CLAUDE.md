@@ -51,9 +51,10 @@ repositório inteiro.
 - **Fotos**: `cadfoto/search_id/+server.ts` busca ex-alunos para o formulário
   de upload; `Fotos/[file]/+server.ts` entrega arquivos de `FOTOS_DIR`.
 - **SEO**: `robots.txt` e `sitemap.xml` são endpoints em `src/routes/`.
-- **UI**: componentes reutilizáveis em `src/lib/components/`; Tailwind 4 via
-  `@tailwindcss/vite`. O redesign responsivo é especificado em
-  `docs/redesign/` (design system, spec funcional, dados privados).
+- **UI**: componentes reutilizáveis em `src/lib/components/`, estilizados com
+  CSS próprio e os tokens de `src/app.css` (sem Tailwind nem biblioteca
+  visual). O redesign responsivo é especificado em `docs/redesign/` (design
+  system, spec funcional, dados privados).
 
 ## Documentação relacionada
 
