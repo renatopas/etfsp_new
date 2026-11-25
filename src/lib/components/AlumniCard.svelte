@@ -54,7 +54,7 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background: var(--color-surface);
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow-sm);
   }
 
   .alumni-card__photo,
@@ -84,7 +84,7 @@
     min-width: 0;
   }
 
-  :global(#mainbody2) .alumni-card h2 {
+  h2 {
     margin: 0;
     color: var(--color-heading);
     font-size: var(--text-base);

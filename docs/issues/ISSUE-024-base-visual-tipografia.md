@@ -1,6 +1,6 @@
 # ISSUE-024 — Base visual: tipografia e remoção do layout legado
 
-**Estado:** Aguardando validação
+**Estado:** Concluída
 
 **Área:** Interface geral
 
@@ -117,3 +117,46 @@ mudança brusca de layout ao carregar.
 - `static/fonts/` (novo)
 
 Não há alteração server-side, de schema ou de migração.
+
+## Resultado da implementação
+
+- O wrapper `#mainbody2` foi removido do layout, junto com todas as regras
+  `#mainbody2` e as classes legadas sem uso (`.formbutton`, `.tableforms`,
+  `.tablelist`, `.tablepage`, `.tablepagenoline`, `#sidebody`, `.imagdir`,
+  `.idsearch`). `AlumniCard` deixou de usar `:global(#mainbody2)`.
+- Os estilos base que ainda eram necessários (`h1`, `h2`, listas e campos de
+  formulário) passaram para `:where(.site-main)`, com especificidade zero.
+  Antes, o seletor de ID sobrescrevia os componentes; agora os estilos
+  declarados nos componentes passam a valer. Efeitos visíveis: a descrição do
+  `PageHeader` aparece em cinza e maior, e textos de apoio (exemplos, dicas,
+  detalhes dos cards, avisos do cadastro) aparecem em 14 px e cinza, como
+  definidos nos componentes. O contraste do cinza é de no mínimo 4,70:1 em
+  todos os fundos usados.
+- Source Serif 4 variável, subconjunto latino, em
+  `static/fonts/source-serif-4-latin-wght.woff2` (50 KB), com a licença OFL em
+  `static/fonts/source-serif-4-OFL.txt`. Origem: pacote
+  `@fontsource-variable/source-serif-4` 5.3.1, copiado sem adicionar
+  dependência ao projeto.
+- `@font-face` com `font-display: swap` e `unicode-range` latino;
+  pré-carregamento em `src/app.html`; `--font-serif` passa a começar por
+  `"Source Serif 4"`, com Georgia como alternativa. Títulos `h1` e os `h2` em
+  serifa de Sobre e Política de Privacidade usam peso 600.
+- Tokens de elevação `--shadow-sm` e `--shadow-overlay` criados ao lado de
+  `--shadow-card`. `AlumniCard` e o resumo do perfil voltaram a usar
+  `--shadow-sm`, como pretendido originalmente.
+- **Correção adicional:** `src/app.html` declarava `lang="en"`; passou a
+  `lang="pt-BR"`, o que corrige a pronúncia em leitores de tela e evita
+  ofertas indevidas de tradução.
+- O design system foi atualizado com a regra de fontes, os tokens de sombra,
+  o uso de `:where(.site-main)` e o tema escuro como fora do escopo.
+- Validação em 25 de novembro de 2026:
+  - `pnpm run validate` e `pnpm run test:cloud-data` passaram. O `check`
+    mantém um aviso anterior em `src/lib/PrettyDate.svelte` (componente sem
+    uso).
+  - Em 320 px, nenhuma das nove rotas principais tem rolagem horizontal.
+  - A fonte é servida apenas por `/fonts/`. No build de produção, é baixada
+    uma vez por página e reaproveitada do cache na navegação seguinte.
+  - Com a fonte bloqueada, os títulos usam a serifa alternativa e continuam
+    legíveis.
+  - Capturas de todas as rotas em 390 px e 1366 px foram comparadas com as da
+    ISSUE-023.

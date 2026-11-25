@@ -14,7 +14,10 @@ transformar o site em um museu ou acrescentar conteúdo histórico inexistente.
   Tailwind, que estava instalado sem uso, foi removido na ISSUE-023.
 - Preferir SVG simples criado no próprio componente ou texto a imagens GIF
   legadas usadas como botões.
-- Não carregar fontes, scripts ou ícones de CDN.
+- Não carregar fontes, scripts ou ícones de CDN. Fontes próprias ficam em
+  `static/fonts/`, junto do arquivo de licença.
+- Não há tema escuro nesta fase; o assunto pode ser retomado por decisão de
+  produto.
 
 ## 2. Tokens
 
@@ -54,7 +57,7 @@ hexadecimais avulsas.
   /* Tipografia */
   --font-sans:
     system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-serif: Georgia, "Times New Roman", serif;
+  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   --text-sm: 0.875rem;
   --text-base: 1rem;
   --text-md: 1.125rem;
@@ -77,7 +80,9 @@ hexadecimais avulsas.
   --radius-sm: 0.375rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
+  --shadow-sm: 0 1px 2px rgb(18 59 82 / 0.08);
   --shadow-card: 0 1px 3px rgb(18 59 82 / 0.12);
+  --shadow-overlay: 0 12px 32px rgb(18 59 82 / 0.24);
   --content-max: 72rem;
   --content-reading: 46rem;
   --control-min-height: 2.75rem;
@@ -91,8 +96,19 @@ sucesso não dependem somente de cor.
 ## 3. Tipografia
 
 - Corpo e interface usam `--font-sans` em 16 px ou mais.
-- Títulos de página podem usar `--font-serif`; títulos de componentes e rótulos
-  continuam em sans-serif.
+- Títulos de página usam `--font-serif` com peso 600; títulos de componentes e
+  rótulos continuam em sans-serif. Páginas de leitura longa (Sobre e Política
+  de Privacidade) podem usar serifa também nos `h2`.
+- A serifa é a **Source Serif 4** (SIL Open Font License 1.1), em arquivo WOFF2
+  variável com subconjunto latino, hospedado em `static/fonts/`, declarado com
+  `font-display: swap` e pré-carregado em `src/app.html`. Georgia é a
+  alternativa caso a fonte não carregue. Não acrescentar outras famílias sem
+  decisão de produto.
+- Elevação: `--shadow-sm` para elementos discretos, `--shadow-card` para cards
+  e `--shadow-overlay` para diálogos e camadas sobrepostas.
+- Estilos base de títulos, listas e campos do conteúdo principal usam
+  `:where(.site-main)`, com especificidade zero, para que os estilos dos
+  componentes sempre prevaleçam.
 - Corpo usa entrelinha 1,6 e largura de leitura máxima de 46 rem.
 - Não usar texto menor que 14 px.
 - Não usar caixa alta em frases, espaçamento artificial entre letras ou texto

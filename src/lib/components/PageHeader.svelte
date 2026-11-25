@@ -40,6 +40,7 @@
     color: var(--color-heading);
     font-family: var(--font-serif);
     font-size: var(--text-xl);
+    font-weight: 600;
     line-height: var(--leading-tight);
   }
 
