@@ -321,44 +321,6 @@
     margin-bottom: var(--space-1);
     padding: 0;
   }
-  .segmented__options {
-    display: inline-flex;
-    padding: 2px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-muted);
-  }
-  .segmented label {
-    position: relative;
-    cursor: pointer;
-  }
-  .segmented input {
-    position: absolute;
-    opacity: 0;
-    inset: 0;
-    margin: 0;
-    cursor: pointer;
-  }
-  .segmented span {
-    display: flex;
-    min-height: calc(var(--control-min-height) - 6px);
-    align-items: center;
-    padding: 0 var(--space-4);
-    border-radius: calc(var(--radius-sm) - 2px);
-    color: var(--color-text);
-    font-weight: 650;
-    transition:
-      background-color 150ms ease,
-      color 150ms ease;
-  }
-  .segmented input:checked + span {
-    background: var(--color-primary);
-    color: var(--color-surface);
-  }
-  .segmented input:focus-visible + span {
-    outline: 3px solid var(--color-focus);
-    outline-offset: 2px;
-  }
   .filters__footer {
     display: flex;
     flex-wrap: wrap;

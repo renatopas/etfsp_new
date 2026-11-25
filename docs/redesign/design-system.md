@@ -201,6 +201,22 @@ superfície principal, borda de 2 px e mudança perceptível de borda em hover,
 foco e erro. O bloco pode usar borda, sombra discreta e
 `--color-surface-muted` para reforçar a hierarquia sem caixas aninhadas.
 
+Implementação: classes globais em `src/app.css` (`.form`, `.form-section`,
+`.form-field`, `.form-grid`, `.form-hint`, `.form-error`, `.form-required`,
+`.error-summary` e `.segmented__options`), usadas pelo cadastro, pelo envio de
+foto e pelos filtros da galeria.
+
+- **Obrigatoriedade:** marcar apenas os campos obrigatórios, com o texto
+  “(obrigatório)” em `.form-required` junto ao rótulo. Não usar asterisco.
+- **Resumo de erros:** `.error-summary` no topo, com `tabindex="-1"`, recebe o
+  foco após um envio com erros.
+- **Escolhas curtas:** “Não / Sim” e similares usam `.segmented__options` com
+  rádios nativos, alinhado à esquerda.
+- **`FileField`:** com JavaScript, área tracejada com o botão “Escolher foto”,
+  a dica “ou arraste a imagem para cá”, pré-visualização, nome e tamanho do
+  arquivo; o `input` fica visualmente oculto, mas focável, e a área mostra o
+  foco. Sem JavaScript, o `input` nativo continua visível.
+
 Placeholder nunca substitui rótulo. Não validar apenas no evento `keyup`; erros
 são apresentados após saída do campo ou tentativa de envio, evitando repreender
 a pessoa enquanto ela ainda digita.
